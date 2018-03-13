@@ -14,21 +14,3 @@
 * Web服务器: Tomcat
 * 编程语言: js + Java
 
-###mybatis官网学习
-可在下面的网址里面学习mapper xml files 怎么写。
-http://www.mybatis.org/mybatis-3/
-
-##开发进度
-2018.03.13
-完成ssm框架搭建。
-说明：目前数据库连本地的，在本地mysql新建pet数据库，建一张表为usr,建表语句
-CREATE TABLE `usr` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `pwd` varchar(255) NOT NULL,
-  `auth` int(11) NOT NULL COMMENT '普通用户1，管理员2，超级管理员3',
-  `picture_url` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-建好表后，自行添加一些数据测试。
