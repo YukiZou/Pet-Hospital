@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.UserDao">
+
+    <resultMap id="userResultMap" type="com.ecnu.entity.User">
+        <id  column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="pwd" property="pwd" />
+        <result column="auth" property="auth" />
+        <result column="picture_url" property="pictureUrl" />
+    </resultMap>
+
+    <!--ID即DAO层接口下声明的方法-->
+    <select id="getAllUser" resultMap="userResultMap">
+        SELECT *
+        FROM usr
+    </select>
+</mapper>
