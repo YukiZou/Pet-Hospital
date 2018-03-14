@@ -24,7 +24,7 @@
             <c:forEach items="${requestScope.users}" var="user">
                 <tr>
                     <th>${user.id}</th>
-                    <th>${user.name}</th>
+                    <th>${user.userName}</th>
                     <th>${user.pwd}</th>
                     <th>${user.auth}</th>
                     <th>${user.pictureUrl}</th>

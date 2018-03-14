@@ -6,7 +6,7 @@
 
     <resultMap id="userResultMap" type="com.ecnu.entity.User">
         <id  column="id" property="id" />
-        <result column="name" property="name" />
+        <result column="user_name" property="userName" />
         <result column="pwd" property="pwd" />
         <result column="auth" property="auth" />
         <result column="picture_url" property="pictureUrl" />
@@ -17,4 +17,9 @@
         SELECT *
         FROM usr
     </select>
+
+    <insert id="insertUser" parameterType="com.ecnu.entity.User" useGeneratedKeys="true">
+        INSERT INTO usr (user_name, pwd, auth, picture_url)
+        VALUES (#{userName}, #{pwd}, #{auth}, #{pictureUrl})
+    </insert>
 </mapper>

@@ -6,7 +6,7 @@
     </head>
     <body>
         <h2>SSM框架测试</h2>
-        <form:form method="GET" action="/user/listAll">
+        <form:form method="GET" action="api/user/listAll">
             <table>
                 <tr>
                     <td>
