@@ -11,6 +11,13 @@ public interface UserDao {
     List<User> getAllUser();
 
     /**
+     * 根据userName找User记录
+     * @param userName
+     * @return
+     */
+    User findUserByName(String userName);
+
+    /**
      * 根据参数usr查询出所有符合查询条件的user用户,可以实现模糊查找
      * @param usr
      * @return
@@ -25,6 +32,7 @@ public interface UserDao {
 
     /**
      * 根据参数usr的ID找到要更改的用户记录，然后update该条记录
+     * 可修改权限auth,修改密码
      * @param usr
      */
     void updateUser(User usr);
