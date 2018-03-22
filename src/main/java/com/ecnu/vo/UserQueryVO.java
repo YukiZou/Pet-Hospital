@@ -1,4 +1,4 @@
-package com.ecnu.dto;
+package com.ecnu.vo;
 
 import com.ecnu.entity.User;
 import lombok.Data;
@@ -6,20 +6,19 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 将后端查询出的User的部分信息返回到前端界面
+ * 查询用户信息列表时返回的数据。
  */
 @Data
-public class ListUserDTO implements Serializable{
+public class UserQueryVO implements Serializable {
     private int id;
     private String userName;
     private int auth;
-    //private String pictureUrl;
 
-    public ListUserDTO(){
+    public UserQueryVO() {
 
     }
 
-    public ListUserDTO(User user){
+    public UserQueryVO(User user) {
         this.id = user.getId();
         this.userName = user.getUserName();
         this.auth = user.getAuth();

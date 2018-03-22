@@ -1,6 +1,7 @@
 package com.ecnu.service;
 
 import com.ecnu.entity.User;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 
@@ -27,26 +28,26 @@ public interface UserService {
      * 新增用户
      * @param usr
      */
-    void addUser(User usr);
+    Boolean addUser(User usr);
 
     /**
      * 删除用户
      * @param id
      * @return
      */
-    void deleteUser(int id);
+    Boolean deleteUser(int id);
 
     /**
      * 管理员修改指定用户权限
      * @param id
      * @param auth 新权限
      */
-    void changeAuth(int id, int auth);
+    Boolean changeAuth(int id, int auth);
 
     /**
      * 管理员重置密码/用户修改密码
      * @param id
      * @param pwd 新密码
      */
-    void changePwd(int id, String pwd);
+    Boolean changePwd(int id, String pwd);
 }

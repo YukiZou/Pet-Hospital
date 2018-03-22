@@ -35,11 +35,11 @@ public interface UserDao {
      * 可修改权限auth,修改密码
      * @param usr
      */
-    void updateUser(User usr);
+    int updateUser(User usr);
 
     /**
      * 根据参数usr删除指定用户记录。
      * @param usr
      */
-    void deleteUser(User usr);
+    int deleteUser(User usr);
 }
