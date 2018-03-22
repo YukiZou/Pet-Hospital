@@ -1,5 +1,6 @@
 package com.ecnu.controller;
 
+import com.ecnu.common.MD5Util;
 import com.ecnu.common.response.BaseResponse;
 import com.ecnu.dto.*;
 import com.ecnu.vo.UserListVO;
@@ -266,7 +267,10 @@ public class UserController {
     private User toUser(UserDTO userDTO) {
         User user = new User();
         user.setUserName(userDTO.getUserName());
-        user.setPwd(userDTO.getPwd());
+        if (userDTO.getPwd() != null && !userDTO.getPwd().equals("")) {
+            user.setPwd(MD5Util.toMd5(userDTO.getPwd()));//将DTO中明文的字符串加密后存在User对象中。
+        }
+        //user.setPwd(userDTO.getPwd());
         user.setAuth(userDTO.getAuth());
         user.setPictureUrl(userDTO.getPictureUrl());
         return user;
