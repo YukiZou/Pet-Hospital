@@ -6,7 +6,7 @@
 
     <resultMap id="userResultMap" type="com.ecnu.entity.User">
         <id  column="id" property="id" />
-        <result column="name" property="name" />
+        <result column="user_name" property="userName" />
         <result column="pwd" property="pwd" />
         <result column="auth" property="auth" />
         <result column="picture_url" property="pictureUrl" />
@@ -17,4 +17,57 @@
         SELECT *
         FROM usr
     </select>
+
+    <select id="queryUsers" parameterType="com.ecnu.entity.User" resultMap="userResultMap">
+        SELECT *
+        FROM usr
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="userName!=null and userName!=''">
+                AND user_name LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="pwd!=null and pwd!=''">
+                AND pwd LIKE #{pwd}
+            </if>
+            <if test="auth!=null and auth>0">
+                AND auth=#{auth}
+            </if>
+        </where>
+    </select>
+
+    <select id="findUserByName" parameterType="java.lang.String" resultMap="userResultMap">
+        SELECT *
+        FROM usr
+        WHERE user_name=#{userName}
+    </select>
+
+    <insert id="insertUser" parameterType="com.ecnu.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO usr (user_name, pwd, auth, picture_url)
+        VALUES (#{userName}, #{pwd}, #{auth}, #{pictureUrl})
+    </insert>
+
+    <delete id="deleteUser" parameterType="com.ecnu.entity.User">
+        DELETE FROM usr WHERE id=#{id}
+    </delete>
+
+    <update id="updateUser" parameterType="com.ecnu.entity.User">
+        UPDATE usr
+          <trim prefix="SET" suffixOverrides=",">
+              <if test="userName!=null and userName!=''">
+                  user_name=#{userName},
+              </if>
+              <if test="pwd!=null and pwd!=''">
+                  pwd=#{pwd},
+              </if>
+              <if test="auth!=null and auth!=0">
+                  auth=#{auth},
+              </if>
+              <if test="pictureUrl!=null and pictureUrl!=''">
+                  picture_url=#{pictureUrl},
+              </if>
+          </trim>
+        WHERE id=#{id}
+    </update>
 </mapper>
