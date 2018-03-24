@@ -41,17 +41,16 @@ public class UserController {
             if (!userDTO.getUserName().equals("") && !userDTO.getPwd().equals("")) {
                 User user = toUser(userDTO);
                 User loginUser = userService.checkLogin(user);
-                UserVO userVO = new UserVO(loginUser);
                 if (loginUser != null) {//success
+                    UserVO userVO = new UserVO(loginUser);
                     LOG.info("user {} login success", user.getUserName());
                     userVO.setStatus("success");
                     //model.addAttribute("loginUser", loginUser);
+                    return userVO;
                 } else {
-                    userVO.setStatus("fail");
                     LOG.error("用户登录失败");
+                    return new UserVO("fail");
                 }
-                LOG.info("userVO : {}", userVO.toString());
-                return userVO;
             }
             LOG.error("用户名和密码不能为空");
             return new UserVO("fail");
