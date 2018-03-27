@@ -6,10 +6,10 @@ public enum RoleEnum {
     ASSISTANT_DOCTOR(2, "医助"),
     VETERINARIAN(3, "兽医");
     private int value;
-    private String decs;
+    private String desc;
 
     RoleEnum(int value, String desc) {
         this.value = value;
-        this.decs = desc;
+        this.desc = desc;
     }
 }

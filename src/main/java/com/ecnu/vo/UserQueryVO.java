@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class UserQueryVO implements Serializable {
     private int id;
     private String userName;
-    private String auth;
+    private int auth;
 
     public UserQueryVO() {
 
@@ -21,6 +21,6 @@ public class UserQueryVO implements Serializable {
     public UserQueryVO(User user) {
         this.id = user.getId();
         this.userName = user.getUserName();
-        this.auth = Integer.toString(user.getAuth());
+        this.auth = user.getAuth();
     }
 }

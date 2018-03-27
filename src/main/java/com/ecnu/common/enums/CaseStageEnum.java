@@ -8,10 +8,10 @@ public enum CaseStageEnum {
     TREATMENT_PLAN(4, "治疗方案");
 
     private int value;
-    private String decs;
+    private String desc;
 
     CaseStageEnum(int value, String desc) {
         this.value = value;
-        this.decs = desc;
+        this.desc = desc;
     }
 }

@@ -170,7 +170,8 @@ public class UserController {
     public BaseResponse changePwd(@RequestBody UserPwdDTO userPwdDTO) {
         try {
             int userId = userPwdDTO.getId();
-            String pwd = userPwdDTO.getPwd();
+            String pwd = userPwdDTO.getPwd();//明文密码
+            pwd = MD5Util.toMd5(pwd); //对密码加密后存入数据库中。
             LOG.info("change user {} password", userId);
 
             Boolean res = userService.changePwd(userId, pwd);
