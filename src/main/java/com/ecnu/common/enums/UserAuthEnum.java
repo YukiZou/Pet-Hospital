@@ -15,4 +15,53 @@ public enum  UserAuthEnum {
         this.value = value;
         this.desc =desc;
     }
+
+    public static String getDesc(int value) {
+        for (UserAuthEnum u: UserAuthEnum.values()) {
+            if (u.value == value) {
+                return u.desc;
+            }
+        }
+        return null;
+    }
+
+    public static int getValue(String desc) {
+        for (UserAuthEnum u: UserAuthEnum.values()) {
+            if (u.desc.equals(desc)) {
+                return u.value;
+            }
+        }
+        return 0;
+    }
+
+    public static UserAuthEnum getUserAuthEnum(int value) {
+        for (UserAuthEnum u: UserAuthEnum.values()) {
+            if (u.value == value) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    public static UserAuthEnum getUserAuthEnum(String desc) {
+        for (UserAuthEnum u: UserAuthEnum.values()) {
+            if (u.desc.equals(desc)) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isOrdinaryUser(UserAuthEnum userAuthEnum) {
+        return userAuthEnum == ORDINARY_USER;
+    }
+
+    public static boolean isAdmin(UserAuthEnum userAuthEnum) {
+        return userAuthEnum == ADMIN;
+    }
+
+    public static boolean isSuperAdmin(UserAuthEnum userAuthEnum) {
+        return userAuthEnum == SUPER_ADMIN;
+    }
+
 }

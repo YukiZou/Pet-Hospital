@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class UserVO extends BaseResponse implements Serializable{
     private int id;
     private String userName;
-    private String auth;
+    private int auth;
     private String pictureUrl;
 
     public UserVO() {
@@ -27,7 +27,7 @@ public class UserVO extends BaseResponse implements Serializable{
     public UserVO(User user) {
         this.id = user.getId();
         this.userName = user.getUserName();
-        this.auth = Integer.toString(user.getAuth());
+        this.auth = user.getAuth();
         this.pictureUrl = user.getPictureUrl();
     }
 }

@@ -17,6 +17,8 @@ public interface UserService {
      */
     List<User> queryUsers(User user);
 
+    User queryUserById(int id);
+
     /**
      * 登录成功与否判定
      * @param usr

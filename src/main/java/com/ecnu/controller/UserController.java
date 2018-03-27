@@ -1,6 +1,7 @@
 package com.ecnu.controller;
 
 import com.ecnu.common.MD5Util;
+import com.ecnu.common.enums.UserAuthEnum;
 import com.ecnu.common.response.BaseResponse;
 import com.ecnu.dto.*;
 import com.ecnu.vo.UserListVO;
@@ -14,13 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("api/user")
-//@SessionAttributes("loginUser")
 public class UserController {
     private static Logger LOG = LoggerFactory.getLogger(UserController.class);
 
@@ -29,29 +31,30 @@ public class UserController {
 
     /**
      * 用户登录，登录成功，返回用户json字符串；登录不成功，返回null（这边需要改进）
-     * 将成功登录的用户User对象放入session中（还未测试）
+     * 将成功登录的用户User对象放入session中
      * @param userDTO
      * @return
      */
     @RequestMapping(value = "/login", method= RequestMethod.POST)
     @ResponseBody
-    public UserVO userLogin(@RequestBody UserDTO userDTO/*, Model model*/) {
+    public UserVO userLogin(@RequestBody UserDTO userDTO, HttpServletRequest request) {
         LOG.info("user {} login", userDTO.toString());
         try {
             if (!userDTO.getUserName().equals("") && !userDTO.getPwd().equals("")) {
                 User user = toUser(userDTO);
                 User loginUser = userService.checkLogin(user);
-                UserVO userVO = new UserVO(loginUser);
                 if (loginUser != null) {//success
+                    UserVO userVO = new UserVO(loginUser);
                     LOG.info("user {} login success", user.getUserName());
                     userVO.setStatus("success");
-                    //model.addAttribute("loginUser", loginUser);
+                    HttpSession session = request.getSession(true);//获取session, true表示如果没有，则新建一个session
+                    session.setAttribute("loginUser", loginUser);//将loginUser存入session中，让其他方法可以访问到。
+                    return userVO;
+                    //return new ObjectMapper().writeValueAsString(userVO);//对象转JSON字符串
                 } else {
-                    userVO.setStatus("fail");
                     LOG.error("用户登录失败");
+                    return new UserVO("fail");
                 }
-                LOG.info("userVO : {}", userVO.toString());
-                return userVO;
             }
             LOG.error("用户名和密码不能为空");
             return new UserVO("fail");
@@ -63,25 +66,53 @@ public class UserController {
     }
 
     /**
+     * 用户注销(还未测试正确性)
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/logout", method= RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse userLogout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        return new BaseResponse("success");
+    }
+
+    /**
      * 新增用户
-     * 需要改进：response自定义；登录用户权限鉴定；如何判断新增用户成功与否，返回值的问题。
+     * 普通admin只能增加auth=1的user，superadmin可以增加任何auth的user
      * @param userDTO
      * @return
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public UserVO addUser(@RequestBody UserDTO userDTO/*, @ModelAttribute("loginUser") User loginUser, Model model*/) {
-        //LOG.info("add user : {} for admin {} user", userDTO.toString(), loginUser.getUserName());
-        LOG.info("add user : {}", userDTO.toString());
+    public UserVO addUser(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+        LOG.info("add user : {} for loginUser {}", userDTO.toString(), loginUser.getUserName());
         try {
-            //UserDTO userDTO = new ObjectMapper().readValue(usr, UserDTO.class);
             //将UserDTO对象转化成User对象
             User user = toUser(userDTO);
             //给新增的用户一个默认的头像url
             user.setPictureUrl("D:\\petHospitalImages\\user.jpg");
 
-            //调用userService层方法新增用户
-            Boolean res = userService.addUser(user);
+            Boolean res = false;
+            int loginUserAuth = loginUser.getAuth();
+            int addUserAuth = user.getAuth();
+
+            //判断用户权限
+            if (loginUserAuth == 1) {
+                LOG.info("loginUser has no permissions to add current user");
+            } else if(loginUserAuth == 2){//登录用户是普通管理员
+                if (addUserAuth == 1) {//可以增加普通前台用户
+                    res = userService.addUser(user);
+                } else {
+                    LOG.info("loginUser has no permissions to add current user");
+                }
+            } else if(loginUserAuth == 3){//超级管理员
+                //调用userService层方法新增用户
+                res = userService.addUser(user);
+            }
 
             if (res) {//新增用户成功
                 UserVO userVO = new UserVO(user);
@@ -102,16 +133,36 @@ public class UserController {
 
     /**
      * 删除用户。
-     * 需要改进：response自定义；登录用户权限鉴定；如何判断删除用户成功与否，返回值的问题。
+     * 普通管理员只可以删除普通用户，超级管理员可以删除所有用户。
      * @param userDeleteDTO
      * @return
      */
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse deleteUser(@RequestBody UserDeleteDTO userDeleteDTO) {
-        LOG.info("delete user for id {}", userDeleteDTO.getId());
+    public BaseResponse deleteUser(@RequestBody UserDeleteDTO userDeleteDTO, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+        LOG.info("delete user with id {} for loginUser {}", userDeleteDTO.getId(), loginUser.getUserName());
         try{
-            Boolean res = userService.deleteUser(userDeleteDTO.getId());
+            Boolean res = false;
+            int deleteUserId = userDeleteDTO.getId();
+            User deleteUser = userService.queryUserById(deleteUserId);
+            int loginUserAuth = loginUser.getAuth();
+            int deleteUserAuth = deleteUser.getAuth();
+            //判断用户权限
+            if (loginUserAuth == 1) {
+                LOG.info("loginUser has no permissions to delete current user");
+            } else if(loginUserAuth == 2){//登录用户是普通管理员
+                if (deleteUserAuth == 1) {//可以删除普通前台用户
+                    res = userService.deleteUser(deleteUserId);
+                } else {
+                    LOG.info("loginUser has no permissions to delete current user");
+                }
+            } else if(loginUserAuth == 3){//超级管理员
+                //TODO:如果当前登录超级管理员删除了自身的操作的逻辑控制。
+                res = userService.deleteUser(deleteUserId);
+            }
+
             if (res) {
                 LOG.info("delete user for user id {} success!", userDeleteDTO.getId());
                 return new BaseResponse("success");
@@ -130,19 +181,28 @@ public class UserController {
 
     /**
      * 修改前台用户权限。
-     * 需要改进：response自定义；登录用户权限鉴定；如何判断修改前台用户权限成功与否，返回值的问题。
+     * 只有超级管理员能修改用户权限
      * @param userAuthDTO
      * @return
      */
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse changeAuth(@RequestBody UserAuthDTO userAuthDTO) {
+    public BaseResponse changeAuth(@RequestBody UserAuthDTO userAuthDTO, HttpServletRequest request) {
         try{
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
             int userId = userAuthDTO.getId();
             int auth = userAuthDTO.getAuth();
-            LOG.info("change user {} with auth {}", userId, auth);
+            LOG.info("change user {} with auth {} for loginUser {}", userId, auth, loginUser.getUserName());
 
-            Boolean res = userService.changeAuth(userId, auth);
+            Boolean res = false;
+            int loginUserAuth = loginUser.getAuth();
+            if (loginUserAuth == 3) {
+                res = userService.changeAuth(userId, auth);
+            } else {
+                LOG.info("loginUser has no permissions to change current user's auth");
+            }
+
             if (res) {
                 LOG.info("change user auth for user id {} success!", userId);
                 return new BaseResponse("success");
@@ -162,19 +222,41 @@ public class UserController {
 
     /**
      * 修改密码 & 管理员重置用户密码。
-     * 需要改进：response自定义；登录用户权限鉴定；如何判断修改密码成功与否，返回值的问题。
+     * 普通admin只能修改自己/普通用户的密码，无权限修改其他普通admin/superadmin的密码
+     * superadmin可以修改其他superadmin的密码,有所有权限
      * @param userPwdDTO
      * @return
      */
     @RequestMapping(value = "/pwd", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse changePwd(@RequestBody UserPwdDTO userPwdDTO) {
+    public BaseResponse changePwd(@RequestBody UserPwdDTO userPwdDTO, HttpServletRequest request) {
         try {
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
             int userId = userPwdDTO.getId();
-            String pwd = userPwdDTO.getPwd();
-            LOG.info("change user {} password", userId);
+            String pwd = userPwdDTO.getPwd();//明文密码
+            pwd = MD5Util.toMd5(pwd); //对密码加密后存入数据库中。
+            LOG.info("change user {} password for loginUser {}", userId, loginUser.getUserName());
 
-            Boolean res = userService.changePwd(userId, pwd);
+            Boolean res = false;
+            int loginUserAuth = loginUser.getAuth();
+            User changePwdUser = userService.queryUserById(userId);
+            int changePwdUserAuth = changePwdUser.getAuth();
+            //判断用户权限
+            if (loginUserAuth == 1) {
+                LOG.info("loginUser has no permissions to change current user's pwd");
+            } else if(loginUserAuth == 2){//登录用户是普通管理员
+                if (changePwdUserAuth == 1) {//可以修改普通前台用户密码
+                    res = userService.changePwd(userId, pwd);
+                } else if (userId == loginUser.getId()) { //当前登录用户修改自己的密码
+                    res = userService.changePwd(userId, pwd);
+                } else {
+                    LOG.info("loginUser has no permissions to change current user's pwd");
+                }
+            } else if(loginUserAuth == 3){//超级管理员
+                res = userService.changePwd(userId, pwd);
+            }
+
             if (res) {
                 LOG.info("change user {} password success!", userId);
                 return new BaseResponse("success");
@@ -192,13 +274,22 @@ public class UserController {
 
     /**
      * 根据当前登录用户的权限查询所有用户
+     * 两种admin均能查询到所有的用户列表。
+     * 普通用户无权查看用户列表。
      * @return
      */
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
-    public UserListVO allUsers() {
-        LOG.info("list all users");
+    public UserListVO allUsers(HttpServletRequest request) {
         try {
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            LOG.info("list all users for loginUser {}", loginUser.getUserName());
+            int loginUserAuth = loginUser.getAuth();
+            if (loginUserAuth == 1) {
+                LOG.info("loginUser has no permissions to query user list");
+                return new UserListVO("fail");
+            }
             List<User> queryUsers = userService.queryUsers(new User());
 
             List<UserQueryVO> userQueryVOList = new LinkedList<>();
@@ -217,7 +308,6 @@ public class UserController {
 
     /**
      * 根据条件查询符合条件的用户，模糊查询
-     * 希望前端可以将查询的条件userName和auth封装成json对象用post方法传过来
      * @param userQueryDTO 封装查询条件
      * @return
      */
