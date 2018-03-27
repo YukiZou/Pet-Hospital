@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
         return userDao.queryUsers(user);
     }
 
+    @Override
+    public User queryUserById(int id) {
+        return userDao.findUserById(id);
+    }
+
     /**
      *user login
      * @param usr

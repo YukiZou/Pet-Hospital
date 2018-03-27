@@ -18,6 +18,13 @@ public interface UserDao {
     User findUserByName(String userName);
 
     /**
+     * 根据ID找到User记录
+     * @param id
+     * @return
+     */
+    User findUserById (int id);
+
+    /**
      * 根据参数usr查询出所有符合查询条件的user用户,可以实现模糊查找
      * @param usr
      * @return
