@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.QuestionDao">
+
+    <resultMap id="questionResultMap" type="com.ecnu.entity.Question">
+        <id  column="id" property="id" />
+        <result column="category" property="category" />
+        <result column="stem" property="stem" />
+        <result column="A" property="A" />
+        <result column="B" property="B" />
+        <result column="C" property="C" />
+        <result column="D" property="D" />
+        <result column="answer" property="answer" />
+    </resultMap>
+
+    <!--ID即DAO层接口下声明的方法-->
+    <!--
+    <select id="getAllUser" resultMap="userResultMap">
+        SELECT *
+        FROM usr
+    </select>
+
+    <select id="queryUsers" parameterType="com.ecnu.entity.User" resultMap="userResultMap">
+        SELECT *
+        FROM usr
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="userName!=null and userName!=''">
+                AND user_name LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="pwd!=null and pwd!=''">
+                AND pwd LIKE #{pwd}
+            </if>
+            <if test="auth!=null and auth>0">
+                AND auth=#{auth}
+            </if>
+        </where>
+    </select>
+
+    <select id="findUserByName" parameterType="java.lang.String" resultMap="userResultMap">
+        SELECT *
+        FROM usr
+        WHERE user_name=#{userName}
+    </select>
+
+    <select id="findUserById" parameterType="java.lang.Integer" resultMap="userResultMap">
+        SELECT *
+        FROM usr
+        WHERE id=#{id}
+    </select>
+-->
+    <insert id="insertQuestion" parameterType="com.ecnu.entity.Question" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (category, stem, A, B, C, D, answer)
+        VALUES (#{category}, #{stem}, #{A}, #{B}, #{C}, #{D}, #{answer})
+    </insert>
+<!--
+    <delete id="deleteUser" parameterType="com.ecnu.entity.User">
+        DELETE FROM usr WHERE id=#{id}
+    </delete>
+
+    <update id="updateUser" parameterType="com.ecnu.entity.User">
+        UPDATE usr
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName!=null and userName!=''">
+                user_name=#{userName},
+            </if>
+            <if test="pwd!=null and pwd!=''">
+                pwd=#{pwd},
+            </if>
+            <if test="auth!=null and auth!=0">
+                auth=#{auth},
+            </if>
+            <if test="pictureUrl!=null and pictureUrl!=''">
+                picture_url=#{pictureUrl},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+    -->
+</mapper>

@@ -1,25 +1,33 @@
-package com.ecnu.dto;
+package com.ecnu.vo;
 
+import com.ecnu.common.response.BaseResponse;
 import com.ecnu.entity.Question;
-import lombok.Data;
 
 import java.io.Serializable;
 
-@Data
-public class QuestionDTO implements Serializable {
+/**
+ * 新增试题方法返回的对象
+ */
+public class QuestionVO extends BaseResponse implements Serializable {
+    private int id;
     private String category;
-    private String stem;//如果题干或选项过大怎么办？
+    private String stem;
     private String A;
     private String B;
     private String C;
     private String D;
-    private String answer;//前台传回ABCD
+    private String answer;
 
-    public QuestionDTO(){
+    public QuestionVO() {
 
     }
 
-    public QuestionDTO(Question question){
+    public QuestionVO(String status) {
+        super.setStatus(status);
+    }
+
+    public QuestionVO(Question question) {
+        this.id = question.getId();
         this.category=question.getCategory();
         this.stem=question.getStem();
         this.A=question.getA();
@@ -27,6 +35,5 @@ public class QuestionDTO implements Serializable {
         this.C=question.getC();
         this.D=question.getD();
         this.answer=question.getAnswer();
-
     }
 }
