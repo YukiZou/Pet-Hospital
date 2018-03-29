@@ -12,7 +12,7 @@ public class BaseResponse implements Serializable{
 //    private int code; //如200，400这种
 //    private String msg; //如ok, accepted这种
 //    private Object data;
-    private String status;
+    private String status;//success, sqlFail, authFail,inputFail, fail
 
     public BaseResponse(){
 

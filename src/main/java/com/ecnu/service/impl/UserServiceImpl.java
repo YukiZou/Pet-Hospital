@@ -99,8 +99,8 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         if (id > 0 && auth > 0 && auth < 4) {
             user.setId(id);
-            List<User> queryUserList = userDao.queryUsers(user);
-            if (queryUserList.size() != 1) {//此用户不存在
+            User queryUser = userDao.findUserById(id);
+            if (queryUser == null) {//此用户不存在
                 LOG.error("该用户不存在，请确定用户ID");
                 return false;
             }
@@ -124,8 +124,8 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         if (id > 0 && pwd != null && !pwd.equals("")) {
             user.setId(id);
-            List<User> queryUserList = userDao.queryUsers(user);
-            if (queryUserList.size() != 1) {//此用户不存在
+            User queryUser = userDao.findUserById(id);
+            if (queryUser == null) {//此用户不存在
                 LOG.error("该用户不存在，请确定用户ID");
                 return false;
             }

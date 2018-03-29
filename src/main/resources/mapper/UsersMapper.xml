@@ -6,7 +6,7 @@
 
     <resultMap id="userResultMap" type="com.ecnu.entity.User">
         <id  column="id" property="id" />
-        <result column="user_name" property="userName" />
+        <result column="name" property="userName" />
         <result column="pwd" property="pwd" />
         <result column="auth" property="auth" />
         <result column="picture_url" property="pictureUrl" />
@@ -15,18 +15,18 @@
     <!--ID即DAO层接口下声明的方法-->
     <select id="getAllUser" resultMap="userResultMap">
         SELECT *
-        FROM usr
+        FROM user
     </select>
 
     <select id="queryUsers" parameterType="com.ecnu.entity.User" resultMap="userResultMap">
         SELECT *
-        FROM usr
+        FROM user
         <where>
             <if test="id!=null and id>0">
                 id=#{id}
             </if>
             <if test="userName!=null and userName!=''">
-                AND user_name LIKE CONCAT('%',#{userName},'%')
+                AND name LIKE CONCAT('%',#{userName},'%')
             </if>
             <if test="pwd!=null and pwd!=''">
                 AND pwd LIKE #{pwd}
@@ -39,30 +39,30 @@
 
     <select id="findUserByName" parameterType="java.lang.String" resultMap="userResultMap">
         SELECT *
-        FROM usr
-        WHERE user_name=#{userName}
+        FROM user
+        WHERE name=#{userName}
     </select>
 
     <select id="findUserById" parameterType="java.lang.Integer" resultMap="userResultMap">
         SELECT *
-        FROM usr
+        FROM user
         WHERE id=#{id}
     </select>
 
     <insert id="insertUser" parameterType="com.ecnu.entity.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO usr (user_name, pwd, auth, picture_url)
+        INSERT INTO user (name, pwd, auth, picture_url)
         VALUES (#{userName}, #{pwd}, #{auth}, #{pictureUrl})
     </insert>
 
     <delete id="deleteUser" parameterType="com.ecnu.entity.User">
-        DELETE FROM usr WHERE id=#{id}
+        DELETE FROM user WHERE id=#{id}
     </delete>
 
     <update id="updateUser" parameterType="com.ecnu.entity.User">
-        UPDATE usr
+        UPDATE user
           <trim prefix="SET" suffixOverrides=",">
               <if test="userName!=null and userName!=''">
-                  user_name=#{userName},
+                  name=#{userName},
               </if>
               <if test="pwd!=null and pwd!=''">
                   pwd=#{pwd},

@@ -6,7 +6,7 @@
     </head>
     <body>
         <h2>SSM框架测试</h2>
-        <form:form method="GET" action="api/user/listAll">
+        <%--<form:form method="GET" action="api/user/listAll">
             <table>
                 <tr>
                     <td>
@@ -14,7 +14,7 @@
                     </td>
                 </tr>
             </table>
-        </form:form>
+        </form:form>--%>
 
         <!--h2>Login</h2-->
         <!--form:form method="POST" action="api/user/login">

@@ -1,6 +1,7 @@
 package com.ecnu.controller;
 
 import com.ecnu.common.MD5Util;
+import com.ecnu.common.enums.ResponseStatusEnum;
 import com.ecnu.common.enums.UserAuthEnum;
 import com.ecnu.common.response.BaseResponse;
 import com.ecnu.dto.*;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.LinkedList;
@@ -46,22 +48,22 @@ public class UserController {
                 if (loginUser != null) {//success
                     UserVO userVO = new UserVO(loginUser);
                     LOG.info("user {} login success", user.getUserName());
-                    userVO.setStatus("success");
+                    userVO.setStatus(ResponseStatusEnum.SUCCESS.getDesc());
                     HttpSession session = request.getSession(true);//获取session, true表示如果没有，则新建一个session
                     session.setAttribute("loginUser", loginUser);//将loginUser存入session中，让其他方法可以访问到。
                     return userVO;
                     //return new ObjectMapper().writeValueAsString(userVO);//对象转JSON字符串
                 } else {
                     LOG.error("用户登录失败");
-                    return new UserVO("fail");
+                    return new UserVO(ResponseStatusEnum.SQL_FAIL.getDesc());
                 }
             }
             LOG.error("用户名和密码不能为空");
-            return new UserVO("fail");
+            return new UserVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("user login error!");
-            return new UserVO("fail");
+            return new UserVO(ResponseStatusEnum.FAIL.getDesc());
         }
     }
 
@@ -75,7 +77,7 @@ public class UserController {
     public BaseResponse userLogout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.invalidate();
-        return new BaseResponse("success");
+        return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
     }
 
     /**
@@ -93,41 +95,56 @@ public class UserController {
         try {
             //将UserDTO对象转化成User对象
             User user = toUser(userDTO);
+
+            //获得项目的路径
+            //ServletContext sc = request.getSession().getServletContext();
+            //获得默认头像存储位置
+            //String pictureUrl
+
             //给新增的用户一个默认的头像url
-            user.setPictureUrl("D:\\petHospitalImages\\user.jpg");
+            //TODO:http://www.ecnupet.cn:8080/pet/img/logo.jpg
+            user.setPictureUrl("ecnupet.cn:8080/pet/img/logo.jpg");
 
             Boolean res = false;
-            int loginUserAuth = loginUser.getAuth();
-            int addUserAuth = user.getAuth();
+            //int loginUserAuth = loginUser.getAuth();
+            //int addUserAuth = user.getAuth();
+            UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
+            UserAuthEnum addUserAuth = UserAuthEnum.getUserAuthEnum(user.getAuth());
 
             //判断用户权限
-            if (loginUserAuth == 1) {
-                LOG.info("loginUser has no permissions to add current user");
-            } else if(loginUserAuth == 2){//登录用户是普通管理员
-                if (addUserAuth == 1) {//可以增加普通前台用户
-                    res = userService.addUser(user);
-                } else {
+            switch (loginUserAuth) {
+                case ORDINARY_USER:
                     LOG.info("loginUser has no permissions to add current user");
-                }
-            } else if(loginUserAuth == 3){//超级管理员
-                //调用userService层方法新增用户
-                res = userService.addUser(user);
+                    break;
+                case ADMIN://登录用户是普通管理员
+                    switch (addUserAuth) {
+                        case ORDINARY_USER:
+                            res = userService.addUser(user);//可以增加普通前台用户
+                            break;
+                        default:
+                            LOG.info("loginUser has no permissions to add current user");
+                            break;
+                    }
+                    break;
+                case SUPER_ADMIN://超级管理员
+                    res = userService.addUser(user);//调用userService层方法新增用户
+                    break;
             }
 
             if (res) {//新增用户成功
                 UserVO userVO = new UserVO(user);
                 LOG.info("add user : {} success", user.toString());
-                userVO.setStatus("success");
+                userVO.setStatus(ResponseStatusEnum.SUCCESS.getDesc());
                 return userVO;
             } else {
                 LOG.error("add user : {} failed", user.toString());
-                return new UserVO("fail");
+                return new UserVO(ResponseStatusEnum.AUTH_FAIL.getDesc());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("add user failed");
-            return new UserVO("fail");
+            return new UserVO(ResponseStatusEnum.FAIL.getDesc());
         }
     }
 
@@ -147,34 +164,47 @@ public class UserController {
             Boolean res = false;
             int deleteUserId = userDeleteDTO.getId();
             User deleteUser = userService.queryUserById(deleteUserId);
-            int loginUserAuth = loginUser.getAuth();
-            int deleteUserAuth = deleteUser.getAuth();
+            //如果当前登录用户与要删除的用户一致，则删除失败
+            if (loginUser.getId() == deleteUser.getId()) {
+                LOG.error("delete user failed : cannot delete current login user");
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            }
+            //int loginUserAuth = loginUser.getAuth();
+            //int deleteUserAuth = deleteUser.getAuth();
+            UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
+            UserAuthEnum deleteUserAuth = UserAuthEnum.getUserAuthEnum(deleteUser.getAuth());
             //判断用户权限
-            if (loginUserAuth == 1) {
-                LOG.info("loginUser has no permissions to delete current user");
-            } else if(loginUserAuth == 2){//登录用户是普通管理员
-                if (deleteUserAuth == 1) {//可以删除普通前台用户
-                    res = userService.deleteUser(deleteUserId);
-                } else {
+            switch (loginUserAuth) {
+                case ORDINARY_USER:
                     LOG.info("loginUser has no permissions to delete current user");
-                }
-            } else if(loginUserAuth == 3){//超级管理员
-                //TODO:如果当前登录超级管理员删除了自身的操作的逻辑控制。
-                res = userService.deleteUser(deleteUserId);
+                    break;
+                case ADMIN://登录用户是普通管理员
+                    switch (deleteUserAuth) {
+                        case ORDINARY_USER://可以删除普通前台用户
+                            res = userService.deleteUser(deleteUserId);
+                            break;
+                        default:
+                            LOG.info("loginUser has no permissions to delete current user");
+                            break;
+                    }
+                    break;
+                case SUPER_ADMIN://超级管理员
+                    res = userService.deleteUser(deleteUserId);
+                    break;
             }
 
             if (res) {
                 LOG.info("delete user for user id {} success!", userDeleteDTO.getId());
-                return new BaseResponse("success");
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
             } else {
                 LOG.error("delete user for user id {} failed!", userDeleteDTO.getId());
-                return new BaseResponse("fail");
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("delete user failed");
-            return new BaseResponse("fail");
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
         }
 
     }
@@ -182,6 +212,7 @@ public class UserController {
     /**
      * 修改前台用户权限。
      * 只有超级管理员能修改用户权限
+     * 限制：当前登录用户不能修改自己的权限
      * @param userAuthDTO
      * @return
      */
@@ -195,26 +226,36 @@ public class UserController {
             int auth = userAuthDTO.getAuth();
             LOG.info("change user {} with auth {} for loginUser {}", userId, auth, loginUser.getUserName());
 
+            //不能修改当前登录用户的权限
+            if (loginUser.getId() == userId) {
+                LOG.error("change auth error: cannot change current login user's auth");
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            }
+
             Boolean res = false;
-            int loginUserAuth = loginUser.getAuth();
-            if (loginUserAuth == 3) {
-                res = userService.changeAuth(userId, auth);
-            } else {
-                LOG.info("loginUser has no permissions to change current user's auth");
+            //int loginUserAuth = loginUser.getAuth();
+            UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
+            switch (loginUserAuth) {
+                case SUPER_ADMIN:
+                    res = userService.changeAuth(userId, auth);
+                    break;
+                default:
+                    LOG.info("loginUser has no permissions to change current user's auth");
+                    break;
             }
 
             if (res) {
                 LOG.info("change user auth for user id {} success!", userId);
-                return new BaseResponse("success");
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
             } else {
                 LOG.error("change user auth for user id {} failed!", userId);
-                return new BaseResponse("fail");
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("change user auth failed");
-            return new BaseResponse("fail");
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
         }
 
     }
@@ -239,36 +280,48 @@ public class UserController {
             LOG.info("change user {} password for loginUser {}", userId, loginUser.getUserName());
 
             Boolean res = false;
-            int loginUserAuth = loginUser.getAuth();
             User changePwdUser = userService.queryUserById(userId);
-            int changePwdUserAuth = changePwdUser.getAuth();
+            //int loginUserAuth = loginUser.getAuth();
+            //int changePwdUserAuth = changePwdUser.getAuth();
+            UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
+            UserAuthEnum changePwdUserAuth = UserAuthEnum.getUserAuthEnum(changePwdUser.getAuth());
             //判断用户权限
-            if (loginUserAuth == 1) {
-                LOG.info("loginUser has no permissions to change current user's pwd");
-            } else if(loginUserAuth == 2){//登录用户是普通管理员
-                if (changePwdUserAuth == 1) {//可以修改普通前台用户密码
-                    res = userService.changePwd(userId, pwd);
-                } else if (userId == loginUser.getId()) { //当前登录用户修改自己的密码
-                    res = userService.changePwd(userId, pwd);
-                } else {
+            switch (loginUserAuth) {
+                case ORDINARY_USER:
                     LOG.info("loginUser has no permissions to change current user's pwd");
-                }
-            } else if(loginUserAuth == 3){//超级管理员
-                res = userService.changePwd(userId, pwd);
+                    break;
+                case ADMIN://登录用户是普通管理员
+                    switch (changePwdUserAuth) {
+                        case ORDINARY_USER://可以修改普通前台用户密码
+                            res = userService.changePwd(userId, pwd);
+                            break;
+                        case ADMIN://如果是普通管理员，可以先判断是不是更改本人的密码
+                            if (userId == loginUser.getId()) {//当前登录用户修改自己的密码
+                                res = userService.changePwd(userId, pwd);
+                            }
+                            break;
+                        default:
+                            LOG.info("loginUser has no permissions to change current user's pwd");
+                            break;
+                    }
+                    break;
+                case SUPER_ADMIN:
+                    res = userService.changePwd(userId, pwd);
+                    break;
             }
 
             if (res) {
                 LOG.info("change user {} password success!", userId);
-                return new BaseResponse("success");
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
             } else {
                 LOG.error("change user {} password failed!", userId);
-                return new BaseResponse("fail");
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("change user password failed");
-            return new BaseResponse("fail");
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
         }
     }
 
@@ -285,10 +338,11 @@ public class UserController {
             HttpSession session = request.getSession();
             User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
             LOG.info("list all users for loginUser {}", loginUser.getUserName());
-            int loginUserAuth = loginUser.getAuth();
-            if (loginUserAuth == 1) {
+            //int loginUserAuth = loginUser.getAuth();
+            UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
+            if (UserAuthEnum.isOrdinaryUser(loginUserAuth)) {
                 LOG.info("loginUser has no permissions to query user list");
-                return new UserListVO("fail");
+                return new UserListVO(ResponseStatusEnum.AUTH_FAIL.getDesc());
             }
             List<User> queryUsers = userService.queryUsers(new User());
 
@@ -298,11 +352,11 @@ public class UserController {
                 userQueryVOList.add(userQueryVO);
             }
             LOG.info("list all users success!");
-            return new UserListVO("success", userQueryVOList);
+            return new UserListVO(ResponseStatusEnum.SUCCESS.getDesc(), userQueryVOList);
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("list all users failed");
-            return new UserListVO("fail");
+            return new UserListVO(ResponseStatusEnum.FAIL.getDesc());
         }
     }
 
@@ -332,11 +386,11 @@ public class UserController {
                 userQueryVOList.add(userQueryVO);
             }
             LOG.info("query users for filter {} success!", userQueryDTO.toString());
-            return new UserListVO("success", userQueryVOList);
+            return new UserListVO(ResponseStatusEnum.SUCCESS.getDesc(), userQueryVOList);
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("query users for filter {} failed", userQueryDTO.toString());
-            return new UserListVO("fail");
+            return new UserListVO(ResponseStatusEnum.FAIL.getDesc());
         }
     }
 
