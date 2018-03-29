@@ -8,10 +8,10 @@
         <id  column="id" property="id" />
         <result column="category" property="category" />
         <result column="stem" property="stem" />
-        <result column="A" property="A" />
-        <result column="B" property="B" />
-        <result column="C" property="C" />
-        <result column="D" property="D" />
+        <result column="A" property="optA" />
+        <result column="B" property="optB" />
+        <result column="C" property="optC" />
+        <result column="D" property="optD" />
         <result column="answer" property="answer" />
     </resultMap>
 
@@ -21,26 +21,24 @@
         SELECT *
         FROM usr
     </select>
-
-    <select id="queryUsers" parameterType="com.ecnu.entity.User" resultMap="userResultMap">
+-->
+    <select id="queryQuestions" parameterType="com.ecnu.entity.Question" resultMap="questionResultMap">
         SELECT *
-        FROM usr
+        FROM question
         <where>
+            <if test="stem!=null and stem!=''">
+                (stem LIKE CONCAT('%',#{stem},'%') OR A LIKE CONCAT('%',#{optA},'%') OR B LIKE CONCAT('%',#{optB},'%') OR C LIKE CONCAT('%',#{optC},'%') OR D LIKE CONCAT('%',#{optD},'%'))
+            </if>
+
             <if test="id!=null and id>0">
-                id=#{id}
+                AND id=#{id}
             </if>
-            <if test="userName!=null and userName!=''">
-                AND user_name LIKE CONCAT('%',#{userName},'%')
-            </if>
-            <if test="pwd!=null and pwd!=''">
-                AND pwd LIKE #{pwd}
-            </if>
-            <if test="auth!=null and auth>0">
-                AND auth=#{auth}
-            </if>
+
+
+
         </where>
     </select>
-
+<!--
     <select id="findUserByName" parameterType="java.lang.String" resultMap="userResultMap">
         SELECT *
         FROM usr
@@ -55,14 +53,14 @@
 -->
     <insert id="insertQuestion" parameterType="com.ecnu.entity.Question" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO question (category, stem, A, B, C, D, answer)
-        VALUES (#{category}, #{stem}, #{A}, #{B}, #{C}, #{D}, #{answer})
+        VALUES (#{category}, #{stem}, #{optA}, #{optB}, #{optC}, #{optD}, #{answer})
     </insert>
-<!--
-    <delete id="deleteUser" parameterType="com.ecnu.entity.User">
-        DELETE FROM usr WHERE id=#{id}
+
+    <delete id="deleteQuestion" parameterType="com.ecnu.entity.Question">
+        DELETE FROM question WHERE id=#{id}
     </delete>
 
-    <update id="updateUser" parameterType="com.ecnu.entity.User">
+  <!--  <update id="updateUser" parameterType="com.ecnu.entity.User">
         UPDATE usr
         <trim prefix="SET" suffixOverrides=",">
             <if test="userName!=null and userName!=''">

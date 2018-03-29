@@ -9,10 +9,10 @@ import java.io.Serializable;
 public class QuestionDTO implements Serializable {
     private String category;
     private String stem;//如果题干或选项过大怎么办？
-    private String A;
-    private String B;
-    private String C;
-    private String D;
+    private String optA;
+    private String optB;
+    private String optC;
+    private String optD;
     private String answer;//前台传回ABCD
 
     public QuestionDTO(){
@@ -22,10 +22,10 @@ public class QuestionDTO implements Serializable {
     public QuestionDTO(Question question){
         this.category=question.getCategory();
         this.stem=question.getStem();
-        this.A=question.getA();
-        this.B=question.getB();
-        this.C=question.getC();
-        this.D=question.getD();
+        this.optA =question.getOptA();
+        this.optB =question.getOptB();
+        this.optC =question.getOptC();
+        this.optD =question.getOptD();
         this.answer=question.getAnswer();
 
     }

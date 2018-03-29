@@ -1,10 +1,16 @@
 package com.ecnu.controller;
 
 
+import com.ecnu.common.enums.ResponseStatusEnum;
+import com.ecnu.common.response.BaseResponse;
 import com.ecnu.dto.QuestionDTO;
+import com.ecnu.dto.QuestionDeleteDTO;
 import com.ecnu.entity.Question;
 import com.ecnu.service.QuestionService;
 import com.ecnu.vo.QuestionVO;
+import com.ecnu.vo.QuestionListVO;
+import com.ecnu.vo.QuestionQueryVO;
+import com.ecnu.dto.QuestionQueryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.LinkedList;
+import java.util.List;
+
 
 @Controller
 @RequestMapping("api/question")
@@ -27,6 +34,39 @@ public class QuestionController {
 
 
     /**
+     * 根据条件查询符合条件的用户
+     * @param questionQueryDTO
+     * @return
+     */
+    @RequestMapping(value = "/filter", method = RequestMethod.POST)
+    @ResponseBody
+    public QuestionListVO queryQuestions(@RequestBody QuestionQueryDTO questionQueryDTO) {
+        LOG.info("query questions for filter {}", questionQueryDTO.toString());
+        try {
+            //将QuestionQueryDTO对象转化成Question对象
+            Question question=toQuestion2(questionQueryDTO);
+
+            List<Question> queryQuestions=questionService.queryQuestions(question);
+            LOG.info("queryQuestions for filter : {} ",queryQuestions.toString());
+
+            List<QuestionQueryVO> questionQueryVOList = new LinkedList<>();
+            for (Question queryQuestion: queryQuestions) {
+                QuestionQueryVO questionQueryVO = new QuestionQueryVO(queryQuestion);///////
+                LOG.info("questionQueryVO for filter : {} ",questionQueryVO.toString());
+
+                questionQueryVOList.add(questionQueryVO);
+            }
+            LOG.info("query questions for filter {} success!", questionQueryDTO.toString());
+            LOG.info("questionQueryVOList for filter : {} ",questionQueryVOList.toString());
+            return new QuestionListVO(ResponseStatusEnum.SUCCESS.getDesc(), questionQueryVOList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("query question for filter {} failed", questionQueryDTO.toString());
+            return new QuestionListVO(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
+    /**
      * 新增试题
      * @param questionDTO
      * @return
@@ -35,11 +75,12 @@ public class QuestionController {
     @ResponseBody
     public QuestionVO addQuestion(@RequestBody QuestionDTO questionDTO) {
         try {
+            LOG.info("questionDTO {}",questionDTO);
             //将QuestionDTO对象转化成Question对象
             Question question=toQuestion(questionDTO);
             Boolean res=false;
             res=questionService.addQuestion(question);
-            if(res){//新增用户成功
+            if(res){//新增试题成功
                 QuestionVO questionVO=new QuestionVO(question);
                 LOG.info("add question : {} success", question.toString());
                 questionVO.setStatus("success");
@@ -57,6 +98,35 @@ public class QuestionController {
     }
 
     /**
+     * 删除试题。
+     * @param questionDeleteDTO
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse deleteQuestion(@RequestBody QuestionDeleteDTO questionDeleteDTO) {
+        try{
+            Boolean res=false;
+            int deleteQuestionId=questionDeleteDTO.getId();
+            res = questionService.deleteQuestion(deleteQuestionId);
+
+            if (res) {
+                LOG.info("delete question for question id {} success!", questionDeleteDTO.getId());
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.error("delete question for question id {} failed!", questionDeleteDTO.getId());
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("delete question failed");
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+        }
+
+    }
+
+    /**
      * 将QuestionDTO对象转化成Question对象
      * @param questionDTO
      * @return
@@ -66,11 +136,28 @@ public class QuestionController {
         Question question=new Question();
         question.setCategory(questionDTO.getCategory());
         question.setStem(questionDTO.getStem());
-        question.setA(questionDTO.getA());
-        question.setB(questionDTO.getB());
-        question.setC(questionDTO.getC());
-        question.setD(questionDTO.getD());
+        question.setOptA(questionDTO.getOptA());
+        question.setOptB(questionDTO.getOptB());
+        question.setOptC(questionDTO.getOptC());
+        question.setOptD(questionDTO.getOptD());
         question.setAnswer(questionDTO.getAnswer());
+        return question;
+    }
+
+    /**
+     * 将QuestionQueryDTO对象转化成Question对象
+     * @param questionQueryDTO
+     * @return
+     */
+    private Question toQuestion2(QuestionQueryDTO questionQueryDTO) {
+        //TODO:判断传回的数据是否为null或者""
+        Question question=new Question();
+        question.setId(questionQueryDTO.getId());
+        question.setStem(questionQueryDTO.getKeyword());
+        question.setOptA(questionQueryDTO.getKeyword());
+        question.setOptB(questionQueryDTO.getKeyword());
+        question.setOptC(questionQueryDTO.getKeyword());
+        question.setOptD(questionQueryDTO.getKeyword());
         return question;
     }
 
