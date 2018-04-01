@@ -5,8 +5,10 @@ import com.ecnu.common.enums.ResponseStatusEnum;
 import com.ecnu.common.response.BaseResponse;
 import com.ecnu.dto.QuestionDTO;
 import com.ecnu.dto.QuestionDeleteDTO;
+import com.ecnu.dto.QuestionUpdateDTO;
 import com.ecnu.entity.Question;
 import com.ecnu.service.QuestionService;
+import com.ecnu.vo.QuestionCategoryListVO;
 import com.ecnu.vo.QuestionVO;
 import com.ecnu.vo.QuestionListVO;
 import com.ecnu.vo.QuestionQueryVO;
@@ -115,7 +117,7 @@ public class QuestionController {
                 return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
             } else {
                 LOG.error("delete question for question id {} failed!", questionDeleteDTO.getId());
-                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+                return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
             }
 
         } catch (Exception e) {
@@ -125,6 +127,62 @@ public class QuestionController {
         }
 
     }
+
+    /**
+     * 修改试题
+     * @param questionUpdateDTO
+     * @return
+     */
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse updateQuestion(@RequestBody QuestionUpdateDTO questionUpdateDTO) {
+        try {
+            LOG.info("questionUpdateDTO {}",questionUpdateDTO);
+            //将QuestionUpdateDTO对象转化成Question对象
+            Question question = toQuestion3(questionUpdateDTO);
+            Boolean res = false;
+            res = questionService.updateQuestion(question);
+            if (res) {
+                LOG.info("update question for question id {} success!", questionUpdateDTO.getId());
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.error("update question for question id {} failed!", questionUpdateDTO.getId());
+                return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("update question failed");
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+        }
+
+    }
+
+    /**
+     * 返回所有试题种类
+     * @return
+     */
+    @RequestMapping(value = "/category", method = RequestMethod.POST)
+    @ResponseBody
+    public QuestionCategoryListVO allQuestionCategory() {
+        try {
+            List<Question> queryQuestionCategory=questionService.getAllQuestionCategory();
+
+            List<String> categoryList = new LinkedList<>();
+            for (Question question: queryQuestionCategory) {
+                String cate=question.getCategory();
+                categoryList.add(cate);
+            }
+
+            LOG.info("list all question category success! {}",categoryList);
+            return new QuestionCategoryListVO(ResponseStatusEnum.SUCCESS.getDesc(), categoryList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("list all question category failed");
+            return new QuestionCategoryListVO(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
 
     /**
      * 将QuestionDTO对象转化成Question对象
@@ -161,4 +219,22 @@ public class QuestionController {
         return question;
     }
 
+    /**
+     * 将QuestionUpdateDTO对象转化成Question对象
+     * @param questionUpdateDTO
+     * @return
+     */
+    private Question toQuestion3(QuestionUpdateDTO questionUpdateDTO) {
+        //TODO:判断传回的数据是否为null或者""
+        Question question=new Question();
+        question.setId(questionUpdateDTO.getId());
+        question.setCategory(questionUpdateDTO.getCategory());
+        question.setStem(questionUpdateDTO.getStem());
+        question.setOptA(questionUpdateDTO.getOptA());
+        question.setOptB(questionUpdateDTO.getOptB());
+        question.setOptC(questionUpdateDTO.getOptC());
+        question.setOptD(questionUpdateDTO.getOptD());
+        question.setAnswer(questionUpdateDTO.getAnswer());
+        return question;
+    }
 }

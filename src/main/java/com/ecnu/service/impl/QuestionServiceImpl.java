@@ -2,7 +2,6 @@ package com.ecnu.service.impl;
 
 import com.ecnu.dao.QuestionDao;
 import com.ecnu.entity.Question;
-import com.ecnu.entity.User;
 import com.ecnu.service.QuestionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,10 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private QuestionDao questionDao;
 
+    @Override
+    public List<Question> getAllQuestionCategory() {
+        return questionDao.getAllQuestionCategory();
+    }
     @Override
     public List<Question> queryQuestions(Question question) {
         return questionDao.queryQuestions(question);
@@ -69,6 +72,42 @@ public class QuestionServiceImpl implements QuestionService {
             }
         } else {
             LOG.error("用户id不合法");
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean updateQuestion(Question question) {
+        if(question.getId()>0){
+            LOG.info("question {}",question);
+
+            if(question.getCategory()==null||question.getCategory().equals("")||
+                    question.getStem()==null||question.getStem().equals("")||
+                    question.getOptA()==null||question.getOptA().equals("")||
+                    question.getOptB()==null||question.getOptB().equals("")||
+                    question.getOptC()==null||question.getOptC().equals("")||
+                    question.getOptD()==null||question.getOptD().equals("")||
+            (!(question.getAnswer().equals("A")||question.getAnswer().equals("B")||question.getAnswer().equals("C")||question.getAnswer().equals("D")))){
+
+                LOG.error("信息缺失，修改试题失败");
+                return false;
+
+            }
+            else{
+
+                int res = questionDao.updateQuestion(question);
+                if(res > 0){
+                    LOG.info("修改试题成功");
+                    return true;
+                }
+                else{
+                    LOG.error("修改试题失败");
+                    return false;
+                }
+            }
+        }
+        else{
+            LOG.error("试题id不存在，修改试题失败");
             return false;
         }
     }

@@ -17,6 +17,20 @@ public interface QuestionDao {
     List<Question> queryQuestions(Question question);
 
     /**
+     * 列出所有category
+     * @param
+     * @return
+     */
+    List<Question> getAllQuestionCategory();
+
+    /**
+     * 根据ID找到Question记录
+     * @param id
+     * @return
+     */
+    Question findQuestionById (int id);
+
+    /**
      * 新增一个试题
      * @param question
      */
@@ -27,4 +41,10 @@ public interface QuestionDao {
      * @param question
      */
     int deleteQuestion(Question question);
+
+    /**
+     * 修改试题
+     * @param question
+     */
+    int updateQuestion(Question question);
 }

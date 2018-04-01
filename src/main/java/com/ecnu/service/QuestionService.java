@@ -6,6 +6,9 @@ import java.util.List;
 
 public interface QuestionService {
 
+
+    List<Question> getAllQuestionCategory();
+
     /**
      * 根据参数question的数据来查找符合条件的question记录
      * @param question
@@ -21,8 +24,12 @@ public interface QuestionService {
     /**
      * 删除试题
      * @param id
-     * @return
      */
     Boolean deleteQuestion(int id);
 
+    /**
+     * 修改指定试题
+     */
+ //   Boolean changeQuestion(int id, String category, String stem, String optA, String optB, String optC, String optD, String answer);
+    Boolean updateQuestion(Question question);
 }

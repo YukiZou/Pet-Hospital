@@ -16,12 +16,11 @@
     </resultMap>
 
     <!--ID即DAO层接口下声明的方法-->
-    <!--
-    <select id="getAllUser" resultMap="userResultMap">
-        SELECT *
-        FROM usr
+    <select id="getAllQuestionCategory" resultMap="questionResultMap">
+        SELECT DISTINCT category
+        FROM question
     </select>
--->
+
     <select id="queryQuestions" parameterType="com.ecnu.entity.Question" resultMap="questionResultMap">
         SELECT *
         FROM question
@@ -44,13 +43,13 @@
         FROM usr
         WHERE user_name=#{userName}
     </select>
-
-    <select id="findUserById" parameterType="java.lang.Integer" resultMap="userResultMap">
+-->
+    <select id="findQuestionById" parameterType="java.lang.Integer" resultMap="questionResultMap">
         SELECT *
-        FROM usr
+        FROM question
         WHERE id=#{id}
     </select>
--->
+
     <insert id="insertQuestion" parameterType="com.ecnu.entity.Question" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO question (category, stem, A, B, C, D, answer)
         VALUES (#{category}, #{stem}, #{optA}, #{optB}, #{optC}, #{optD}, #{answer})
@@ -60,23 +59,31 @@
         DELETE FROM question WHERE id=#{id}
     </delete>
 
-  <!--  <update id="updateUser" parameterType="com.ecnu.entity.User">
-        UPDATE usr
+    <update id="updateQuestion" parameterType="com.ecnu.entity.Question">
+        UPDATE question
         <trim prefix="SET" suffixOverrides=",">
-            <if test="userName!=null and userName!=''">
-                user_name=#{userName},
+            <if test="category!=null and category!=''">
+                category=#{category},
             </if>
-            <if test="pwd!=null and pwd!=''">
-                pwd=#{pwd},
+            <if test="stem!=null and stem!=''">
+                stem=#{stem},
             </if>
-            <if test="auth!=null and auth!=0">
-                auth=#{auth},
+            <if test="optA!=null and optA!=''">
+                A=#{optA},
             </if>
-            <if test="pictureUrl!=null and pictureUrl!=''">
-                picture_url=#{pictureUrl},
+            <if test="optB!=null and optB!=''">
+                B=#{optB},
+            </if>
+            <if test="optC!=null and optC!=''">
+                C=#{optC},
+            </if>
+            <if test="optD!=null and optD!=''">
+                D=#{optD},
+            </if>
+            <if test="answer!=null and answer!=''">
+                answer=#{answer},
             </if>
         </trim>
         WHERE id=#{id}
     </update>
-    -->
 </mapper>
