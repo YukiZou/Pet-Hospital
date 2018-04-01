@@ -36,7 +36,7 @@ public class QuestionController {
 
 
     /**
-     * 根据条件查询符合条件的用户
+     * 根据条件查询符合条件的试题
      * @param questionQueryDTO
      * @return
      */

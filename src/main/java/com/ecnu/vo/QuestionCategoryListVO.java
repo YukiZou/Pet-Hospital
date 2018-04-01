@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class QuestionCategoryListVO extends BaseResponse implements Serializable {
-    private List<String> questionCategoryList;
+    private List<String> categoryList;
 
     public QuestionCategoryListVO(){
 
@@ -20,6 +20,6 @@ public class QuestionCategoryListVO extends BaseResponse implements Serializable
 
     public QuestionCategoryListVO(String status, List<String> categoryList) {
         super.setStatus(status);
-        this.questionCategoryList = categoryList;
+        this.categoryList = categoryList;
     }
 }
