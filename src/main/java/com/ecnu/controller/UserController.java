@@ -75,6 +75,7 @@ public class UserController {
     @RequestMapping(value = "/logout", method= RequestMethod.POST)
     @ResponseBody
     public BaseResponse userLogout(HttpServletRequest request) {
+        LOG.info("start logout!");
         HttpSession session = request.getSession();
         session.invalidate();
         return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());

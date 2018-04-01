@@ -1,7 +1,6 @@
 package com.ecnu.service;
 
 import com.ecnu.entity.User;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 

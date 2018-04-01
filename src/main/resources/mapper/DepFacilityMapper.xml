@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.DepFacilityDao">
+
+    <insert id="insertDepFacility" parameterType="com.ecnu.entity.DepFacility">
+        INSERT INTO dep_fac (department_id, facility_id)
+        VALUES (#{department_id}, #{facility_id})
+    </insert>
+
+    <delete id="deleteDepFacility" parameterType="com.ecnu.entity.DepFacility">
+        DELETE FROM dep_fac
+        WHERE department_id=#{department_id}
+        AND facility_id=#{facility_id}
+    </delete>
+
+    <select id="queryDepFacilities" parameterType="com.ecnu.entity.DepFacility">
+        SELECT *
+        FROM dep_fac
+        <where>
+            <if test="department_id!=null and department_id>0">
+                department_id=#{department_id}
+            </if>
+            <if test="facility_id!=null and facility_id>0">
+                AND facility_id=#{facility_id}
+            </if>
+        </where>
+    </select>
+
+</mapper>

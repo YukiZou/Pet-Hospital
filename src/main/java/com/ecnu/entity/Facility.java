@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Data
 public class Facility implements Serializable{
     private int id;//设备ID
+    private String name;//设备名称
     private String picture;
     private String info;
 }

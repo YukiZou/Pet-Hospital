@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.DepDrugDao">
+
+    <insert id="insertDepDrug" parameterType="com.ecnu.entity.DepDrug">
+        INSERT INTO dep_dru (department_id, drug_id)
+        VALUES (#{department_id}, #{drug_id})
+    </insert>
+
+    <delete id="deleteDepDrug" parameterType="com.ecnu.entity.DepDrug">
+        DELETE FROM dep_dru
+        WHERE department_id=#{department_id}
+        AND drug_id=#{drug_id}
+    </delete>
+
+    <select id="queryDepDrugs" parameterType="com.ecnu.entity.DepDrug">
+        SELECT *
+        FROM dep_dru
+        <where>
+            <if test="department_id!=null and department_id>0">
+                department_id=#{department_id}
+            </if>
+            <if test="drug_id!=null and drug_id>0">
+                AND drug_id=#{drug_id}
+            </if>
+        </where>
+    </select>
+
+</mapper>
