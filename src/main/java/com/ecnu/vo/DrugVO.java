@@ -14,6 +14,7 @@ public class DrugVO implements Serializable{
     private int id;
     private String name;
     private String info;
+    private String picture;
 
     public DrugVO() {
 

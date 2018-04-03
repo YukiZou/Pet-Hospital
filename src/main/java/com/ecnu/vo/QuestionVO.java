@@ -2,12 +2,14 @@ package com.ecnu.vo;
 
 import com.ecnu.common.response.BaseResponse;
 import com.ecnu.entity.Question;
+import lombok.Data;
 
 import java.io.Serializable;
 
 /**
  * 新增试题方法返回的对象
  */
+@Data
 public class QuestionVO extends BaseResponse implements Serializable {
     private int id;
     private String category;

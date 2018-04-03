@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
+
 @Controller
 @RequestMapping("api/drug")
 public class DrugController {
@@ -35,16 +37,23 @@ public class DrugController {
     public DrugAddVO addDrug(@RequestBody DrugAddDTO drugAddDTO) {
         try {
             LOG.info("start add drug for drugAddDTO: {}", drugAddDTO);
+            String name = drugAddDTO.getName();
+            String info = drugAddDTO.getInfo();
             //将新增的drug信息转换成Drug对象
             Drug drug = toDrug(drugAddDTO);
 
             //如果将要新增的drug的name已经存在在表drug中，则新增不成功。
             Drug queryDrug = new Drug();
-            queryDrug.setName(drug.getName());
+            queryDrug.setName(name);
             List<Drug> drugList = drugService.queryDrugs(queryDrug);
             if (drugList.size() > 0) {
                 LOG.error("the drug name is already exist or name is null, add drug failed!");
                 return new DrugAddVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+
+            if ((name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info))) {
+                LOG.error("drug name or info are not invalid for add drug!");
+                return new DrugAddVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
 
             Boolean res = drugService.addDrug(drug);

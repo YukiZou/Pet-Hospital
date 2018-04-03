@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
+
 @Controller
 @RequestMapping("api/facility")
 public class FacilityController {
@@ -39,16 +41,23 @@ public class FacilityController {
     public FacilityAddVO addDrug(@RequestBody FacilityAddDTO facilityAddDTO) {
         try {
             LOG.info("start add facility for facilityAddDTO: {}", facilityAddDTO);
+            String name = facilityAddDTO.getName();
+            String info = facilityAddDTO.getInfo();
             //将新增的 facility 信息转换成 Facility 对象
             Facility facility = toFacility(facilityAddDTO);
 
             //如果将要新增的 facility 的name已经存在在表 facility 中，则新增不成功。
             Facility queryFacility = new Facility();
-            queryFacility.setName(facility.getName());
+            queryFacility.setName(name);
             List<Facility> facilityList = facilityService.queryFacilities(queryFacility);
             if (facilityList.size() > 0) {
                 LOG.error("the facility name is already exist or name is null, add facility failed!");
                 return new FacilityAddVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+
+            if ((name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info))) {
+                LOG.error("facility name or info are not invalid for add facility!");
+                return new FacilityAddVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
 
             Boolean res = facilityService.addFacility(facility);

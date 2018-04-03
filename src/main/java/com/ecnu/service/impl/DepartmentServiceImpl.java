@@ -24,6 +24,26 @@ public class DepartmentServiceImpl implements DepartmentService{
     }
 
     @Override
+    public Boolean deleteDepartment(Department department) {
+        int res = departmentDao.deleteDepartment(department);
+        if (res > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean updateDepartment(Department department) {
+        int res = departmentDao.updateDepartment(department);
+        if (res > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public List<Department> queryDepartments(Department department) {
         return departmentDao.queryDepartments(department);
     }
