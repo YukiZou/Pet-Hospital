@@ -24,5 +24,6 @@ public class DrugVO implements Serializable{
         this.id = drug.getId();
         this.name = drug.getName();
         this.info = drug.getInfo();
+        this.picture = drug.getPicture();
     }
 }

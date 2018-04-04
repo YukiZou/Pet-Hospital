@@ -27,16 +27,22 @@ public class DepFacilityServiceImpl implements DepFacilityService {
 
     @Override
     public int addDepFacilities(List<DepFacility> depFacilities) {
+        if (depFacilities == null || depFacilities.size() == 0) {
+            return 0;
+        }
         return depFacilityDao.insertDepFacilities(depFacilities);
     }
 
     @Override
     public int deleteDepFacilities(List<DepFacility> depFacilities) {
+        if (depFacilities == null || depFacilities.size() == 0) {
+            return 0;
+        }
         return depFacilityDao.deleteDepFacilities(depFacilities);
     }
 
     @Override
-    public void deleteDepFacilities(DepFacility depFacility) {
-        depFacilityDao.deleteDepFacility(depFacility);
+    public int deleteDepFacilities(DepFacility depFacility) {
+        return depFacilityDao.deleteDepFacility(depFacility);
     }
 }

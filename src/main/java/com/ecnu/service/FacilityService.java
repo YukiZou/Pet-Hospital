@@ -17,6 +17,13 @@ public interface FacilityService {
     Boolean addFacility(Facility facility);
 
     /**
+     * 根据参数的id来删除指定的科室记录
+     * @param facility
+     * @return
+     */
+    Boolean deleteFacility(Facility facility);
+
+    /**
      * 根据条件查询设备
      * @param facility
      * @return

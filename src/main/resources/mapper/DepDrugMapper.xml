@@ -34,7 +34,7 @@
         WHERE
         <foreach collection="list" item="item" index="index" separator="or">
             (department_id=#{item.departmentId}
-            and drug_id=#{item.drugId})
+            AND drug_id=#{item.drugId})
         </foreach>
     </delete>
 

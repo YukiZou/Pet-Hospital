@@ -37,6 +37,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean addUser(User usr) {
+        String name = usr.getUserName();
+        User queryUser = userDao.findUserByName(name);
+        if (queryUser != null) {
+            return false;
+        }
         userDao.insertUser(usr);
         if (usr.getId() > 0) {
             return true;

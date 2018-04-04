@@ -25,6 +25,16 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
+    public Boolean deleteFacility(Facility facility) {
+        int res = facilityDao.deleteFacility(facility);
+        if (res > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public List<Facility> queryFacilities(Facility facility) {
         return facilityDao.queryFacilities(facility);
     }

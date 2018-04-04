@@ -24,5 +24,6 @@ public class FacilityVO implements Serializable{
         this.id = facility.getId();
         this.name = facility.getName();
         this.info = facility.getInfo();
+        this.picture = facility.getPicture();
     }
 }

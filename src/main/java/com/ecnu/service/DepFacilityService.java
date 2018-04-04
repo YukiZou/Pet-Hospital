@@ -43,5 +43,5 @@ public interface DepFacilityService {
      * @param depFacility
      * @return
      */
-    void deleteDepFacilities(DepFacility depFacility);
+    int deleteDepFacilities(DepFacility depFacility);
 }

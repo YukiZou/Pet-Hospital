@@ -17,6 +17,13 @@ public interface DrugService {
     Boolean addDrug(Drug drug);
 
     /**
+     * 根据参数的id来删除指定的Drug
+     * @param drug
+     * @return
+     */
+    Boolean deleteDrug(Drug drug);
+
+    /**
      * 根据条件查询药品
      * @param drug
      * @return

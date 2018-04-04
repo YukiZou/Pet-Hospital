@@ -25,6 +25,7 @@ public interface DepDrugService {
 
     /**
      * 根据List型的参数批量增加指定dep_dru表中的记录
+     * depDrugs 中的 DepDrug 的id值不能是默认值0或者其他不合法的值
      * @param depDrugs
      * @return
      */
@@ -32,6 +33,7 @@ public interface DepDrugService {
 
     /**
      * 根据List型的参数批量删除指定dep_dru表中的记录
+     * depDrugs 中的 DepDrug 的id值不能是默认值0或者其他不合法的值
      * @param depDrugs
      * @return
      */
@@ -41,5 +43,5 @@ public interface DepDrugService {
      * 根据参数删除指定的关联记录
      * @param depDrug
      */
-    void deleteDepDrugs(DepDrug depDrug);
+    int deleteDepDrugs(DepDrug depDrug);
 }

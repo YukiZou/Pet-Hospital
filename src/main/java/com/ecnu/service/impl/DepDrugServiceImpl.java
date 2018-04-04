@@ -12,6 +12,7 @@ import java.util.List;
 public class DepDrugServiceImpl implements DepDrugService {
     @Autowired
     private DepDrugDao depDrugDao;
+
     @Override
     public List<DepDrug> findDepDrugsByDepId(int depId) {
         DepDrug depDrug = new DepDrug();
@@ -26,16 +27,22 @@ public class DepDrugServiceImpl implements DepDrugService {
 
     @Override
     public int addDepDrugs(List<DepDrug> depDrugs) {
+        if (depDrugs == null || depDrugs.size() == 0) {
+            return 0;
+        }
         return depDrugDao.insertDepDrugs(depDrugs);
     }
 
     @Override
     public int deleteDepDrugs(List<DepDrug> depDrugs) {
+        if (depDrugs == null || depDrugs.size() == 0) {
+            return 0;
+        }
         return depDrugDao.deleteDepDrugs(depDrugs);
     }
 
     @Override
-    public void deleteDepDrugs(DepDrug depDrug) {
-        depDrugDao.deleteDepDrug(depDrug);
+    public int deleteDepDrugs(DepDrug depDrug) {
+        return depDrugDao.deleteDepDrug(depDrug);
     }
 }

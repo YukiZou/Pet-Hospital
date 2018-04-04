@@ -12,4 +12,13 @@ import java.io.Serializable;
 public class DepDrug implements Serializable{
     private int drugId;
     private int departmentId;
+
+    public DepDrug(){
+
+    }
+
+    public DepDrug(int drugId, int departmentId) {
+        this.drugId = drugId;
+        this.departmentId = departmentId;
+    }
 }

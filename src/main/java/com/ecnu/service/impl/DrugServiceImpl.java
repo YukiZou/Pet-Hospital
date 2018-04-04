@@ -25,6 +25,16 @@ public class DrugServiceImpl implements DrugService{
     }
 
     @Override
+    public Boolean deleteDrug(Drug drug) {
+        int res = drugDao.deleteDrug(drug);
+        if (res > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public List<Drug> queryDrugs(Drug drug) {
         return drugDao.queryDrugs(drug);
     }
