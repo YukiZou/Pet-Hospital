@@ -2,18 +2,10 @@ package com.ecnu.controller;
 
 import com.ecnu.common.enums.ResponseStatusEnum;
 import com.ecnu.common.response.BaseResponse;
-import com.ecnu.dto.DepartmentAddDTO;
-import com.ecnu.dto.DepartmentDeleteDTO;
-import com.ecnu.dto.DepartmentQueryDTO;
-import com.ecnu.entity.DepDrug;
-import com.ecnu.entity.DepFacility;
-import com.ecnu.entity.Department;
-import com.ecnu.service.DepDrugService;
-import com.ecnu.service.DepFacilityService;
-import com.ecnu.service.DepartmentService;
-import com.ecnu.vo.DepartmentAddVO;
-import com.ecnu.vo.DepartmentListVO;
-import com.ecnu.vo.DepartmentVO;
+import com.ecnu.dto.*;
+import com.ecnu.entity.*;
+import com.ecnu.service.*;
+import com.ecnu.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +32,19 @@ public class DepartmentController {
 
     @Autowired
     private DepartmentService departmentService;
+
     @Autowired
     private DepDrugService depDrugService;
+
     @Autowired
     private DepFacilityService depFacilityService;
+
+    @Autowired
+    private DrugService drugService;
+
+    @Autowired
+    private FacilityService facilityService;
+
 
     /**
      * 新增科室
@@ -113,11 +114,11 @@ public class DepartmentController {
             //List<DepFacility> depFacilityList = depFacilityService.findDepFacilitiesByDepId(depId);
             //删除科室，首先删除和该科室关联的药物和设备记录。
             DepDrug depDrug = new DepDrug();
-            depDrug.setDepartment_id(depId);
+            depDrug.setDepartmentId(depId);
             depDrugService.deleteDepDrugs(depDrug);
 
             DepFacility depFacility = new DepFacility();
-            depFacility.setDepartment_id(depId);
+            depFacility.setDepartmentId(depId);
             depFacilityService.deleteDepFacilities(depFacility);
 
             Department department = new Department();
@@ -157,6 +158,12 @@ public class DepartmentController {
             if ((name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info))) {
                 LOG.error("department name or info are not invalid for update department data!");
                 return new BaseResponse(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
+            }
+
+            //除了id以外，其他参数都为空的情况在update时是不合法的
+            if ((name == null || name.equals("")) && department.getRole() == 0 && (info == null || info.equals("")) && (department.getPicture() == null || department.getPicture().equals(""))) {
+                LOG.error("name/role/info/picture are null");
+                return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
 
             departmentService.updateDepartment(department);
@@ -204,27 +211,231 @@ public class DepartmentController {
     /**
      * 添加指定Department 的 药品-科室关联关系
      * 可一次性添加多条关联关系
+     * 默认department_id在表中存在，drug_id至少一条，且对应的drug_id在drug表中也是存在的
      * @return
      */
-    /*@RequestMapping(value = "/drug/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/drug/add", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse addDepDrug() {
+    public BaseResponse addDepDrug(@RequestBody DepDrugDTO depDrugDTO) {
         try {
+            LOG.info("start add dep-drug for depDrugDTO {}", depDrugDTO);
+            int depId = depDrugDTO.getId();
+            List<Integer> drugIds = depDrugDTO.getDrugList();
+            //先把传入的参数封装成List<DepDrug>对象
+            List<DepDrug> depDrugList = new ArrayList<>();
+            for (Integer drugId : drugIds) {
+                DepDrug depDrug = new DepDrug();
+                depDrug.setDepartmentId(depId);
+                depDrug.setDrugId(drugId);
+                //检查一下要新增的depDrug是否已经在关系表中存在
+                List<DepDrug> queryDepDrug = depDrugService.findDepDrug(depDrug);
+                if (queryDepDrug != null && queryDepDrug.size() > 0) {
+                    LOG.error("dep-drug relationship for depId {} and drugId {} has already exist", depId, drugId);
+                    return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+                }
+                depDrugList.add(depDrug);
+            }
 
+            int res = depDrugService.addDepDrugs(depDrugList);
+            if (res > 0) {
+                LOG.info("add dep-drug for depDrugDTO {} success", depDrugDTO);
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.info("add dep-drug for depDrugDTO {} failed", depDrugDTO);
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
+            }
         } catch (Exception e) {
-            LOG.error("add department failed!");
+            LOG.error("add depDrug failed!");
             e.printStackTrace();
-            return new DepartmentAddVO(ResponseStatusEnum.FAIL.getDesc());
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
         }
-    }*/
+    }
 
-    /*try {
+    /**
+     * 批量删除dep-drug关联关系
+     * @param depDrugDTO
+     * @return
+     */
+    @RequestMapping(value = "/drug/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse deleteDepDrug(@RequestBody DepDrugDTO depDrugDTO) {
+        try {
+            LOG.info("start delete dep-drug for depDrugDTO {}", depDrugDTO);
+            int depId = depDrugDTO.getId();
+            List<Integer> drugIds = depDrugDTO.getDrugList();
+            //先把传入的参数封装成List<DepDrug>对象
+            List<DepDrug> depDrugList = new ArrayList<>();
+            for (Integer drugId : drugIds) {
+                DepDrug depDrug = new DepDrug();
+                depDrug.setDepartmentId(depId);
+                depDrug.setDrugId(drugId);
+                depDrugList.add(depDrug);
+            }
 
-    } catch (Exception e) {
-        LOG.error("add department failed!");
-        e.printStackTrace();
-        return new DepartmentAddVO(ResponseStatusEnum.FAIL.getDesc());
-    }*/
+            int res = depDrugService.deleteDepDrugs(depDrugList);
+            if (res > 0) {
+                LOG.info("delete dep-drug for depDrugDTO {} success", depDrugDTO);
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.info("delete dep-drug for depDrugDTO {} failed", depDrugDTO);
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
+            }
+        } catch (Exception e) {
+            LOG.error("delete depDrug failed!");
+            e.printStackTrace();
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
+    /**
+     * 根据departmentId查询到指定科室对应的药品List
+     * @param departmentDeleteDTO
+     * @return
+     */
+    @RequestMapping(value = "/drug/all", method = RequestMethod.POST)
+    @ResponseBody
+    public DrugListVO queryDrugsByDepId(@RequestBody DepartmentDeleteDTO departmentDeleteDTO) {
+        try {
+            int depId = departmentDeleteDTO.getId();
+            LOG.info("start query all drugs for depId {}", depId);
+            //先去关联表中找到DepDrug list
+            List<DepDrug> depDrugList = depDrugService.findDepDrugsByDepId(depId);
+            //找到对应的drugId list
+            List<Integer> drugIds = new ArrayList<>();
+            for (DepDrug depDrug : depDrugList) {
+                drugIds.add(depDrug.getDrugId());
+            }
+
+            //根据drugId List批量查询符合条件的Drug对象
+            List<Drug> drugList = drugService.queryDrugsByIds(drugIds);
+
+            List<DrugVO> drugVOList = new ArrayList<>();
+            for (Drug d : drugList) {
+                DrugVO drugVO = new DrugVO(d);
+                drugVOList.add(drugVO);
+            }
+            LOG.info("query all drugs for depId {} success!", depId);
+            return new DrugListVO(ResponseStatusEnum.SUCCESS.getDesc(), drugVOList);
+        } catch (Exception e) {
+            LOG.error("query drugs failed!");
+            e.printStackTrace();
+            return new DrugListVO(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
+    /**
+     * 添加指定Department 的 设备-科室关联关系
+     * 可一次性添加多条关联关系
+     * 默认department_id在表中存在，facility_id至少一条，且对应的facility_id在facility表中也是存在的
+     * @return
+     */
+    @RequestMapping(value = "/facility/add", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse addDepFacility(@RequestBody DepFacilityDTO depFacilityDTO) {
+        try {
+            LOG.info("start add dep-facility for depFacilityDTO {}", depFacilityDTO);
+            int depId = depFacilityDTO.getId();
+            List<Integer> facilityIds = depFacilityDTO.getFacilityList();
+            //先把传入的参数封装成List<DepFacility>对象
+            List<DepFacility> depFacilityList = new ArrayList<>();
+            for (Integer facilityId : facilityIds) {
+                DepFacility depFacility = new DepFacility();
+                depFacility.setDepartmentId(depId);
+                depFacility.setFacilityId(facilityId);
+                //检查一下要新增的 depFacility 是否已经在关系表中存在
+                List<DepFacility> queryDepFacility = depFacilityService.findDepFacility(depFacility);
+                if (queryDepFacility != null && queryDepFacility.size() > 0) {
+                    LOG.error("dep-facility relationship for depId {} and facilityId {} has already exist", depId, facilityId);
+                    return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+                }
+                depFacilityList.add(depFacility);
+            }
+
+            int res = depFacilityService.addDepFacilities(depFacilityList);
+            if (res > 0) {
+                LOG.info("add dep-facility for depFacilityDTO {} success", depFacilityDTO);
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.info("add dep-drug for depFacilityDTO {} failed", depFacilityDTO);
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
+            }
+        } catch (Exception e) {
+            LOG.error("add depFacility failed!");
+            e.printStackTrace();
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
+    /**
+     * 批量删除dep-facility关联关系
+     * @param depFacilityDTO
+     * @return
+     */
+    @RequestMapping(value = "/facility/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse deleteDepFacility(@RequestBody DepFacilityDTO depFacilityDTO) {
+        try {
+            LOG.info("start delete dep-facility for depFacilityDTO {}", depFacilityDTO);
+            int depId = depFacilityDTO.getId();
+            List<Integer> facilityIds = depFacilityDTO.getFacilityList();
+            //先把传入的参数封装成List<DepFacility>对象
+            List<DepFacility> depFacilityList = new ArrayList<>();
+            for (Integer facilityId : facilityIds) {
+                DepFacility depFacility = new DepFacility();
+                depFacility.setFacilityId(facilityId);
+                depFacility.setDepartmentId(depId);
+                depFacilityList.add(depFacility);
+            }
+
+            int res = depFacilityService.deleteDepFacilities(depFacilityList);
+            if (res > 0) {
+                LOG.info("delete dep-facility for depFacilityDTO {} success", depFacilityDTO);
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.info("delete dep-facility for depFacilityDTO {} failed", depFacilityDTO);
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
+            }
+        } catch (Exception e) {
+            LOG.error("delete depFacility failed!");
+            e.printStackTrace();
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
+    /**
+     * 根据departmentId查询到指定科室对应的药品List
+     * @param departmentDeleteDTO
+     * @return
+     */
+    @RequestMapping(value = "/facility/all", method = RequestMethod.POST)
+    @ResponseBody
+    public FacilityListVO queryFacilitiesByDepId(@RequestBody DepartmentDeleteDTO departmentDeleteDTO) {
+        try {
+            int depId = departmentDeleteDTO.getId();
+            LOG.info("start query all facilities for depId {}", depId);
+            //先去关联表中找到DepFacility list
+            List<DepFacility> depFacilityList = depFacilityService.findDepFacilitiesByDepId(depId);
+            //找到对应的facilityId list
+            List<Integer> facilityIds = new ArrayList<>();
+            for (DepFacility depFacility : depFacilityList) {
+                facilityIds.add(depFacility.getFacilityId());
+            }
+            //根据facilityId list批量查询符合条件的 Facility 对象
+            List<Facility> facilityList = facilityService.queryFacilitiesByIds(facilityIds);
+
+            List<FacilityVO> facilityVOList = new ArrayList<>();
+            for (Facility f : facilityList) {
+                FacilityVO facilityVO = new FacilityVO(f);
+                facilityVOList.add(facilityVO);
+            }
+            LOG.info("query all facilities for depId {} success!", depId);
+            return new FacilityListVO(ResponseStatusEnum.SUCCESS.getDesc(), facilityVOList);
+        } catch (Exception e) {
+            LOG.error("query facilities failed!");
+            e.printStackTrace();
+            return new FacilityListVO(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
 
     /**
      * 将 DepartmentAddDTO 对象转化成 Department 对象

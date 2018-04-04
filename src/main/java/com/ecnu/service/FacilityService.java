@@ -23,4 +23,10 @@ public interface FacilityService {
      */
     List<Facility> queryFacilities(Facility facility);
 
+    /**
+     * 根据条件的id list批量查询 Facility 记录
+     * @param facilityIds
+     * @return
+     */
+    List<Facility> queryFacilitiesByIds(List<Integer> facilityIds);
 }

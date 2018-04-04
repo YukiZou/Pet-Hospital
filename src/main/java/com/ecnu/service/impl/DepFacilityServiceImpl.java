@@ -16,8 +16,23 @@ public class DepFacilityServiceImpl implements DepFacilityService {
     @Override
     public List<DepFacility> findDepFacilitiesByDepId(int depId) {
         DepFacility depFacility = new DepFacility();
-        depFacility.setDepartment_id(depId);
+        depFacility.setDepartmentId(depId);
         return depFacilityDao.queryDepFacilities(depFacility);
+    }
+
+    @Override
+    public List<DepFacility> findDepFacility(DepFacility depFacility) {
+        return depFacilityDao.queryDepFacilities(depFacility);
+    }
+
+    @Override
+    public int addDepFacilities(List<DepFacility> depFacilities) {
+        return depFacilityDao.insertDepFacilities(depFacilities);
+    }
+
+    @Override
+    public int deleteDepFacilities(List<DepFacility> depFacilities) {
+        return depFacilityDao.deleteDepFacilities(depFacilities);
     }
 
     @Override

@@ -42,4 +42,11 @@ public interface FacilityDao {
      * @return
      */
     Facility queryFacilityById(int id);
+
+    /**
+     * 根据id list批量查询 facility 记录
+     * @param facilityIds
+     * @return
+     */
+    List<Facility> queryFacilitiesByIds(List<Integer> facilityIds);
 }

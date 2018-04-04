@@ -15,8 +15,23 @@ public class DepDrugServiceImpl implements DepDrugService {
     @Override
     public List<DepDrug> findDepDrugsByDepId(int depId) {
         DepDrug depDrug = new DepDrug();
-        depDrug.setDepartment_id(depId);
+        depDrug.setDepartmentId(depId);
         return depDrugDao.queryDepDrugs(depDrug);
+    }
+
+    @Override
+    public List<DepDrug> findDepDrug(DepDrug depDrug) {
+        return depDrugDao.queryDepDrugs(depDrug);
+    }
+
+    @Override
+    public int addDepDrugs(List<DepDrug> depDrugs) {
+        return depDrugDao.insertDepDrugs(depDrugs);
+    }
+
+    @Override
+    public int deleteDepDrugs(List<DepDrug> depDrugs) {
+        return depDrugDao.deleteDepDrugs(depDrugs);
     }
 
     @Override

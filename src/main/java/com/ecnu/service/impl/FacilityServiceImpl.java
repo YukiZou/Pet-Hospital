@@ -6,6 +6,7 @@ import com.ecnu.service.FacilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,5 +27,13 @@ public class FacilityServiceImpl implements FacilityService{
     @Override
     public List<Facility> queryFacilities(Facility facility) {
         return facilityDao.queryFacilities(facility);
+    }
+
+    @Override
+    public List<Facility> queryFacilitiesByIds(List<Integer> facilityIds) {
+        if (facilityIds == null || facilityIds.size() == 0) {
+            return new ArrayList<>();
+        }
+        return facilityDao.queryFacilitiesByIds(facilityIds);
     }
 }

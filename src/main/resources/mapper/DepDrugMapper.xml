@@ -6,24 +6,49 @@
 
     <insert id="insertDepDrug" parameterType="com.ecnu.entity.DepDrug">
         INSERT INTO dep_dru (department_id, drug_id)
-        VALUES (#{department_id}, #{drug_id})
+        VALUES (#{departmentId}, #{drugId})
+    </insert>
+
+    <insert id="insertDepDrugs" parameterType="java.util.List">
+        INSERT INTO dep_dru (department_id, drug_id)
+        VALUES 
+        <foreach collection="list" item="item" separator=",">
+            (#{item.departmentId}, #{item.drugId})
+        </foreach>
     </insert>
 
     <delete id="deleteDepDrug" parameterType="com.ecnu.entity.DepDrug">
         DELETE FROM dep_dru
-        WHERE department_id=#{department_id}
-        AND drug_id=#{drug_id}
+        <where>
+            <if test="departmentId!=null and departmentId>0">
+                department_id=#{departmentId}
+            </if>
+            <if test="drugId!=null and drugId>0">
+                AND drug_id=#{drugId}
+            </if>
+        </where>
     </delete>
 
-    <select id="queryDepDrugs" parameterType="com.ecnu.entity.DepDrug">
-        SELECT *
+    <delete id="deleteDepDrugs" parameterType="java.util.List">
+        DELETE FROM dep_dru
+        WHERE
+        <foreach collection="list" item="item" index="index" separator="or">
+            (department_id=#{item.departmentId}
+            and drug_id=#{item.drugId})
+        </foreach>
+    </delete>
+
+    <select id="queryDepDrugs" parameterType="com.ecnu.entity.DepDrug" resultType="com.ecnu.entity.DepDrug">
+        SELECT
+        department_id as departmentId,
+        drug_id as drugId
         FROM dep_dru
         <where>
-            <if test="department_id!=null and department_id>0">
-                department_id=#{department_id}
+            <if test="departmentId!=null and departmentId>0">
+                department_id=#{departmentId}
             </if>
-            <if test="drug_id!=null and drug_id>0">
-                AND drug_id=#{drug_id}
+            <if test="drugId!=null and drugId>0">
+                AND drug_id=#{drugId}
             </if>
         </where>
     </select>

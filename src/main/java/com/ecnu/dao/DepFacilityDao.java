@@ -16,11 +16,25 @@ public interface DepFacilityDao {
     int insertDepFacility(DepFacility depFacility);
 
     /**
+     * 批量插入记录
+     * @param depFacilities
+     * @return
+     */
+    int insertDepFacilities(List<DepFacility> depFacilities);
+
+    /**
      * 删除参数depFacility指定的科室和设备的关联记录
      * @param depFacility 字段facility_id, department_id都需要存在才能删除成功
      * @return
      */
     int deleteDepFacility(DepFacility depFacility);
+
+    /**
+     * 批量删除记录
+     * @param depFacilities
+     * @return
+     */
+    int deleteDepFacilities(List<DepFacility> depFacilities);
 
     /**
      * 根据参数所给的字段检索记录

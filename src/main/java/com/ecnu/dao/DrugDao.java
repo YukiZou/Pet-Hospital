@@ -43,4 +43,11 @@ public interface DrugDao {
      * @return
      */
     Drug queryDrugById(int id);
+
+    /**
+     * 根据id list批量查询 drug 记录
+     * @param drugIds
+     * @return
+     */
+    List<Drug> queryDrugsByIds(List<Integer> drugIds);
 }

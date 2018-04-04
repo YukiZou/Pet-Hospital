@@ -61,4 +61,14 @@
         WHERE id=#{id}
     </select>
 
+    <select id="queryDrugsByIds" parameterType="java.util.List" resultMap="drugResultMap">
+        SELECT *
+        FROM  drug
+        WHERE  id IN
+        <foreach collection="list" item="id" open="(" close=")"
+                 separator=",">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>

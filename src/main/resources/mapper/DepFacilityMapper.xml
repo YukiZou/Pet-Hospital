@@ -6,24 +6,49 @@
 
     <insert id="insertDepFacility" parameterType="com.ecnu.entity.DepFacility">
         INSERT INTO dep_fac (department_id, facility_id)
-        VALUES (#{department_id}, #{facility_id})
+        VALUES (#{departmentId}, #{facilityId})
+    </insert>
+
+    <insert id="insertDepFacilities" parameterType="java.util.List">
+        INSERT INTO dep_fac (department_id, facility_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.departmentId}, #{item.facilityId})
+        </foreach>
     </insert>
 
     <delete id="deleteDepFacility" parameterType="com.ecnu.entity.DepFacility">
         DELETE FROM dep_fac
-        WHERE department_id=#{department_id}
-        AND facility_id=#{facility_id}
+        <where>
+            <if test="departmentId!=null and departmentId>0">
+                department_id=#{departmentId}
+            </if>
+            <if test="facilityId!=null and facilityId>0">
+                AND facility_id=#{facilityId}
+            </if>
+        </where>
     </delete>
 
-    <select id="queryDepFacilities" parameterType="com.ecnu.entity.DepFacility">
-        SELECT *
+    <delete id="deleteDepFacilities" parameterType="java.util.List">
+        DELETE FROM dep_fac
+        WHERE
+        <foreach collection="list" item="item" index="index" separator="or">
+            (department_id=#{item.departmentId}
+            and facility_id=#{item.facilityId})
+        </foreach>
+    </delete>
+
+    <select id="queryDepFacilities" parameterType="com.ecnu.entity.DepFacility" resultType="com.ecnu.entity.DepFacility">
+        SELECT
+        department_id as departmentId,
+        facility_id as facilityId
         FROM dep_fac
         <where>
-            <if test="department_id!=null and department_id>0">
-                department_id=#{department_id}
+            <if test="departmentId!=null and departmentId>0">
+                department_id=#{departmentId}
             </if>
-            <if test="facility_id!=null and facility_id>0">
-                AND facility_id=#{facility_id}
+            <if test="facilityId!=null and facilityId>0">
+                AND facility_id=#{facilityId}
             </if>
         </where>
     </select>

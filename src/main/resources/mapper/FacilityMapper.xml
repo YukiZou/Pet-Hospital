@@ -61,4 +61,14 @@
         WHERE id=#{id}
     </select>
 
+    <select id="queryFacilitiesByIds" parameterType="java.util.List" resultMap="facilityResultMap">
+        SELECT *
+        FROM  facility
+        WHERE  id IN
+        <foreach collection="list" item="id" open="(" close=")"
+                 separator=",">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>

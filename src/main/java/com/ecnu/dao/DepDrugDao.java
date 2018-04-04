@@ -7,7 +7,6 @@ import java.util.List;
 
 @Repository
 public interface DepDrugDao {
-
     /**
      * 插入一条科室和药品的关联记录
      * @param depDrug 两个字段drug_id, department_id都需要存在才能插入
@@ -16,11 +15,25 @@ public interface DepDrugDao {
     int insertDepDrug(DepDrug depDrug);
 
     /**
+     * 批量插入记录
+     * @param depDrugs
+     * @return
+     */
+    int insertDepDrugs(List<DepDrug> depDrugs);
+
+    /**
      * 删除参数depDrug指定的科室和药品的关联记录
      * @param depDrug 字段drug_id, department_id都需要存在才能删除成功
      * @return
      */
     int deleteDepDrug(DepDrug depDrug);
+
+    /**
+     * 批量删除记录
+     * @param depDrugs
+     * @return
+     */
+    int deleteDepDrugs(List<DepDrug> depDrugs);
 
     /**
      * 根据参数所给的字段检索记录

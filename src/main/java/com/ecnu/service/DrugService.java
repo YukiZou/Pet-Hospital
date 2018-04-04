@@ -22,4 +22,11 @@ public interface DrugService {
      * @return
      */
     List<Drug> queryDrugs(Drug drug);
+
+    /**
+     * 根据条件的id list批量查询Drug记录
+     * @param drugIds
+     * @return
+     */
+    List<Drug> queryDrugsByIds(List<Integer> drugIds);
 }

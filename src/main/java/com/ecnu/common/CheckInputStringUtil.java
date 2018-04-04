@@ -5,7 +5,7 @@ package com.ecnu.common;
  */
 public class CheckInputStringUtil {
     public static Boolean containIllegalCharacter(String str) {
-        if (str.contains("<") || str.contains(">")) {
+        if (str.contains("<") || str.contains(">") || str.contains(" ") || str.contains("?") ) {
             return true;
         } else {
             return false;
