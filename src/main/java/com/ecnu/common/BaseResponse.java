@@ -1,4 +1,4 @@
-package com.ecnu.common.response;
+package com.ecnu.common;
 
 import lombok.Data;
 

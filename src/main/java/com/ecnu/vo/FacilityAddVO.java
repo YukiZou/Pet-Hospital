@@ -1,6 +1,6 @@
 package com.ecnu.vo;
 
-import com.ecnu.common.response.BaseResponse;
+import com.ecnu.common.BaseResponse;
 import com.ecnu.entity.Facility;
 import lombok.Data;
 

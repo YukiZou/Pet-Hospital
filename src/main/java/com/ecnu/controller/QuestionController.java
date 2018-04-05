@@ -2,7 +2,7 @@ package com.ecnu.controller;
 
 
 import com.ecnu.common.enums.ResponseStatusEnum;
-import com.ecnu.common.response.BaseResponse;
+import com.ecnu.common.BaseResponse;
 import com.ecnu.dto.QuestionDTO;
 import com.ecnu.dto.QuestionDeleteDTO;
 import com.ecnu.dto.QuestionUpdateDTO;
