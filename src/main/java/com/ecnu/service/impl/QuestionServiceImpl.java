@@ -44,6 +44,10 @@ public class QuestionServiceImpl implements QuestionService {
             LOG.error("新增试题信息不符合规范，新增试题失败。");
             return false;
         }
+        else if(questionDao.findQuestionByStem(stem)!=null){//判断新增试题的stem是否已在数据库中存在
+            LOG.error("新增试题已存在，新增试题失败。");
+            return false;
+        }
         else{
             //TODO:判断新增试题的stem是否已在数据库中存在
             questionDao.insertQuestion(question);

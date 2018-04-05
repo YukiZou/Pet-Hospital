@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.DiseaseDao">
+
+    <resultMap id="diseaseResultMap" type="com.ecnu.entity.Disease">
+        <id  column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="category" property="category" />
+    </resultMap>
+
+    <!--ID即DAO层接口下声明的方法-->
+    <select id="getAllDisease" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+    </select>
+
+<!--
+    <select id="queryUsers" parameterType="com.ecnu.entity.User" resultMap="userResultMap">
+        SELECT *
+        FROM user
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="userName!=null and userName!=''">
+                AND name LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="pwd!=null and pwd!=''">
+                AND pwd LIKE #{pwd}
+            </if>
+            <if test="auth!=null and auth>0">
+                AND auth=#{auth}
+            </if>
+        </where>
+    </select>
+-->
+    <select id="findDiseaseByName" parameterType="java.lang.String" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+        WHERE name=#{name}
+    </select>
+<!--
+    <select id="findUserById" parameterType="java.lang.Integer" resultMap="userResultMap">
+        SELECT *
+        FROM user
+        WHERE id=#{id}
+    </select>
+-->
+    <insert id="insertDisease" parameterType="com.ecnu.entity.Disease" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO disease (name, category)
+        VALUES (#{name}, #{category})
+    </insert>
+<!--
+    <delete id="deleteUser" parameterType="com.ecnu.entity.User">
+        DELETE FROM user WHERE id=#{id}
+    </delete>
+
+    <update id="updateUser" parameterType="com.ecnu.entity.User">
+        UPDATE user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName!=null and userName!=''">
+                name=#{userName},
+            </if>
+            <if test="pwd!=null and pwd!=''">
+                pwd=#{pwd},
+            </if>
+            <if test="auth!=null and auth!=0">
+                auth=#{auth},
+            </if>
+            <if test="pictureUrl!=null and pictureUrl!=''">
+                picture_url=#{pictureUrl},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+    -->
+</mapper>

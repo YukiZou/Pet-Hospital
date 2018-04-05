@@ -31,6 +31,13 @@ public interface QuestionDao {
     Question findQuestionById (int id);
 
     /**
+     * 根据Stem找到Question记录
+     * @param stem
+     * @return
+     */
+    Question findQuestionByStem (String stem);
+
+    /**
      * 新增一个试题
      * @param question
      */
