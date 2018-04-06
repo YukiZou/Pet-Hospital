@@ -37,6 +37,10 @@ public class PictureServiceImpl implements PictureService{
     @Override
     public int addProcedurePics(List<Picture> pictures) {
         //TODO:先检查输入的参数的正确性和意义再插入
+        //根据前端的逻辑判断，可能会有size==0的参数传过来，判断一下
+        if (pictures == null || pictures.size() == 0) {
+            return 0;
+        }
         return pictureDao.insertProcedurePics(pictures);
     }
 
@@ -51,5 +55,27 @@ public class PictureServiceImpl implements PictureService{
     @Override
     public List<Picture> queryPictures(Picture picture) {
         return pictureDao.queryPictures(picture);
+    }
+
+    @Override
+    public List<Picture> queryPicturesByStepIds(List<Integer> procedureIds) {
+        if (procedureIds == null || procedureIds.size() == 0) {
+            return null;
+        }
+        return pictureDao.queryPicturesByStepIds(procedureIds);
+    }
+
+    /**
+     * 批量删除
+     * picture 所有条件都不匹配的话会清空整个表中的记录
+     * @param pictures
+     * @return
+     */
+    @Override
+    public int deletePictures(List<Picture> pictures) {
+        if (pictures == null || pictures.size() == 0) {
+            return 0;
+        }
+        return pictureDao.deletePictures(pictures);
     }
 }

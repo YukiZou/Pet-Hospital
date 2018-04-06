@@ -25,4 +25,22 @@ public interface ProcedureDao {
      * @return
      */
     List<Procedure> queryProcedureStep(Procedure procedure);
+
+    /**
+     * 删除
+     * procedure 所有条件都不匹配的话会清空整个表中的记录
+     * @param procedures
+     * @return
+     */
+    int deleteProcedureSteps(List<Procedure> procedures);
+
+    int deleteProcedureStep(Procedure procedure);
+
+    /**
+     * 更新表记录
+     * 不为空的字段值表示新值，id值不能为空
+     * @param procedure
+     * @return
+     */
+    int updateProcedureStep(Procedure procedure);
 }

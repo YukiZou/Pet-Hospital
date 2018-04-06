@@ -2,6 +2,7 @@ package com.ecnu.service;
 
 import com.ecnu.entity.Picture;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 /**
@@ -37,4 +38,14 @@ public interface PictureService {
      * @return
      */
     List<Picture> queryPictures(Picture picture);
+
+    List<Picture> queryPicturesByStepIds(List<Integer> procedureIds);
+
+    /**
+     * 批量删除
+     * picture 所有条件都不匹配的话会清空整个表中的记录
+     * @param pictures
+     * @return
+     */
+    int deletePictures(List<Picture> pictures);
 }

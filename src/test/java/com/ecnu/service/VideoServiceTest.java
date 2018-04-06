@@ -36,4 +36,14 @@ public class VideoServiceTest extends BaseServiceTest {
         assertEquals(videoService.addProcedureVideos(videos), 2);
     }
 
+    @Test
+    public void deleteVideos() throws Exception {
+        List<Video> videos = new ArrayList<>();
+        Video video = new Video();
+        video.setProcedureId(11);
+        videos.add(video);
+        int res = videoService.deleteVideos(videos); //批量删除
+        assertTrue(res > 0);
+    }
+
 }

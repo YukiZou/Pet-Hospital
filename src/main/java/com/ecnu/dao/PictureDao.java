@@ -54,4 +54,19 @@ public interface PictureDao {
      * @return
      */
     List<Picture> queryPictures(Picture picture);
+
+    /**
+     * 根据procedureId查找 picture list
+     * @param procedureIds
+     * @return
+     */
+    List<Picture> queryPicturesByStepIds(List<Integer> procedureIds);
+
+    /**
+     * 批量删除
+     * picture 所有条件都不匹配的话会清空整个表中的记录
+     * @param pictures
+     * @return
+     */
+    int deletePictures(List<Picture> pictures);
 }

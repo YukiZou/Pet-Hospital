@@ -45,4 +45,13 @@ public class PictureServiceTest extends BaseServiceTest {
         assertEquals(res, 2);
     }
 
+    @Test
+    public void deletePictures() throws Exception {
+        List<Picture> pictures = new ArrayList<>();
+        Picture picture = new Picture();
+        picture.setProcedureId(11);
+        pictures.add(picture);
+        pictureService.deletePictures(pictures); //批量删除
+    }
+
 }

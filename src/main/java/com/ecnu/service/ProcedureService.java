@@ -11,7 +11,7 @@ public interface ProcedureService {
     /**
      * 新增流程（实际上是新增某个流程的某一步）
      * procedure 的 domain stepName info 字段注意要判断特殊字符的插入(controller层判断)
-     * 不为空的字段： roleId不为空且有意义（1 2 3），domain不能重名（domain + step 可以唯一标识） stepName info
+     * 不为空的字段： roleId不为空且有意义（1 2 3），domain不能重名（roleId + domain + step 可以唯一标识） stepName info
      * @param procedure
      * @return
      */
@@ -26,4 +26,23 @@ public interface ProcedureService {
      * @return
      */
     List<Procedure> queryProcedureSteps(Procedure procedure);
+
+    /**
+     * 删除
+     * procedure 所有条件都不匹配的话会清空整个表中的记录
+     * 判断List是否为空
+     * @param procedures
+     * @return
+     */
+    int deleteProcedureSteps(List<Procedure> procedures);
+
+    int deleteProcedureSteps(Procedure procedure);
+
+    /**
+     * 更新表记录
+     * 不为空的字段值表示新值，id值不能为空
+     * @param procedure
+     * @return
+     */
+    int updateProcedureStep(Procedure procedure);
 }

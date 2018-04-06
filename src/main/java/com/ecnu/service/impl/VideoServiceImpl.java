@@ -37,6 +37,10 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public int addProcedureVideos(List<Video> videos) {
         //TODO:先检查输入的参数的正确性和意义再插入
+        //根据前端的逻辑判断，可能会有size==0的参数传过来，判断一下
+        if (videos == null || videos.size() == 0) {
+            return 0;
+        }
         return videoDao.insertProcedureVideos(videos);
     }
 
@@ -51,5 +55,27 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public List<Video> queryVideos(Video video) {
         return videoDao.queryVideos(video);
+    }
+
+    @Override
+    public List<Video> queryVideosByStepIds(List<Integer> procedureIds) {
+        if (procedureIds == null || procedureIds.size() == 0) {
+            return null;
+        }
+        return videoDao.queryVideosByStepIds(procedureIds);
+    }
+
+    /**
+     * 批量删除
+     * video 所有条件都不匹配的话会清空整个表中的记录
+     * @param videos
+     * @return
+     */
+    @Override
+    public int deleteVideos(List<Video> videos) {
+        if (videos == null || videos.size() == 0) {
+            return 0;
+        }
+        return videoDao.deleteVideos(videos);
     }
 }

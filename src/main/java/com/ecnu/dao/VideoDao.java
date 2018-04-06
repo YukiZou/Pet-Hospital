@@ -52,4 +52,19 @@ public interface VideoDao {
      * @return
      */
     List<Video> queryVideos(Video video);
+
+    /**
+     * 根据procedureId查找 video list
+     * @param procedureIds
+     * @return
+     */
+    List<Video> queryVideosByStepIds(List<Integer> procedureIds);
+
+    /**
+     * 批量删除
+     * video 所有条件都不匹配的话会清空整个表中的记录
+     * @param videos
+     * @return
+     */
+    int deleteVideos(List<Video> videos);
 }

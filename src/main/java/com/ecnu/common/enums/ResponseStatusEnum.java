@@ -9,7 +9,9 @@ public enum ResponseStatusEnum {
     AUTH_FAIL("authFail"),
     INPUT_FAIL("inputFail"),
     INVALID_INPUT_FAIL("invalidInputFail"),
-    SQL_FAIL("sqlFail");
+    SQL_FAIL("sqlFail"),
+    STEP_FAIL("stepFail");
+
 
     private String desc;
 

@@ -17,7 +17,7 @@
         VALUES (#{procedureId},  #{url})
     </insert>
 
-    <insert id="insertProcedurePics" parameterType="java.util.List">
+    <insert id="insertProcedurePics" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO picture (procedure_id, url)
         VALUES
         <foreach collection="list" item="pic" separator=",">
@@ -46,5 +46,42 @@
             </if>
         </where>
     </select>
+    
+    <select id="queryPicturesByStepIds" parameterType="java.util.List" resultMap="pictureResultMap">
+        SELECT *
+        FROM  picture
+        WHERE  picture.procedure_id IN
+        <foreach collection="list" item="procedureId" open="(" close=")"
+                 separator=",">
+            #{procedureId}
+        </foreach>
+    </select>
+
+    <delete id="deletePictures" parameterType="java.util.List">
+        DELETE FROM picture
+        <where>
+            <foreach collection="list" item="item" index="index" separator="or">
+                (
+                <trim prefixOverrides="AND">
+                    <if test="item.id!=null and item.id>0">
+                        id=#{item.id}
+                    </if>
+                    <if test="item.caseId!=null and item.caseId>0">
+                        AND case_id=#{item.caseId}
+                    </if>
+                    <if test="item.procedureId!=null and item.procedureId>0">
+                        AND procedure_id=#{item.procedureId}
+                    </if>
+                    <if test="item.stage!=null and item.stage>0">
+                        AND stage=#{item.stage}
+                    </if>
+                    <if test="item.url!=null and item.url!=''">
+                        AND url LIKE CONCAT('%',#{item.url},'%')
+                    </if>
+                </trim>
+                )
+            </foreach>
+        </where>
+    </delete>
 
 </mapper>
