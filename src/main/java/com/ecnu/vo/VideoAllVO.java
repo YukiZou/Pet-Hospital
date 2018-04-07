@@ -7,15 +7,15 @@ import java.io.Serializable;
 
 @Data
 public class VideoAllVO implements Serializable {
-    private int case_id;
-    private int stage;
+    private int id;
+    private String url;
 
     public VideoAllVO() {
 
     }
 
     public VideoAllVO(Video video) {
-        this.case_id=video.getCaseId();
-        this.stage=video.getStage();
+        this.id=video.getId();
+        this.url=video.getUrl();
     }
 }

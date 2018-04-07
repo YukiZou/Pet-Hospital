@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class PictureAllListVO extends BaseResponse implements Serializable {
-    private List<PictureAllVO> pictureAllVOList;
+    private List<PictureAllVO> pictureList;
 
     public PictureAllListVO() {
 
@@ -20,6 +20,6 @@ public class PictureAllListVO extends BaseResponse implements Serializable {
 
     public PictureAllListVO(String status, List<PictureAllVO> pictureAllVOList) {
         super.setStatus(status);
-        this.pictureAllVOList = pictureAllVOList;
+        this.pictureList = pictureAllVOList;
     }
 }

@@ -4,9 +4,12 @@ import com.ecnu.common.BaseResponse;
 import com.ecnu.common.enums.ResponseStatusEnum;
 import com.ecnu.dto.PictureDTO;
 import com.ecnu.dto.PictureDeleteDTO;
+import com.ecnu.dto.PictureAllDTO;
 import com.ecnu.entity.Picture;
 import com.ecnu.service.PictureService;
 import com.ecnu.vo.PictureVO;
+import com.ecnu.vo.PictureAllListVO;
+import com.ecnu.vo.PictureAllVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Controller
 @RequestMapping("api/case/picture")
@@ -86,6 +92,33 @@ public class PictureController {
     }
 
     /**
+     * 根据case_id和stage返回图片列表
+     * @param pictureAllDTO
+     * @return
+     */
+    @RequestMapping(value = "/all", method = RequestMethod.POST)
+    @ResponseBody
+    public PictureAllListVO allPictures(@RequestBody PictureAllDTO pictureAllDTO) {
+        try {
+            //将PictureAllDTO对象转化成Picture对象
+            Picture picture=toPicture2(pictureAllDTO);
+
+            List<Picture> queryPictures=pictureService.queryPictures(picture);
+            List<PictureAllVO> pictureAllVOList=new LinkedList<>();
+
+            for (Picture queryPicture:queryPictures){
+                PictureAllVO p=new PictureAllVO(queryPicture);
+                pictureAllVOList.add(p);
+            }
+            return new PictureAllListVO(ResponseStatusEnum.SUCCESS.getDesc(), pictureAllVOList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("query picture for all {} failed", pictureAllDTO.toString());
+            return new PictureAllListVO(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
+    /**
      * 将PictureDTO对象转化成Picture对象
      * @param
      * @return
@@ -96,6 +129,13 @@ public class PictureController {
         picture.setCaseId(pictureDTO.getCaseId());
         picture.setStage(pictureDTO.getStage());
         picture.setUrl(pictureDTO.getUrl());
+        return picture;
+    }
+
+    private Picture toPicture2(PictureAllDTO pictureAllDTO){
+        Picture picture=new Picture();
+        picture.setCaseId(pictureAllDTO.getCaseId());
+        picture.setStage(pictureAllDTO.getStage());
         return picture;
     }
 }

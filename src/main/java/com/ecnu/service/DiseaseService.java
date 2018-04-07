@@ -2,6 +2,7 @@ package com.ecnu.service;
 
 import com.ecnu.entity.Disease;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public interface DiseaseService {
@@ -31,4 +32,11 @@ public interface DiseaseService {
      * @return
      */
     Boolean updateDisease(Disease disease);
+
+    /**
+     * 删除疾病
+     * @param disease
+     * @return
+     */
+    Boolean deleteDisease(Disease disease);
 }

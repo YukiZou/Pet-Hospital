@@ -19,6 +19,12 @@ public interface CaseService {
     Boolean updateCase(Case c);
 
     /**
+     * 删除病例（仅删除病例）
+     * @param c
+     * @return
+     */
+    Boolean deleteCase(Case c);
+    /**
      * 根据参数case的数据来查找符合条件的case记录
      * @param c
      * @return

@@ -3,10 +3,13 @@ package com.ecnu.controller;
 import com.ecnu.common.BaseResponse;
 import com.ecnu.common.enums.ResponseStatusEnum;
 import com.ecnu.dto.VideoDeleteDTO;
+import com.ecnu.dto.VideoAllDTO;
 import com.ecnu.dto.VideoDTO;
 import com.ecnu.entity.Video;
 import com.ecnu.service.VideoService;
 import com.ecnu.vo.VideoVO;
+import com.ecnu.vo.VideoAllVO;
+import com.ecnu.vo.VideoAllListVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Controller
 @RequestMapping("api/case/video")
@@ -25,6 +31,32 @@ public class VideoController {
     @Autowired
     private VideoService videoService;
 
+    /**
+     * 根据case_id和stage返回视频列表
+     * @param videoAllDTO
+     * @return
+     */
+    @RequestMapping(value = "/all", method = RequestMethod.POST)
+    @ResponseBody
+    public VideoAllListVO allVideos(@RequestBody VideoAllDTO videoAllDTO) {
+        try {
+            //将VideoAllDTO对象转化成Video对象
+            Video video=toVideo2(videoAllDTO);
+
+            List<Video> queryVideos=videoService.queryVideos(video);
+            List<VideoAllVO> videoAllVOList=new LinkedList<>();
+
+            for (Video queryVideo:queryVideos){
+                VideoAllVO v=new VideoAllVO(queryVideo);
+                videoAllVOList.add(v);
+            }
+            return new VideoAllListVO(ResponseStatusEnum.SUCCESS.getDesc(), videoAllVOList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("query video for all {} failed", videoAllDTO.toString());
+            return new VideoAllListVO(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
     /**
      * 新增video
      * @param
@@ -95,6 +127,13 @@ public class VideoController {
         video.setCaseId(videoDTO.getCaseId());
         video.setStage(videoDTO.getStage());
         video.setUrl(videoDTO.getUrl());
+        return video;
+    }
+
+    private Video toVideo2(VideoAllDTO videoAllDTO){
+        Video video=new Video();
+        video.setCaseId(videoAllDTO.getCaseId());
+        video.setStage(videoAllDTO.getStage());
         return video;
     }
 }

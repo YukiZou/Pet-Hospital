@@ -53,4 +53,11 @@ public interface DiseaseDao {
      * @param disease
      */
     int updateDisease(Disease disease);
+
+    /**
+     * 删除疾病
+     * @param disease
+     * @return
+     */
+    int deleteDisease(Disease disease);
 }

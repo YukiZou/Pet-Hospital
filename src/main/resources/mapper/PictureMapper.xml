@@ -90,7 +90,15 @@
     </delete>
 
     <delete id="deleteCasePicture" parameterType="com.ecnu.entity.Picture">
-        DELETE FROM picture WHERE id=#{id}
+        DELETE FROM picture
+        <where>
+            <if test="caseId!=null and caseId>0">
+                case_id=#{caseId}
+            </if>
+            <if test="id!=null and id>0">
+                AND id=#{id}
+            </if>
+        </where>
     </delete>
 
     <select id="findPictureById" parameterType="java.lang.Integer" resultMap="pictureResultMap">

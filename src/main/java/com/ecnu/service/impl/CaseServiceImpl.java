@@ -26,6 +26,15 @@ public class CaseServiceImpl implements CaseService{
     }
 
     @Override
+    public Boolean deleteCase(Case c){
+        int res = caseDao.deleteCase(c);
+        if (res > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    @Override
     public Boolean addCase(Case c) {
         int diseaseId=c.getDiseaseId();
         String name=c.getName();

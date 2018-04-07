@@ -30,26 +30,7 @@
             </if>
         </where>
     </select>
-<!--
-    <select id="queryUsers" parameterType="com.ecnu.entity.User" resultMap="userResultMap">
-        SELECT *
-        FROM user
-        <where>
-            <if test="id!=null and id>0">
-                id=#{id}
-            </if>
-            <if test="userName!=null and userName!=''">
-                AND name LIKE CONCAT('%',#{userName},'%')
-            </if>
-            <if test="pwd!=null and pwd!=''">
-                AND pwd LIKE #{pwd}
-            </if>
-            <if test="auth!=null and auth>0">
-                AND auth=#{auth}
-            </if>
-        </where>
-    </select>
--->
+
     <select id="findDiseaseByName" parameterType="java.lang.String" resultMap="diseaseResultMap">
         SELECT *
         FROM disease
@@ -61,22 +42,16 @@
         FROM disease
         WHERE id=#{id}
     </select>
-<!--
-    <select id="findUserById" parameterType="java.lang.Integer" resultMap="userResultMap">
-        SELECT *
-        FROM user
-        WHERE id=#{id}
-    </select>
--->
+
     <insert id="insertDisease" parameterType="com.ecnu.entity.Disease" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO disease (name, category)
         VALUES (#{name}, #{category})
     </insert>
-<!--
-    <delete id="deleteUser" parameterType="com.ecnu.entity.User">
-        DELETE FROM user WHERE id=#{id}
+
+    <delete id="deleteDisease" parameterType="com.ecnu.entity.Disease">
+        DELETE FROM disease WHERE id=#{id}
     </delete>
--->
+
     <update id="updateDisease" parameterType="com.ecnu.entity.Disease">
         UPDATE disease
         <trim prefix="SET" suffixOverrides=",">

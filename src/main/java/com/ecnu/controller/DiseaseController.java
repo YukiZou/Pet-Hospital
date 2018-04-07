@@ -2,11 +2,12 @@ package com.ecnu.controller;
 
 import com.ecnu.common.BaseResponse;
 import com.ecnu.common.enums.ResponseStatusEnum;
+import com.ecnu.dto.DiseaseDeleteDTO;
 import com.ecnu.dto.DiseaseDTO;
 import com.ecnu.dto.DiseaseUpdateDTO;
 import com.ecnu.dto.DiseaseQueryDTO;
-import com.ecnu.entity.Disease;
-import com.ecnu.service.DiseaseService;
+import com.ecnu.entity.*;
+import com.ecnu.service.*;
 import com.ecnu.vo.DiseaseAddVO;
 import com.ecnu.vo.DiseaseCategoryListVO;
 import com.ecnu.vo.DiseaseListVO;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +36,66 @@ public class DiseaseController {
 
     @Autowired
     private DiseaseService diseaseService;
+    @Autowired
+    private CaseService caseService;
+    @Autowired
+    private TextService textService;
+    @Autowired
+    private PictureService pictureService;
+    @Autowired
+    private VideoService videoService;
 
+    /**
+     * 删除指定Id的病种，并且把关联表中与此病例关联的病例及其文字、视频、图片全部删掉
+     * @param diseaseDeleteDTO
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public BaseResponse deleteDisease(@RequestBody DiseaseDeleteDTO diseaseDeleteDTO) {
+        try {
+            int disId = diseaseDeleteDTO.getId();
+            LOG.info("start delete disease for id {}", disId);
+            if (disId <= 0) {
+                LOG.error("invalid disease id");
+                return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+            List<Case> queryCases=caseService.findCaseByDId(disId);
+            LOG.info("queryCases {}",queryCases.toString());
+            for(Case queryCase:queryCases){
+                int caseId=queryCase.getId();
+
+                Text text=new Text();
+                text.setCaseId(caseId);
+                textService.deleteText(text);
+
+                Picture picture=new Picture();
+                picture.setCaseId(caseId);
+                pictureService.deleteCasePic(picture);
+
+                Video video=new Video();
+                video.setCaseId(caseId);
+                videoService.deleteCaseVideo(video);
+
+                Case c=new Case();
+                c.setId(caseId);
+                caseService.deleteCase(c);
+            }
+
+            Disease disease=new Disease();
+            disease.setId(disId);
+            diseaseService.deleteDisease(disease);
+
+            LOG.info("delete disease for id {} success", disId);
+            return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+
+        } catch (Exception e) {
+            LOG.error("delete disease for id {} failed!", diseaseDeleteDTO.getId());
+            e.printStackTrace();
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
     /**
      * 新增病种
      * @param diseaseDTO

@@ -6,15 +6,23 @@ import com.ecnu.dto.CaseDTO;
 import com.ecnu.dto.CaseUpdateDTO;
 import com.ecnu.dto.DiseaseQueryDTO;
 import com.ecnu.dto.CaseQueryDTO;
+import com.ecnu.dto.CaseDeleteDTO;
 import com.ecnu.entity.Case;
 import com.ecnu.entity.Disease;
+import com.ecnu.entity.Text;
+import com.ecnu.entity.Picture;
+import com.ecnu.entity.Video;
 import com.ecnu.service.CaseService;
 import com.ecnu.service.DiseaseService;
+import com.ecnu.service.TextService;
+import com.ecnu.service.PictureService;
+import com.ecnu.service.VideoService;
 import com.ecnu.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,7 +45,56 @@ public class CaseController {
     private CaseService caseService;
     @Autowired
     private DiseaseService diseaseService;
+    @Autowired
+    private TextService textService;
+    @Autowired
+    private PictureService pictureService;
+    @Autowired
+    private VideoService videoService;
 
+
+    /**
+     * 删除指定Id的病例，并且把关联表中与此病例关联的文字、视频、图片全部删掉
+     * @param caseDeleteDTO
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public BaseResponse deleteCase(@RequestBody CaseDeleteDTO caseDeleteDTO) {
+        try {
+            int caseId = caseDeleteDTO.getId();
+            LOG.info("start delete case for id {}", caseId);
+            if (caseId <= 0) {
+                LOG.error("invalid case id");
+                return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+
+            Text text=new Text();
+            text.setCaseId(caseId);
+            textService.deleteText(text);
+
+            Picture picture=new Picture();
+            picture.setCaseId(caseId);
+            pictureService.deleteCasePic(picture);
+
+            Video video=new Video();
+            video.setCaseId(caseId);
+            videoService.deleteCaseVideo(video);
+
+            Case c=new Case();
+            c.setId(caseId);
+            caseService.deleteCase(c);
+
+            LOG.info("delete case for id {} success", caseId);
+            return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+
+        } catch (Exception e) {
+            LOG.error("delete case for id {} failed!", caseDeleteDTO.getId());
+            e.printStackTrace();
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
     /**
      * 新增试题
      * @param caseDTO

@@ -64,5 +64,14 @@ public class DiseaseServiceImpl implements DiseaseService {
         }
     }
 
+    @Override
+    public Boolean deleteDisease(Disease disease){
+        int res = diseaseDao.deleteDisease(disease);
+        if (res > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

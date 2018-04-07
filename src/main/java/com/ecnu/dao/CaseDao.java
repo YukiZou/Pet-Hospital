@@ -28,4 +28,11 @@ public interface CaseDao {
      * @param c
      */
     int updateCase(Case c);
+
+    /**
+     * 删除病例（仅删除病例表）
+     * @param c
+     * @return
+     */
+    int deleteCase(Case c);
 }
