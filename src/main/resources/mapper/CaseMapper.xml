@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.CaseDao">
+
+    <resultMap id="caseResultMap" type="com.ecnu.entity.Case">
+        <id  column="id" property="id" />
+        <result column="disease_id" property="diseaseId" />
+        <result column="name" property="name" />
+    </resultMap>
+
+    <insert id="insertCase" parameterType="com.ecnu.entity.Case" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO mcase (disease_id, name)
+        VALUES (#{diseaseId}, #{name})
+    </insert>
+
+    <delete id="deleteCase" parameterType="com.ecnu.entity.Case">
+        DELETE FROM mcase WHERE id=#{id}
+    </delete>
+
+    <select id="findCaseByName" parameterType="java.lang.String" resultMap="caseResultMap">
+        SELECT *
+        FROM mcase
+        WHERE name=#{name}
+    </select>
+
+    <select id="findCasesByDId" parameterType="java.lang.Integer" resultMap="caseResultMap">
+        SELECT *
+        FROM mcase
+        WHERE disease_id=#{diseaseId}
+    </select>
+
+    <update id="updateCase" parameterType="com.ecnu.entity.Case">
+        UPDATE mcase
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="diseaseId!=null and diseaseId>0">
+                disease_id=#{diseaseId},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryCases" parameterType="com.ecnu.entity.Case" resultMap="caseResultMap">
+        SELECT *
+        FROM mcase
+        <where>
+            <if test="name!=null and name!=''">
+                name LIKE CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

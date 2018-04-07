@@ -3,6 +3,8 @@ package com.ecnu.service.impl;
 import com.ecnu.dao.PictureDao;
 import com.ecnu.entity.Picture;
 import com.ecnu.service.PictureService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,8 @@ import java.util.List;
 
 @Service
 public class PictureServiceImpl implements PictureService{
+    private static Logger LOG = LoggerFactory.getLogger(PictureServiceImpl.class);
+
     @Autowired
     private PictureDao pictureDao;
     /**
@@ -24,6 +28,39 @@ public class PictureServiceImpl implements PictureService{
     public int addProcedurePic(Picture picture) {
         //TODO:先检查输入的参数的正确性和意义再插入
         return pictureDao.insertProcedurePic(picture);
+    }
+
+    /**
+     * 新增与病例相关的图片
+     * @param picture
+     * @return
+     */
+    @Override
+    public Boolean addCasePic(Picture picture){
+        pictureDao.insertCasePic(picture);
+        if (picture.getId() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean deleteCasePic(Picture picture) {
+        int res = pictureDao.deleteCasePicture(picture);
+        if (res > 0) {
+            LOG.info("删除图片成功");
+            return true;
+        }
+        else {
+            LOG.error("删除图片失败");
+            return false;
+        }
+    }
+
+    @Override
+    public Picture findPictureById(int id) {
+        return pictureDao.findPictureById(id);
     }
 
     /**

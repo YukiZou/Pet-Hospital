@@ -9,6 +9,17 @@ import java.util.List;
  */
 public interface VideoService {
     /**
+     * 新增与病例相关的视频
+     */
+    Boolean addCaseVideo(Video video);
+
+    /**
+     * 删除与病例相关的视频
+     */
+    Boolean deleteCaseVideo(Video video);
+
+
+    /**
      * 新增与流程相关的视频
      * 新增流程的视频的情况：参数 video 的 procedureId 和 url 一定要有。
      * 调用dao层接口的前置条件：procedureId有意义且 url存在
@@ -37,6 +48,8 @@ public interface VideoService {
      * @return
      */
     List<Video> queryVideos(Video video);
+
+    Video findVideoById(int id);
 
     List<Video> queryVideosByStepIds(List<Integer> procedureIds);
 

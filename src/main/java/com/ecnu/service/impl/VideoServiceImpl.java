@@ -3,6 +3,8 @@ package com.ecnu.service.impl;
 import com.ecnu.dao.VideoDao;
 import com.ecnu.entity.Video;
 import com.ecnu.service.VideoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +12,42 @@ import java.util.List;
 
 @Service
 public class VideoServiceImpl implements VideoService {
+    private static Logger LOG = LoggerFactory.getLogger(VideoServiceImpl.class);
+
     @Autowired
     private VideoDao videoDao;
+
+    /**
+     * 新增与病例相关的视频
+     */
+    @Override
+    public Boolean addCaseVideo(Video video){
+        videoDao.insertCaseVideo(video);
+        if (video.getId() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean deleteCaseVideo(Video video) {
+        int res = videoDao.deleteCaseVideo(video);
+        if (res > 0) {
+            LOG.info("删除视频成功");
+            return true;
+        }
+        else {
+            LOG.error("删除视频失败");
+            return false;
+        }
+    }
+
+    @Override
+    public Video findVideoById(int id) {
+        return videoDao.findVideoById(id);
+    }
+
     /**
      * 新增与流程相关的视频
      * 新增流程的视频的情况：参数 video 的 procedureId 和 url 一定要有。

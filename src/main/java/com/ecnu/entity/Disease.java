@@ -1,5 +1,6 @@
 package com.ecnu.entity;
 
+import com.ecnu.dao.DiseaseDao;
 import lombok.Data;
 
 import java.io.Serializable;

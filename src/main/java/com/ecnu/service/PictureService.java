@@ -30,6 +30,12 @@ public interface PictureService {
     int addProcedurePics(List<Picture> pictures);
 
     /**
+     * 新增与病例有关的picture记录
+     * @param picture
+     * @return
+     */
+    Boolean addCasePic(Picture picture);
+    /**
      * 根据参数的指定字段查找符合条件的 picture list
      * 属性有值表示要匹配那个字段去查询,如果所有字段都为空，则是查询所有。
      * 限制：暂时无
@@ -38,6 +44,13 @@ public interface PictureService {
      * @return
      */
     List<Picture> queryPictures(Picture picture);
+
+    /**
+     * 删除与病例有关的picture记录
+     */
+    Boolean deleteCasePic(Picture picture);
+
+    Picture findPictureById(int id);
 
     List<Picture> queryPicturesByStepIds(List<Integer> procedureIds);
 

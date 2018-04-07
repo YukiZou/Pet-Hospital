@@ -41,6 +41,7 @@ public interface VideoDao {
      * @return
      */
     //TODO: @黑猫实现
+    //不实现了
     int insertCaseVideos(List<Video> videos);
 
     /**
@@ -52,6 +53,13 @@ public interface VideoDao {
      * @return
      */
     List<Video> queryVideos(Video video);
+
+    /**
+     * 删除和病例相关的video
+     */
+    int deleteCaseVideo(Video video);
+
+    Video findVideoById(int id);
 
     /**
      * 根据procedureId查找 video list

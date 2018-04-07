@@ -11,5 +11,5 @@ import java.io.Serializable;
 public class Case implements Serializable{
     private int id;//病例ID
     private int diseaseId;
-    private int name;
+    private String name;
 }

@@ -11,11 +11,25 @@
     </resultMap>
 
     <!--ID即DAO层接口下声明的方法-->
+    <select id="getAllDiseaseCategory" resultMap="diseaseResultMap">
+        SELECT DISTINCT category
+        FROM disease
+    </select>
+
     <select id="getAllDisease" resultMap="diseaseResultMap">
         SELECT *
         FROM disease
     </select>
 
+    <select id="queryDiseases" parameterType="com.ecnu.entity.Disease" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+        <where>
+            <if test="name!=null and name!=''">
+                (name LIKE CONCAT('%',#{name},'%') OR category LIKE CONCAT('%',#{category},'%'))
+            </if>
+        </where>
+    </select>
 <!--
     <select id="queryUsers" parameterType="com.ecnu.entity.User" resultMap="userResultMap">
         SELECT *
@@ -41,6 +55,12 @@
         FROM disease
         WHERE name=#{name}
     </select>
+
+    <select id="findDiseaseById" parameterType="java.lang.Integer" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+        WHERE id=#{id}
+    </select>
 <!--
     <select id="findUserById" parameterType="java.lang.Integer" resultMap="userResultMap">
         SELECT *
@@ -56,24 +76,18 @@
     <delete id="deleteUser" parameterType="com.ecnu.entity.User">
         DELETE FROM user WHERE id=#{id}
     </delete>
-
-    <update id="updateUser" parameterType="com.ecnu.entity.User">
-        UPDATE user
+-->
+    <update id="updateDisease" parameterType="com.ecnu.entity.Disease">
+        UPDATE disease
         <trim prefix="SET" suffixOverrides=",">
-            <if test="userName!=null and userName!=''">
-                name=#{userName},
+            <if test="name!=null and name!=''">
+                name=#{name},
             </if>
-            <if test="pwd!=null and pwd!=''">
-                pwd=#{pwd},
-            </if>
-            <if test="auth!=null and auth!=0">
-                auth=#{auth},
-            </if>
-            <if test="pictureUrl!=null and pictureUrl!=''">
-                picture_url=#{pictureUrl},
+            <if test="category!=null and category!=''">
+                category=#{category},
             </if>
         </trim>
         WHERE id=#{id}
     </update>
-    -->
+
 </mapper>

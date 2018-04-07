@@ -10,7 +10,7 @@ import java.util.List;
 public interface QuestionDao {
 
     /**
-     * 根据参数usr查询出所有符合查询条件的user用户,可以实现模糊查找
+     * 根据参数question查询出所有符合查询条件的question
      * @param question
      * @return
      */

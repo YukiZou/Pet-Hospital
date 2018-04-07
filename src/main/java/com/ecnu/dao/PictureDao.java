@@ -56,6 +56,13 @@ public interface PictureDao {
     List<Picture> queryPictures(Picture picture);
 
     /**
+     * 删除和病例相关的picture
+     */
+    int deleteCasePicture(Picture picture);
+
+    Picture findPictureById(int id);
+
+    /**
      * 根据procedureId查找 picture list
      * @param procedureIds
      * @return

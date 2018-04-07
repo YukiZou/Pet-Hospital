@@ -16,6 +16,11 @@
         INSERT INTO picture (procedure_id, url)
         VALUES (#{procedureId},  #{url})
     </insert>
+    <insert id="insertCasePic" parameterType="com.ecnu.entity.Picture" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO picture (case_id, stage, url)
+        VALUES (#{caseId}, #{stage}, #{url})
+    </insert>
+
 
     <insert id="insertProcedurePics" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO picture (procedure_id, url)
@@ -84,4 +89,13 @@
         </where>
     </delete>
 
+    <delete id="deleteCasePicture" parameterType="com.ecnu.entity.Picture">
+        DELETE FROM picture WHERE id=#{id}
+    </delete>
+
+    <select id="findPictureById" parameterType="java.lang.Integer" resultMap="pictureResultMap">
+        SELECT *
+        FROM picture
+        WHERE id=#{id}
+    </select>
 </mapper>
