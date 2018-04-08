@@ -42,7 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
         String answer=question.getAnswer();
 
         //TODO：新增试题的题干及选项的长度限制
-        if(category == null || category.equals("") || A == null || A.equals("") ||
+        if(stem == null || stem.equals("") ||category == null || category.equals("") || A == null || A.equals("") ||
                 B == null || B.equals("") || C == null || C.equals("") ||
                 D == null || D.equals("") ||
                 (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")))){//不合法输入
@@ -54,7 +54,13 @@ public class QuestionServiceImpl implements QuestionService {
             return false;
         }
         else{
-            //TODO:判断新增试题的stem是否已在数据库中存在
+            //判断新增试题的stem是否已在数据库中存在
+            List<Question> q=questionDao.queryQuestionsByQues(question);
+            if(q.size()>0){
+                LOG.info("新增试题已存在，新增试题失败");
+                return false;
+            }
+
             questionDao.insertQuestion(question);
             //判断是否新增试题成功
             if (question.getId() > 0) {
