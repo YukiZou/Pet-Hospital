@@ -27,6 +27,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Question> queryQuestionsByQues(Question question) {
+        return questionDao.queryQuestionsByQues(question);
+    }
+
+    @Override
     public Boolean addQuestion(Question question) {
         String category=question.getCategory();
         String stem=question.getStem();
@@ -61,6 +66,15 @@ public class QuestionServiceImpl implements QuestionService {
             }
         }
     }
+
+    @Override
+    public int addQuestions(List<Question> questions) {
+        if (questions == null || questions.size() == 0) {
+            return 0;
+        }
+        return questionDao.insertQuestions(questions);
+    }
+
     @Override
     public Boolean deleteQuestion(int id) {
         Question question = new Question();

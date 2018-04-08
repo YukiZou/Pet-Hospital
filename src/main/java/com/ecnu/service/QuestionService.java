@@ -15,11 +15,21 @@ public interface QuestionService {
      * @return
      */
     List<Question> queryQuestions(Question question);
+
+    List<Question> queryQuestionsByQues(Question question);
+
     /**
      * 新增试题
      * @param question
      */
     Boolean addQuestion(Question question);
+
+    /**
+     * 批量新增试题，参数List != null 且不为空
+     * @param questions
+     * @return
+     */
+    int addQuestions(List<Question> questions);
 
     /**
      * 删除试题

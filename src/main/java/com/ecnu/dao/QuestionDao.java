@@ -1,7 +1,6 @@
 package com.ecnu.dao;
 
 import com.ecnu.entity.Question;
-import com.ecnu.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +14,13 @@ public interface QuestionDao {
      * @return
      */
     List<Question> queryQuestions(Question question);
+
+    /**
+     * 根据参数question 的参数来匹配寻找Question 记录
+     * @param question
+     * @return
+     */
+    List<Question> queryQuestionsByQues(Question question);
 
     /**
      * 列出所有category
@@ -42,6 +48,13 @@ public interface QuestionDao {
      * @param question
      */
     void insertQuestion(Question question);
+
+    /**
+     * 批量新增多个试题
+     * @param questions
+     * @return
+     */
+    int insertQuestions(List<Question> questions);
 
     /**
      * 根据参数question删除指定试题记录。

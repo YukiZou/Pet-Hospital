@@ -32,9 +32,34 @@
             <if test="id!=null and id>0">
                 AND id=#{id}
             </if>
+        </where>
+    </select>
 
-
-
+    <select id="queryQuestionsByQues" parameterType="com.ecnu.entity.Question" resultMap="questionResultMap">
+        SELECT *
+        FROM question
+        <where>
+            <if test="stem!=null and stem!=''">
+                stem LIKE CONCAT('%',#{stem},'%')
+            </if>
+            <if test="category!=null and category!=''">
+                AND category LIKE CONCAT('%',#{category},'%')
+            </if>
+            <if test="optA!=null and optA!=''">
+                AND A LIKE CONCAT('%',#{optA},'%')
+            </if>
+            <if test="optB!=null and optB!=''">
+                AND B LIKE CONCAT('%',#{optB},'%')
+            </if>
+            <if test="optC!=null and optC!=''">
+                AND C LIKE CONCAT('%',#{optC},'%')
+            </if>
+            <if test="optB!=null and optB!=''">
+                AND D LIKE CONCAT('%',#{optD},'%')
+            </if>
+            <if test="id!=null and id>0">
+                AND id=#{id}
+            </if>
         </where>
     </select>
 
@@ -53,6 +78,22 @@
     <insert id="insertQuestion" parameterType="com.ecnu.entity.Question" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO question (category, stem, A, B, C, D, answer)
         VALUES (#{category}, #{stem}, #{optA}, #{optB}, #{optC}, #{optD}, #{answer})
+    </insert>
+
+    <insert id="insertProcedurePics" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO picture (procedure_id, url)
+        VALUES
+        <foreach collection="list" item="pic" separator=",">
+            (#{pic.procedureId}, #{pic.url})
+        </foreach>
+    </insert>
+
+    <insert id="insertQuestions" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (category, stem, A, B, C, D, answer)
+        VALUES
+         <foreach collection="list" item="ques" separator=",">
+             (#{ques.category}, #{ques.stem}, #{ques.optA}, #{ques.optB}, #{ques.optC}, #{ques.optD}, #{ques.answer})
+         </foreach>
     </insert>
 
     <delete id="deleteQuestion" parameterType="com.ecnu.entity.Question">

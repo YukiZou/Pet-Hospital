@@ -1,6 +1,7 @@
 package com.ecnu.controller;
 
 
+import com.ecnu.common.TxtUtil;
 import com.ecnu.common.enums.ResponseStatusEnum;
 import com.ecnu.common.BaseResponse;
 import com.ecnu.dto.QuestionDTO;
@@ -17,19 +18,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sun.rmi.runtime.Log;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
 
 @Controller
 @RequestMapping("api/question")
 public class QuestionController {
     private static Logger LOG = LoggerFactory.getLogger(QuestionController.class);
+    private final static String TXT = "txt";
 
     @Autowired
     private QuestionService questionService;
@@ -96,6 +101,100 @@ public class QuestionController {
             e.printStackTrace();
             LOG.error("add question failed");
             return new QuestionVO("fail");
+        }
+    }
+
+    /**
+     * 根据文件批量上传试题
+     * @author zouyuanyuan on 2018.04.08
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "/file", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResponse fileAddQuestion(@RequestParam("file") CommonsMultipartFile file) {
+        try {
+            //获得原始文件名
+            String fileName = file.getOriginalFilename();
+            LOG.info("start add questions by file {} ", fileName);
+
+            if (!fileName.endsWith(TXT)) {
+                LOG.error("the type of uploaded file is not txt");
+                return new BaseResponse(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
+            }
+            //得到原始数据
+            List<String[]> originList = TxtUtil.readTxt(file);
+            int size = originList.size();
+
+            List<Question> questionList = new ArrayList<>();
+            for (int index = 0; index < size; index++) {
+                String[] strings = originList.get(index);
+                if (strings.length != 7) {//每行必须是七个字段
+                    continue;
+                }
+
+                String category = strings[0];
+                String stem = strings[1];
+                String A = strings[2];
+                String B = strings[3];
+                String C = strings[4];
+                String D = strings[5];
+                String answer = strings[6];
+
+                //新增试题的题干及选项的长度限制
+                if(category == null || category.equals("")
+                        || stem == null || stem.equals("")
+                        || A == null || A.equals("")
+                        || B == null || B.equals("")
+                        || C == null || C.equals("")
+                        || D == null || D.equals("")
+                        || (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")))){//不合法输入
+                    LOG.error("invalid input.");
+                    continue;
+                    //return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+                }
+                if (category.length() > 255 || containIllegalCharacter(category)
+                        || stem.length() > 255 || containIllegalCharacter(stem)
+                        || A.length() > 255 || containIllegalCharacter(A)
+                        || B.length() > 255 || containIllegalCharacter(B)
+                        || C.length() > 255 || containIllegalCharacter(C)
+                        || D.length() > 255 || containIllegalCharacter(D)) {
+                    LOG.error("invalid input.");
+                    continue;
+                    //return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+                }
+
+                //判断新增的题干是否已经存在（数据库中不允许题干重复）
+                Question question = new Question();
+                question.setCategory(category);
+                question.setStem(stem);
+                question.setOptA(A);
+                question.setOptB(B);
+                question.setOptC(C);
+                question.setOptD(D);
+                question.setAnswer(answer);
+
+                List<Question> queryQuestions = questionService.queryQuestionsByQues(question);
+                if (queryQuestions != null && queryQuestions.size() > 0) {
+                    LOG.error("this question already exist!");
+                    continue;
+                    //return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+                }
+                questionList.add(question);
+            }
+            int res = questionService.addQuestions(questionList);
+            if (res > 0) {
+                LOG.info("add questions by file {} success!", fileName);
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.info("no question to be added by file {}!", fileName);
+                return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("add questions by file failed");
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
         }
     }
 
