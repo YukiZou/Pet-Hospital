@@ -51,19 +51,15 @@ public class TextServiceImpl implements TextService {
     public Boolean updateText(Text text) {
         if(text.getId()>0){
             if(text.getInfo()==null||text.getInfo().equals("")){
-
                 LOG.error("信息缺失，修改text失败");
                 return false;
 
-            }
-            else{
-
+            } else{
                 int res = textDao.updateText(text);
                 if(res > 0){
                     LOG.info("修改text成功");
                     return true;
-                }
-                else{
+                } else{
                     LOG.error("修改text失败");
                     return false;
                 }

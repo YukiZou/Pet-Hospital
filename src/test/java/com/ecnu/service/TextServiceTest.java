@@ -55,7 +55,10 @@ public class TextServiceTest extends BaseServiceTest {
         assertTrue(textService.addText(addText));
         int id = addText.getId();
         Text updateText = new Text();
+        updateText.setId(-1);
+        assertFalse(textService.updateText(updateText));
         updateText.setId(id);
+        assertFalse(textService.updateText(updateText));
         updateText.setInfo("textUpdate");
 
         assertTrue(textService.updateText(updateText));

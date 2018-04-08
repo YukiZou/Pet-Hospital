@@ -38,7 +38,7 @@ public class VideoServiceTest extends BaseServiceTest {
     @Test
     public void findVideoById() throws Exception {
         //该id存在的情况
-        Video v = videoService.findVideoById(1);
+        Video v = videoService.findVideoById(30);
         assertTrue(v.getId() > 0);
 
         //该id不存在的情况

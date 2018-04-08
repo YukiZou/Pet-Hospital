@@ -54,8 +54,11 @@
             <if test="optC!=null and optC!=''">
                 AND C LIKE CONCAT('%',#{optC},'%')
             </if>
-            <if test="optB!=null and optB!=''">
+            <if test="optD!=null and optD!=''">
                 AND D LIKE CONCAT('%',#{optD},'%')
+            </if>
+            <if test="answer!=null and answer!=''">
+                AND answer LIKE CONCAT('%',#{answer},'%')
             </if>
             <if test="id!=null and id>0">
                 AND id=#{id}

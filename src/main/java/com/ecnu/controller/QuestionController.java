@@ -148,7 +148,7 @@ public class QuestionController {
                         || B == null || B.equals("")
                         || C == null || C.equals("")
                         || D == null || D.equals("")
-                        || (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")))){//不合法输入
+                        || answer == null || (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")))){//不合法输入
                     LOG.error("invalid input.");
                     continue;
                     //return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());

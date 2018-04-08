@@ -98,7 +98,7 @@ public class PictureServiceTest extends BaseServiceTest {
     @Test
     public void findPictureById() throws Exception {
         //该id存在的情况
-        Picture p = pictureService.findPictureById(1);
+        Picture p = pictureService.findPictureById(31);
         assertTrue(p.getId() > 0);
 
         //该id不存在的情况
