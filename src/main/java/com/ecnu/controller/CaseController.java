@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -197,7 +199,16 @@ public class CaseController {
                     caseQueryVOList.add(caseQueryVO);
                 }
             }
-            return new CaseListVO(ResponseStatusEnum.SUCCESS.getDesc(), caseQueryVOList);
+
+            HashSet proSet = new HashSet();
+            for (CaseQueryVO cc : caseQueryVOList) {
+                proSet.add(cc);
+            }
+            //将hashSet转化成list
+            List<CaseQueryVO> caseQueryVOList1 = new ArrayList<>();
+            caseQueryVOList1.addAll(proSet);
+
+            return new CaseListVO(ResponseStatusEnum.SUCCESS.getDesc(), caseQueryVOList1);
         } catch (Exception e) {
             e.printStackTrace();
             return new CaseListVO(ResponseStatusEnum.FAIL.getDesc());

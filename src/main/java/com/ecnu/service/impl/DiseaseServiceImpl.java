@@ -56,8 +56,9 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     @Override
     public Boolean updateDisease(Disease disease) {
+        //判断新修改的病名是否已经存在（病名不能重复）
         Disease d = diseaseDao.findDiseaseByName(disease.getName());
-        if(d.getId() > 0){
+        if(d != null){
             return false;
         }
         int res = diseaseDao.updateDisease(disease);
