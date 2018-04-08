@@ -95,15 +95,15 @@ public class TextController {
         try {
             Text text=toText3(textAllDTO);
             Text resText=textService.findTextByCIdS(text);
-            if(resText.getId()>0){
+            //if(resText.getId()>0){
                 TextAllVO textAllVO=new TextAllVO(resText);
                 textAllVO.setStatus("success");
                 return textAllVO;
-            }
-            else {
-                LOG.error("all text : {} failed", text.toString());
-                return new TextAllVO("fail");
-            }
+            //}
+            //else {
+            //    LOG.error("all text : {} failed", text.toString());
+            //    return new TextAllVO("fail");
+            //}
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("all text failed");
