@@ -15,6 +15,38 @@ public class VideoServiceTest extends BaseServiceTest {
     private VideoService videoService;
 
     @Test
+    public void addCaseVideo() throws Exception {
+        Video video = new Video();
+        video.setCaseId(1);
+        video.setUrl("testVideoUrl1");
+        assertTrue(videoService.addCaseVideo(video));
+    }
+
+    @Test
+    public void deleteCaseVideo() throws Exception {
+        Video video = new Video();
+        video.setCaseId(1);
+        video.setUrl("testUrl");
+        assertTrue(videoService.addCaseVideo(video));
+        assertTrue(videoService.deleteCaseVideo(video));
+
+        //不能删除不存在的video
+        assertFalse(videoService.deleteCaseVideo(video));
+
+    }
+
+    @Test
+    public void findVideoById() throws Exception {
+        //该id存在的情况
+        Video v = videoService.findVideoById(1);
+        assertTrue(v.getId() > 0);
+
+        //该id不存在的情况
+        Video vv = videoService.findVideoById(2);
+        assertTrue(vv == null);
+    }
+
+    @Test
     public void addProcedureVideo() throws Exception {
         Video video = new Video();
         video.setProcedureId(11);

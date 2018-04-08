@@ -46,6 +46,7 @@ public class TextServiceImpl implements TextService {
 
     @Override
     public Text findTextByCIdS(Text text){return textDao.findTextByCIdS(text);}
+
     @Override
     public Boolean updateText(Text text) {
         if(text.getId()>0){
