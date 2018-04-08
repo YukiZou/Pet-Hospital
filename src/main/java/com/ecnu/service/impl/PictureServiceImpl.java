@@ -94,14 +94,6 @@ public class PictureServiceImpl implements PictureService{
         return pictureDao.queryPictures(picture);
     }
 
-    @Override
-    public List<Picture> queryPicturesByStepIds(List<Integer> procedureIds) {
-        if (procedureIds == null || procedureIds.size() == 0) {
-            return null;
-        }
-        return pictureDao.queryPicturesByStepIds(procedureIds);
-    }
-
     /**
      * 批量删除
      * picture 所有条件都不匹配的话会清空整个表中的记录

@@ -40,31 +40,12 @@ public class ProcedureServiceImpl implements ProcedureService {
         return procedureDao.queryProcedureStep(procedure);
     }
 
-    /**
-     * 删除
-     * procedure 所有条件都不匹配的话会清空整个表中的记录
-     * @param procedures
-     * @return
-     */
-    @Override
-    public int deleteProcedureSteps(List<Procedure> procedures) {
-        if (procedures == null || procedures.size() == 0) {
-            return 0;
-        }
-        return procedureDao.deleteProcedureSteps(procedures);
-    }
-
     @Override
     public int deleteProcedureSteps(Procedure procedure) {
         return procedureDao.deleteProcedureStep(procedure);
     }
 
-    /**
-     * 更新表记录
-     * 不为空的字段值表示新值，id值不能为空
-     * @param procedure
-     * @return
-     */
+    //更新表记录不为空的字段值表示新值，id值不能为空
     @Override
     public int updateProcedureStep(Procedure procedure) {
         if (procedure.getId() <= 0) {
@@ -72,5 +53,4 @@ public class ProcedureServiceImpl implements ProcedureService {
         }
         return procedureDao.updateProcedureStep(procedure);
     }
-
 }

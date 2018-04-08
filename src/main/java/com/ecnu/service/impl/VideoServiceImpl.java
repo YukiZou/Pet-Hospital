@@ -93,14 +93,6 @@ public class VideoServiceImpl implements VideoService {
         return videoDao.queryVideos(video);
     }
 
-    @Override
-    public List<Video> queryVideosByStepIds(List<Integer> procedureIds) {
-        if (procedureIds == null || procedureIds.size() == 0) {
-            return null;
-        }
-        return videoDao.queryVideosByStepIds(procedureIds);
-    }
-
     /**
      * 批量删除
      * video 所有条件都不匹配的话会清空整个表中的记录

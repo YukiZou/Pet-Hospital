@@ -52,8 +52,6 @@ public interface PictureService {
 
     Picture findPictureById(int id);
 
-    List<Picture> queryPicturesByStepIds(List<Integer> procedureIds);
-
     /**
      * 批量删除
      * picture 所有条件都不匹配的话会清空整个表中的记录

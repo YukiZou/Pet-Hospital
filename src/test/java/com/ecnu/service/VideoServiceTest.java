@@ -49,33 +49,53 @@ public class VideoServiceTest extends BaseServiceTest {
     @Test
     public void addProcedureVideo() throws Exception {
         Video video = new Video();
-        video.setProcedureId(11);
+        video.setProcedureId(12);
         video.setUrl("testVideoUrl1");
         assertEquals(videoService.addProcedureVideo(video), 1);
+        List<Video> videos = new ArrayList<>();
+        videos.add(video);
+        assertEquals(videoService.deleteVideos(videos), 1);
     }
 
     @Test
     public void addProcedureVideos() throws Exception {
         List<Video> videos = new ArrayList<>();
+        assertEquals(videoService.addProcedureVideos(videos), 0);
         Video video = new Video();
-        video.setProcedureId(11);
+        video.setProcedureId(12);
         video.setUrl("testVideoUrl2");
         videos.add(video);
         video = new Video();
-        video.setProcedureId(11);
+        video.setProcedureId(12);
         video.setUrl("testVideoUrl3");
         videos.add(video);
         assertEquals(videoService.addProcedureVideos(videos), 2);
+        assertEquals(videoService.deleteVideos(videos), 2);
+    }
+
+    @Test
+    public void queryVideos() throws Exception {
+        //查询所有
+        assertTrue(videoService.queryVideos(new Video()).size() > 0);
+        //查询不存在的
+        Video video = new Video();
+        video.setId(1110);
+        assertTrue(videoService.queryVideos(video).size() == 0);
     }
 
     @Test
     public void deleteVideos() throws Exception {
         List<Video> videos = new ArrayList<>();
+        assertTrue(videoService.deleteVideos(videos) == 0);
         Video video = new Video();
-        video.setProcedureId(11);
+        video.setProcedureId(12);
+        video.setUrl("testDeleteVideoUrl");
+        assertEquals(videoService.addProcedureVideo(video),1);
         videos.add(video);
         int res = videoService.deleteVideos(videos); //批量删除
         assertTrue(res > 0);
+
+        assertEquals(videoService.deleteVideos(videos), 0);
     }
 
 }

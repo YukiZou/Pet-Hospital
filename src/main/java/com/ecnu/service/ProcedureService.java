@@ -30,12 +30,9 @@ public interface ProcedureService {
     /**
      * 删除
      * procedure 所有条件都不匹配的话会清空整个表中的记录
-     * 判断List是否为空
-     * @param procedures
+     * @param procedure
      * @return
      */
-    int deleteProcedureSteps(List<Procedure> procedures);
-
     int deleteProcedureSteps(Procedure procedure);
 
     /**

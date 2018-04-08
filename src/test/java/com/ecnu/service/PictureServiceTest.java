@@ -24,10 +24,13 @@ public class PictureServiceTest extends BaseServiceTest {
     @Test
     public void addProcedurePic() throws Exception {
         Picture picture = new Picture();
-        picture.setProcedureId(11);
+        picture.setProcedureId(12);
         picture.setUrl("testUrl");
         int res = pictureService.addProcedurePic(picture);
         assertEquals(res, 1);
+        List<Picture> pictures = new ArrayList<>();
+        pictures.add(picture);
+        assertEquals(pictureService.deletePictures(pictures), 1);
     }
 
     @Test
@@ -41,17 +44,28 @@ public class PictureServiceTest extends BaseServiceTest {
     @Test
     public  void addProcedurePics() throws Exception {
         List<Picture> pictures = new ArrayList<>();
+        assertEquals(pictureService.addProcedurePics(pictures), 0);
         Picture picture = new Picture();
-        picture.setProcedureId(11);
+        picture.setProcedureId(12);
         picture.setUrl("testUrl2");
         pictures.add(picture);
         picture = new Picture();
-        picture.setProcedureId(11);
+        picture.setProcedureId(12);
         picture.setUrl("testUrl3");
         pictures.add(picture);
-        System.out.println("size : " + pictures.size());
         int res = pictureService.addProcedurePics(pictures);
         assertEquals(res, 2);
+        assertEquals(pictureService.deletePictures(pictures), 2);
+    }
+
+    @Test
+    public void queryPictures() throws Exception {
+        //查询所有
+        assertTrue(pictureService.queryPictures(new Picture()).size() > 0);
+        //查询不存在的
+        Picture picture = new Picture();
+        picture.setId(1110);
+        assertTrue(pictureService.queryPictures(picture).size() == 0);
     }
 
     @Test
@@ -69,10 +83,16 @@ public class PictureServiceTest extends BaseServiceTest {
     @Test
     public void deletePictures() throws Exception {
         List<Picture> pictures = new ArrayList<>();
+        assertTrue(pictureService.deletePictures(pictures) == 0);
         Picture picture = new Picture();
-        picture.setProcedureId(11);
+        picture.setProcedureId(12);
+        picture.setUrl("testDeleteUrl");
+        assertEquals(pictureService.addProcedurePic(picture), 1);
+
         pictures.add(picture);
-        pictureService.deletePictures(pictures); //批量删除
+        assertEquals(pictureService.deletePictures(pictures), 1);
+        //再删一次
+        assertEquals(pictureService.deletePictures(pictures), 0);
     }
 
     @Test
