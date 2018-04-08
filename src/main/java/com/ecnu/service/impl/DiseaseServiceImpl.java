@@ -56,6 +56,10 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     @Override
     public Boolean updateDisease(Disease disease) {
+        Disease d = diseaseDao.findDiseaseByName(disease.getName());
+        if(d.getId() > 0){
+            return false;
+        }
         int res = diseaseDao.updateDisease(disease);
         if (res > 0) {
             return true;
