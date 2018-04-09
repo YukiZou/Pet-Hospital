@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 @Data
 public class TextAllVO extends BaseResponse implements Serializable {
+    private int id;
     private String info;
     public TextAllVO() {
 
@@ -18,6 +19,7 @@ public class TextAllVO extends BaseResponse implements Serializable {
     }
 
     public TextAllVO(Text text) {
+        this.id = text.getId();
         this.info = text.getInfo();
     }
 }
