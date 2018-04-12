@@ -128,7 +128,7 @@ public class UserController {
 
             //给新增的用户一个默认的头像url
             //TODO:https://www.ecnupet.cn/img/logo.jpg
-            user.setPictureUrl("https://www.ecnupet.cn/pet/img/2e1007b6-59ba-437c-a1be-14b4d43230d6z.jpg");
+            user.setPictureUrl("http://ecnupet.cn/img/sijia.jpg");
 
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
             UserAuthEnum addUserAuth = UserAuthEnum.getUserAuthEnum(auth);
