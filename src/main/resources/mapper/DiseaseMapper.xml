@@ -31,6 +31,22 @@
         </where>
     </select>
 
+    <select id="findByDisease" parameterType="com.ecnu.entity.Disease" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="category!=null and category!=''">
+                AND category LIKE CONCAT('%',#{category},'%')
+            </if>
+        </where>
+    </select>
+
     <select id="findDiseaseByName" parameterType="java.lang.String" resultMap="diseaseResultMap">
         SELECT *
         FROM disease

@@ -60,4 +60,12 @@ public interface DiseaseDao {
      * @return
      */
     int deleteDisease(Disease disease);
+
+    /**
+     * 根据参数disease的各字段值查询出所有符合查询条件的disease
+     * @author zou yuanyuan
+     * @param disease
+     * @return
+     */
+    List<Disease> findByDisease(Disease disease);
 }

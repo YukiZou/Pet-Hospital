@@ -108,9 +108,10 @@ public class DiseaseController {
             LOG.info("diseaseDTO {}",diseaseDTO);
             //将DiseaseDTO对象转化成Disease对象
             Disease disease=toDisease(diseaseDTO);
-            Boolean res=false;
+            Boolean res;
             res=diseaseService.addDisease(disease);
-            if(res){//新增病种成功
+            //新增病种成功
+            if(res){
                 DiseaseAddVO diseaseAddVO=new DiseaseAddVO(disease);
                 LOG.info("add disease : {} success", disease.toString());
                 diseaseAddVO.setStatus("success");
@@ -141,7 +142,7 @@ public class DiseaseController {
             //将QuestionUpdateDTO对象转化成Question对象
             Disease disease=toDisease2(diseaseUpdateDTO);
 
-            Boolean res = false;
+            Boolean res;
             res = diseaseService.updateDisease(disease);
             if (res) {
                 LOG.info("update disease for disease id {} success!", diseaseUpdateDTO.getId());
