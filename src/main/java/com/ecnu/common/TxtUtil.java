@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * 读取Txt文件工具类
+ * @author zou yuanyuan
  */
 public class TxtUtil {
     private static Logger logger = LoggerFactory.getLogger(TxtUtil.class);
@@ -20,7 +21,8 @@ public class TxtUtil {
             InputStream inputStream = file.getInputStream();
             InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
             BufferedReader bufferedReader = new BufferedReader(reader);
-            List<String[]> rowList = new ArrayList<String[]>(); //存储txt中的原始数据。
+            //存储txt中的原始数据。
+            List<String[]> rowList = new ArrayList<String[]>();
 
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {

@@ -3,6 +3,7 @@ package com.ecnu.common.enums;
 
 /**
  * 表明用户权限的枚举类
+ * @author zou yuanyuan
  */
 public enum  UserAuthEnum {
     ORDINARY_USER(1, "ordinary user"),

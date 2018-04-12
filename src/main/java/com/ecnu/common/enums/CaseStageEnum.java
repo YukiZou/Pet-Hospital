@@ -1,6 +1,10 @@
 package com.ecnu.common.enums;
 
 
+/**
+ * @author zou yuanyuan
+ */
+
 public enum CaseStageEnum {
     RECEIVE_TREATMENT(1, "接诊"),
     CASE_EXAMINATION(2, "病例检查"),

@@ -1,5 +1,9 @@
 package com.ecnu.common.enums;
 
+/**
+ * @author zou yuanyuan
+ */
+
 public enum ResponseStatusEnum {
     SUCCESS("success"),
 
