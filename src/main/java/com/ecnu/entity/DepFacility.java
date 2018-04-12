@@ -9,6 +9,15 @@ import java.io.Serializable;
  */
 @Data
 public class DepFacility implements Serializable{
-    private int department_id;
-    private int facility_id;
+    private int departmentId;
+    private int facilityId;
+
+    public DepFacility(){
+
+    }
+
+    public DepFacility(int facilityId, int departmentId) {
+        this.facilityId = facilityId;
+        this.departmentId = departmentId;
+    }
 }

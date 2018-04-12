@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.QuestionDao">
+
+    <resultMap id="questionResultMap" type="com.ecnu.entity.Question">
+        <id  column="id" property="id" />
+        <result column="category" property="category" />
+        <result column="stem" property="stem" />
+        <result column="A" property="optA" />
+        <result column="B" property="optB" />
+        <result column="C" property="optC" />
+        <result column="D" property="optD" />
+        <result column="answer" property="answer" />
+    </resultMap>
+
+    <!--ID即DAO层接口下声明的方法-->
+    <select id="getAllQuestionCategory" resultMap="questionResultMap">
+        SELECT DISTINCT category
+        FROM question
+    </select>
+
+    <select id="queryQuestions" parameterType="com.ecnu.entity.Question" resultMap="questionResultMap">
+        SELECT *
+        FROM question
+        <where>
+            <if test="stem!=null and stem!=''">
+                (stem LIKE CONCAT('%',#{stem},'%') OR A LIKE CONCAT('%',#{optA},'%') OR B LIKE CONCAT('%',#{optB},'%') OR C LIKE CONCAT('%',#{optC},'%') OR D LIKE CONCAT('%',#{optD},'%'))
+            </if>
+
+            <if test="id!=null and id>0">
+                AND id=#{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryQuestionsByQues" parameterType="com.ecnu.entity.Question" resultMap="questionResultMap">
+        SELECT *
+        FROM question
+        <where>
+            <if test="stem!=null and stem!=''">
+                stem LIKE CONCAT('%',#{stem},'%')
+            </if>
+            <if test="category!=null and category!=''">
+                AND category LIKE CONCAT('%',#{category},'%')
+            </if>
+            <if test="optA!=null and optA!=''">
+                AND A LIKE CONCAT('%',#{optA},'%')
+            </if>
+            <if test="optB!=null and optB!=''">
+                AND B LIKE CONCAT('%',#{optB},'%')
+            </if>
+            <if test="optC!=null and optC!=''">
+                AND C LIKE CONCAT('%',#{optC},'%')
+            </if>
+            <if test="optD!=null and optD!=''">
+                AND D LIKE CONCAT('%',#{optD},'%')
+            </if>
+            <if test="answer!=null and answer!=''">
+                AND answer LIKE CONCAT('%',#{answer},'%')
+            </if>
+            <if test="id!=null and id>0">
+                AND id=#{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="findQuestionByStem" parameterType="java.lang.String" resultMap="questionResultMap">
+        SELECT *
+        FROM question
+        WHERE stem=#{stem}
+    </select>
+
+    <select id="findQuestionById" parameterType="java.lang.Integer" resultMap="questionResultMap">
+        SELECT *
+        FROM question
+        WHERE id=#{id}
+    </select>
+
+    <insert id="insertQuestion" parameterType="com.ecnu.entity.Question" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (category, stem, A, B, C, D, answer)
+        VALUES (#{category}, #{stem}, #{optA}, #{optB}, #{optC}, #{optD}, #{answer})
+    </insert>
+
+    <insert id="insertProcedurePics" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO picture (procedure_id, url)
+        VALUES
+        <foreach collection="list" item="pic" separator=",">
+            (#{pic.procedureId}, #{pic.url})
+        </foreach>
+    </insert>
+
+    <insert id="insertQuestions" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (category, stem, A, B, C, D, answer)
+        VALUES
+         <foreach collection="list" item="ques" separator=",">
+             (#{ques.category}, #{ques.stem}, #{ques.optA}, #{ques.optB}, #{ques.optC}, #{ques.optD}, #{ques.answer})
+         </foreach>
+    </insert>
+
+    <delete id="deleteQuestion" parameterType="com.ecnu.entity.Question">
+        DELETE FROM question WHERE id=#{id}
+    </delete>
+
+    <update id="updateQuestion" parameterType="com.ecnu.entity.Question">
+        UPDATE question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="category!=null and category!=''">
+                category=#{category},
+            </if>
+            <if test="stem!=null and stem!=''">
+                stem=#{stem},
+            </if>
+            <if test="optA!=null and optA!=''">
+                A=#{optA},
+            </if>
+            <if test="optB!=null and optB!=''">
+                B=#{optB},
+            </if>
+            <if test="optC!=null and optC!=''">
+                C=#{optC},
+            </if>
+            <if test="optD!=null and optD!=''">
+                D=#{optD},
+            </if>
+            <if test="answer!=null and answer!=''">
+                answer=#{answer},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+</mapper>

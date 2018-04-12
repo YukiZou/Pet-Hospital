@@ -1,9 +1,8 @@
 package com.ecnu.controller;
 
-import com.ecnu.common.MD5Util;
 import com.ecnu.common.enums.ResponseStatusEnum;
 import com.ecnu.common.enums.UserAuthEnum;
-import com.ecnu.common.response.BaseResponse;
+import com.ecnu.common.BaseResponse;
 import com.ecnu.dto.*;
 import com.ecnu.vo.UserListVO;
 import com.ecnu.entity.User;
@@ -16,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
 @Controller
 @RequestMapping("api/user")
@@ -40,26 +41,35 @@ public class UserController {
     @RequestMapping(value = "/login", method= RequestMethod.POST)
     @ResponseBody
     public UserVO userLogin(@RequestBody UserDTO userDTO, HttpServletRequest request) {
-        LOG.info("user {} login", userDTO.toString());
         try {
-            if (!userDTO.getUserName().equals("") && !userDTO.getPwd().equals("")) {
-                User user = toUser(userDTO);
-                User loginUser = userService.checkLogin(user);
-                if (loginUser != null) {//success
-                    UserVO userVO = new UserVO(loginUser);
-                    LOG.info("user {} login success", user.getUserName());
-                    userVO.setStatus(ResponseStatusEnum.SUCCESS.getDesc());
-                    HttpSession session = request.getSession(true);//获取session, true表示如果没有，则新建一个session
-                    session.setAttribute("loginUser", loginUser);//将loginUser存入session中，让其他方法可以访问到。
-                    return userVO;
-                    //return new ObjectMapper().writeValueAsString(userVO);//对象转JSON字符串
-                } else {
-                    LOG.error("用户登录失败");
-                    return new UserVO(ResponseStatusEnum.SQL_FAIL.getDesc());
-                }
+            LOG.info("user {} login", userDTO.toString());
+            String loginUserName = userDTO.getUserName();
+            String loginUserPwd = userDTO.getPwd();
+            if (loginUserName == null || loginUserName.equals("") || loginUserPwd == null || loginUserPwd.equals("")) {
+                LOG.error("用户名或密码不能为空");
+                return new UserVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
-            LOG.error("用户名和密码不能为空");
-            return new UserVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
+
+            User loginUser = userService.queryUserByName(loginUserName);
+            if (loginUser == null) {
+                LOG.error("user {} do not exist!", loginUserName);
+                //登录用户的用户名不存在
+                return new UserVO(ResponseStatusEnum.NO_USER_FAIL.getDesc());
+            }
+
+            //登录成功
+            if (loginUser.getPwd().equals(loginUserPwd)) {
+                UserVO userVO = new UserVO(loginUser);
+                LOG.info("user {} login success", loginUserName);
+                userVO.setStatus(ResponseStatusEnum.SUCCESS.getDesc());
+                HttpSession session = request.getSession(true);//获取session, true表示如果没有，则新建一个session
+                session.setAttribute("loginUser", loginUser);//将loginUser存入session中，让其他方法可以访问到。
+                return userVO;
+            } else {
+                LOG.error("user {} login failed for error password!", loginUserName);
+                return new UserVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("user login error!");
@@ -75,6 +85,7 @@ public class UserController {
     @RequestMapping(value = "/logout", method= RequestMethod.POST)
     @ResponseBody
     public BaseResponse userLogout(HttpServletRequest request) {
+        LOG.info("start logout!");
         HttpSession session = request.getSession();
         session.invalidate();
         return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
@@ -89,10 +100,24 @@ public class UserController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public UserVO addUser(@RequestBody UserDTO userDTO, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
-        LOG.info("add user : {} for loginUser {}", userDTO.toString(), loginUser.getUserName());
         try {
+            String addUserName = userDTO.getUserName();
+            String addUserPwd = userDTO.getPwd();
+            int auth = userDTO.getAuth();
+            if (addUserName == null || addUserName.equals("") || addUserPwd == null || addUserPwd.equals("") || auth > 3 || auth < 1) {
+                LOG.error("add user for input error!");
+                return new UserVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+
+            if (containIllegalCharacter(addUserName)) {
+                LOG.error("name is invalid!");
+                return new UserVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
+            }
+
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            LOG.info("add user : {} for loginUser {}", userDTO.toString(), loginUser.getUserName());
+
             //将UserDTO对象转化成User对象
             User user = toUser(userDTO);
 
@@ -102,34 +127,46 @@ public class UserController {
             //String pictureUrl
 
             //给新增的用户一个默认的头像url
-            //TODO:http://www.ecnupet.cn:8080/pet/img/logo.jpg
-            user.setPictureUrl("ecnupet.cn:8080/pet/img/logo.jpg");
+            //TODO:https://www.ecnupet.cn/img/logo.jpg
+            user.setPictureUrl("https://www.ecnupet.cn/pet/img/2e1007b6-59ba-437c-a1be-14b4d43230d6z.jpg");
 
-            Boolean res = false;
-            //int loginUserAuth = loginUser.getAuth();
-            //int addUserAuth = user.getAuth();
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
-            UserAuthEnum addUserAuth = UserAuthEnum.getUserAuthEnum(user.getAuth());
+            UserAuthEnum addUserAuth = UserAuthEnum.getUserAuthEnum(auth);
+
+            Boolean hasAuth = true;
 
             //判断用户权限
             switch (loginUserAuth) {
                 case ORDINARY_USER:
-                    LOG.info("loginUser has no permissions to add current user");
+                    hasAuth = false;
                     break;
                 case ADMIN://登录用户是普通管理员
                     switch (addUserAuth) {
-                        case ORDINARY_USER:
-                            res = userService.addUser(user);//可以增加普通前台用户
+                        case ORDINARY_USER: //可以增加普通前台用户
                             break;
                         default:
-                            LOG.info("loginUser has no permissions to add current user");
+                            hasAuth = false;
                             break;
                     }
                     break;
                 case SUPER_ADMIN://超级管理员
-                    res = userService.addUser(user);//调用userService层方法新增用户
                     break;
             }
+
+            //如果登录用户没有权限
+            if (!hasAuth) {
+                LOG.error("loginUser has no permissions to add current user");
+                return new UserVO(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            }
+
+            //如果数据库表中已经存在该用户，返回对应错误类型
+            User queryUser = userService.queryUserByName(addUserName);
+            if (queryUser != null) {
+                LOG.error("addUserName: {} has existed!", addUserName);
+                return new UserVO(ResponseStatusEnum.DUPLICATE_USERNAME_FAIL.getDesc());
+            }
+
+            Boolean res = userService.addUser(user);
 
             if (res) {//新增用户成功
                 UserVO userVO = new UserVO(user);
@@ -138,7 +175,7 @@ public class UserController {
                 return userVO;
             } else {
                 LOG.error("add user : {} failed", user.toString());
-                return new UserVO(ResponseStatusEnum.AUTH_FAIL.getDesc());
+                return new UserVO(ResponseStatusEnum.SQL_FAIL.getDesc());
             }
 
         } catch (Exception e) {
@@ -157,48 +194,58 @@ public class UserController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse deleteUser(@RequestBody UserDeleteDTO userDeleteDTO, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
-        LOG.info("delete user with id {} for loginUser {}", userDeleteDTO.getId(), loginUser.getUserName());
         try{
-            Boolean res = false;
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            LOG.info("delete user with id {} for loginUser {}", userDeleteDTO.getId(), loginUser.getUserName());
+
+
             int deleteUserId = userDeleteDTO.getId();
             User deleteUser = userService.queryUserById(deleteUserId);
-            //如果当前登录用户与要删除的用户一致，则删除失败
-            if (loginUser.getId() == deleteUser.getId()) {
-                LOG.error("delete user failed : cannot delete current login user");
-                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            //如果没找到，说明数据库中无该用户
+            if (deleteUser == null) {
+                LOG.error("user for id {} do not exist!",deleteUserId);
+                return new BaseResponse(ResponseStatusEnum.NO_USER_FAIL.getDesc());
             }
-            //int loginUserAuth = loginUser.getAuth();
-            //int deleteUserAuth = deleteUser.getAuth();
+
+            Boolean hasAuth = true;
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
             UserAuthEnum deleteUserAuth = UserAuthEnum.getUserAuthEnum(deleteUser.getAuth());
             //判断用户权限
             switch (loginUserAuth) {
                 case ORDINARY_USER:
-                    LOG.info("loginUser has no permissions to delete current user");
+                    hasAuth = false;
                     break;
                 case ADMIN://登录用户是普通管理员
                     switch (deleteUserAuth) {
                         case ORDINARY_USER://可以删除普通前台用户
-                            res = userService.deleteUser(deleteUserId);
                             break;
                         default:
-                            LOG.info("loginUser has no permissions to delete current user");
+                            hasAuth = false;
                             break;
                     }
                     break;
                 case SUPER_ADMIN://超级管理员
-                    res = userService.deleteUser(deleteUserId);
+                    if (loginUser.getId() == deleteUser.getId()) {//超级管理员无权删除自己
+                        hasAuth = false;
+                    }
                     break;
             }
+
+            //如果登录用户没有权限
+            if (!hasAuth) {
+                LOG.error("loginUser has no permissions to delete current user");
+                return new UserVO(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            }
+
+            Boolean res = userService.deleteUser(deleteUserId);
 
             if (res) {
                 LOG.info("delete user for user id {} success!", userDeleteDTO.getId());
                 return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
             } else {
-                LOG.error("delete user for user id {} failed!", userDeleteDTO.getId());
-                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+                LOG.info("loginUser has no permissions to delete current user");
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
             }
 
         } catch (Exception e) {
@@ -224,32 +271,45 @@ public class UserController {
             User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
             int userId = userAuthDTO.getId();
             int auth = userAuthDTO.getAuth();
+            if (userId <= 0 || auth > 3 || auth < 1) {
+                LOG.error("userId or auth invalid!");
+                return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
             LOG.info("change user {} with auth {} for loginUser {}", userId, auth, loginUser.getUserName());
 
-            //不能修改当前登录用户的权限
-            if (loginUser.getId() == userId) {
-                LOG.error("change auth error: cannot change current login user's auth");
-                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            User queryUser = userService.queryUserById(userId);
+            if (queryUser == null) {
+                LOG.error("user for id {} do not exist!", userId);
+                return new BaseResponse(ResponseStatusEnum.NO_USER_FAIL.getDesc());
             }
 
-            Boolean res = false;
+            Boolean hasAuth = true;
             //int loginUserAuth = loginUser.getAuth();
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
             switch (loginUserAuth) {
                 case SUPER_ADMIN:
-                    res = userService.changeAuth(userId, auth);
+                    if (loginUser.getId() == userId) {//超级管理员不能修改自己的权限
+                        hasAuth = false;
+                    }
                     break;
                 default:
-                    LOG.info("loginUser has no permissions to change current user's auth");
+                    hasAuth = false;
                     break;
             }
+
+            if (!hasAuth) {
+                LOG.info("loginUser has no permissions to change current user's auth");
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            }
+
+            Boolean res = userService.changeAuth(userId, auth);
 
             if (res) {
                 LOG.info("change user auth for user id {} success!", userId);
                 return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
             } else {
                 LOG.error("change user auth for user id {} failed!", userId);
-                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
             }
 
         } catch (Exception e) {
@@ -262,9 +322,9 @@ public class UserController {
 
 
     /**
-     * 修改密码 & 管理员重置用户密码。
-     * 普通admin只能修改自己/普通用户的密码，无权限修改其他普通admin/superadmin的密码
-     * superadmin可以修改其他superadmin的密码,有所有权限
+     * 管理员重置用户密码。
+     * 普通admin只能重置普通用户的密码，无权限重置其他普通admin/superadmin的密码
+     * superadmin可以修改其他superadmin的密码（包括自己的密码）,有所有权限
      * @param userPwdDTO
      * @return
      */
@@ -276,46 +336,55 @@ public class UserController {
             User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
             int userId = userPwdDTO.getId();
             String pwd = userPwdDTO.getPwd();//明文密码
-            pwd = MD5Util.toMd5(pwd); //对密码加密后存入数据库中。
+            if (userId <= 0 || pwd == null || pwd.equals("")) {
+                LOG.error("userId or pwd invalid!");
+                return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
             LOG.info("change user {} password for loginUser {}", userId, loginUser.getUserName());
 
-            Boolean res = false;
-            User changePwdUser = userService.queryUserById(userId);
-            //int loginUserAuth = loginUser.getAuth();
-            //int changePwdUserAuth = changePwdUser.getAuth();
+            User queryUser = userService.queryUserById(userId);
+            if (queryUser == null) {
+                LOG.error("user for id {} do not exist!", userId);
+                return new BaseResponse(ResponseStatusEnum.NO_USER_FAIL.getDesc());
+            }
+
+            Boolean hasAuth = true;
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
-            UserAuthEnum changePwdUserAuth = UserAuthEnum.getUserAuthEnum(changePwdUser.getAuth());
+            UserAuthEnum changePwdUserAuth = UserAuthEnum.getUserAuthEnum(queryUser.getAuth());
             //判断用户权限
             switch (loginUserAuth) {
                 case ORDINARY_USER:
-                    LOG.info("loginUser has no permissions to change current user's pwd");
+                    hasAuth = false;
                     break;
                 case ADMIN://登录用户是普通管理员
                     switch (changePwdUserAuth) {
                         case ORDINARY_USER://可以修改普通前台用户密码
-                            res = userService.changePwd(userId, pwd);
                             break;
                         case ADMIN://如果是普通管理员，可以先判断是不是更改本人的密码
-                            if (userId == loginUser.getId()) {//当前登录用户修改自己的密码
-                                res = userService.changePwd(userId, pwd);
+                            if (userId != loginUser.getId()) {//当前登录用户只能修改自己的密码，不可修改其他普通管理员用户密码
+                                hasAuth = false;
                             }
                             break;
                         default:
-                            LOG.info("loginUser has no permissions to change current user's pwd");
+                            hasAuth = false;
                             break;
                     }
                     break;
                 case SUPER_ADMIN:
-                    res = userService.changePwd(userId, pwd);
                     break;
             }
+            if (!hasAuth) {
+                LOG.info("loginUser has no permissions to change current user's pwd");
+                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+            }
 
+            Boolean res = userService.changePwd(userId, pwd);
             if (res) {
                 LOG.info("change user {} password success!", userId);
                 return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
             } else {
                 LOG.error("change user {} password failed!", userId);
-                return new BaseResponse(ResponseStatusEnum.AUTH_FAIL.getDesc());
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
             }
 
         } catch (Exception e) {
@@ -368,8 +437,8 @@ public class UserController {
     @RequestMapping(value = "/filter", method = RequestMethod.POST)
     @ResponseBody
     public UserListVO queryUsers(@RequestBody UserQueryDTO userQueryDTO) {
-        LOG.info("query users for filter {}", userQueryDTO.toString());
         try {
+            LOG.info("query users for filter {}", userQueryDTO.toString());
             User user = new User();
             String userName = userQueryDTO.getUserName();
             int auth = userQueryDTO.getAuth();
@@ -380,7 +449,7 @@ public class UserController {
                 user.setAuth(auth);
             }
             List<User> queryUsers = userService.queryUsers(user);
-            List<UserQueryVO> userQueryVOList = new LinkedList<>();
+            List<UserQueryVO> userQueryVOList = new ArrayList<>();
             for (User queryUser: queryUsers) {
                 UserQueryVO userQueryVO = new UserQueryVO(queryUser);
                 userQueryVOList.add(userQueryVO);
@@ -391,6 +460,63 @@ public class UserController {
             e.printStackTrace();
             LOG.error("query users for filter {} failed", userQueryDTO.toString());
             return new UserListVO(ResponseStatusEnum.FAIL.getDesc());
+        }
+    }
+
+
+    /**
+     * 当前登录的管理员用户修改自身的用户信息
+     * 包括修改自身的昵称（唯一）、密码、头像
+     * @param userSelfUpdateDTO
+     * @param request
+     * @return
+     */
+    @RequestMapping("/update")
+    @ResponseBody
+    public BaseResponse userSelfUpdate(@RequestBody UserSelfUpdateDTO userSelfUpdateDTO, HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            LOG.info("start update loginUser {} data for {}", loginUser.getUserName(), userSelfUpdateDTO.toString());
+            int id = loginUser.getId();
+            String name = userSelfUpdateDTO.getUserName();
+            String pwd = userSelfUpdateDTO.getPwd();
+            String picture = userSelfUpdateDTO.getPictureUrl();
+            if (name == null && pwd == null && picture == null) {
+                LOG.error("用户新昵称、用户新密码、用户新头像不能同时为空");
+                return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
+            }
+            //新昵称不能包含特殊字符<>
+            if (name != null && containIllegalCharacter(name)){
+                LOG.error("name is invalid!");
+                return new BaseResponse(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
+            }
+            //新昵称要唯一
+            if (name != null && !name.equals("")) {
+                User queryUser = userService.queryUserByName(name);
+                if (queryUser != null) {
+                    LOG.error("user name has existed! update login user data error!");
+                    return new BaseResponse(ResponseStatusEnum.DUPLICATE_USERNAME_FAIL.getDesc());
+                }
+            }
+
+            User updateUser = new User(id, name, pwd, picture);
+            Boolean res = userService.updateUser(updateUser);
+            //修改当前登录用户信息成功，则更新session中的值。
+            if (res) {
+                LOG.info("update loginUser data success!");
+                User newLoginUser = userService.queryUserById(id);
+                session.setAttribute("loginUser", newLoginUser);
+                return new BaseResponse(ResponseStatusEnum.SUCCESS.getDesc());
+            } else {
+                LOG.error("update loginUser data failed!");
+                return new BaseResponse(ResponseStatusEnum.SQL_FAIL.getDesc());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("update loginUser for userSelfUpdateDTO {} failed", userSelfUpdateDTO.toString());
+            return new BaseResponse(ResponseStatusEnum.FAIL.getDesc());
         }
     }
 
@@ -411,10 +537,7 @@ public class UserController {
     private User toUser(UserDTO userDTO) {
         User user = new User();
         user.setUserName(userDTO.getUserName());
-        if (userDTO.getPwd() != null && !userDTO.getPwd().equals("")) {
-            user.setPwd(MD5Util.toMd5(userDTO.getPwd()));//将DTO中明文的字符串加密后存在User对象中。
-        }
-        //user.setPwd(userDTO.getPwd());
+        user.setPwd(userDTO.getPwd());
         user.setAuth(userDTO.getAuth());
         user.setPictureUrl(userDTO.getPictureUrl());
         return user;

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.ProcedureDao">
+
+    <resultMap id="procedureResultMap" type="com.ecnu.entity.Procedure">
+        <id  column="id" property="id" />
+        <result column="role_id" property="roleId" />
+        <result column="domain" property="domain" />
+        <result column="step" property="step" />
+        <result column="step_name" property="stepName" />
+        <result column="info" property="info" />
+    </resultMap>
+
+    <insert id="insertProcedureStep" parameterType="com.ecnu.entity.Procedure" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pet.procedure (role_id, domain, step, step_name, info)
+        VALUES (#{roleId}, #{domain}, #{step}, #{stepName}, #{info})
+    </insert>
+
+    <select id="queryProcedureStep" parameterType="com.ecnu.entity.Procedure" resultMap="procedureResultMap">
+        SELECT *
+        FROM pet.procedure
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="roleId!=null and roleId>0">
+                AND role_id=#{roleId}
+            </if>
+            <if test="domain!=null and domain!=''">
+                AND domain LIKE CONCAT('%',#{domain},'%')
+            </if>
+            <if test="step!=null and step>0">
+                AND step=#{step}
+            </if>
+            <if test="stepName!=null and stepName!=''">
+                AND step_name LIKE CONCAT('%',#{stepName},'%')
+            </if>
+            <if test="info!=null and info!=''">
+                AND info LIKE CONCAT('%',#{info},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteProcedureSteps" parameterType="java.util.List">
+        DELETE FROM pet.procedure
+        <where>
+            <foreach collection="list" item="item" index="index" separator="or">
+                (
+                <trim prefixOverrides="AND">
+                    <if test="item.id!=null and item.id>0">
+                        id=#{item.id}
+                    </if>
+                    <if test="item.roleId!=null and item.roleId>0">
+                        AND role_id=#{item.roleId}
+                    </if>
+                    <if test="item.domain!=null and item.domain!=''">
+                        AND domain LIKE CONCAT('%',#{item.domain},'%')
+                    </if>
+                    <if test="item.step!=null and item.step>0">
+                        AND step=#{item.step}
+                    </if>
+                    <if test="item.stepName!=null and item.stepName!=''">
+                        AND step_name LIKE CONCAT('%',#{item.stepName},'%')
+                    </if>
+                    <if test="item.info!=null and item.info!=''">
+                        AND info LIKE CONCAT('%',#{item.info},'%')
+                    </if>
+                </trim>
+                )
+            </foreach>
+        </where>
+    </delete>
+
+    <delete id="deleteProcedureStep" parameterType="com.ecnu.entity.Procedure">
+        DELETE FROM pet.procedure
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="roleId!=null and roleId>0">
+                AND role_id=#{roleId}
+            </if>
+            <if test="domain!=null and domain!=''">
+                AND domain LIKE CONCAT('%',#{domain},'%')
+            </if>
+            <if test="step!=null and step>0">
+                AND step=#{step}
+            </if>
+            <if test="stepName!=null and stepName!=''">
+                AND step_name LIKE CONCAT('%',#{stepName},'%')
+            </if>
+            <if test="info!=null and info!=''">
+                AND info LIKE CONCAT('%',#{info},'%')
+            </if>
+        </where>
+    </delete>
+
+    <update id="updateProcedureStep" parameterType="com.ecnu.entity.Procedure">
+        UPDATE pet.procedure
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roleId!=null and roleId>0">
+                role_id=#{roleId},
+            </if>
+            <if test="domain!=null and domain!=''">
+                domain=#{domain},
+            </if>
+            <if test="step!=null and step>0">
+                step=#{step},
+            </if>
+            <if test="stepName!=null and stepName!=''">
+                step_name=#{stepName},
+            </if>
+            <if test="info!=null and info!=''">
+                info=#{info},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+
+
+
+</mapper>

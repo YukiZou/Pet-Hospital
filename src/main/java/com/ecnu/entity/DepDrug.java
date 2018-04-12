@@ -7,8 +7,18 @@ import java.io.Serializable;
 /**
  * 科室和药品关联图
  */
+
 @Data
 public class DepDrug implements Serializable{
-    private int department_id;
-    private int drug_id;
+    private int drugId;
+    private int departmentId;
+
+    public DepDrug(){
+
+    }
+
+    public DepDrug(int drugId, int departmentId) {
+        this.drugId = drugId;
+        this.departmentId = departmentId;
+    }
 }

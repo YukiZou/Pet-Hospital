@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Data
 public class Drug implements Serializable{
     private int id;//药物ID
+    private String name;//药品名称
     private String picture;
     private String info;
 }

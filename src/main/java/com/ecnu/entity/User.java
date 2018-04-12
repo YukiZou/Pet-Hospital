@@ -17,4 +17,15 @@ public class User implements Serializable{
     private int auth;
     private String pictureUrl;
 
+    public User() {
+
+    }
+
+    public User(int id, String userName, String pwd, String pictureUrl) {
+        this.id = id;
+        this.userName = userName;
+        this.pwd = pwd;
+        this.pictureUrl = pictureUrl;
+    }
+
 }

@@ -1,7 +1,17 @@
 package com.ecnu.common.enums;
 
 public enum ResponseStatusEnum {
-    SUCCESS("success"), SQL_FAIL("sqlFail"), AUTH_FAIL("authFail"), INPUT_FAIL("inputFail"), FAIL("fail");
+    SUCCESS("success"),
+
+    FAIL("fail"),
+    NO_USER_FAIL("noUserFail"),
+    DUPLICATE_USERNAME_FAIL("duplicateUsernameFail"),
+    AUTH_FAIL("authFail"),
+    INPUT_FAIL("inputFail"),
+    INVALID_INPUT_FAIL("invalidInputFail"),
+    SQL_FAIL("sqlFail"),
+    STEP_FAIL("stepFail");
+
 
     private String desc;
 

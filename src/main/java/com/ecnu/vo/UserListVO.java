@@ -1,7 +1,6 @@
 package com.ecnu.vo;
 
-import com.ecnu.common.response.BaseResponse;
-import com.ecnu.entity.User;
+import com.ecnu.common.BaseResponse;
 import lombok.Data;
 
 import java.io.Serializable;

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.DiseaseDao">
+
+    <resultMap id="diseaseResultMap" type="com.ecnu.entity.Disease">
+        <id  column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="category" property="category" />
+    </resultMap>
+
+    <!--ID即DAO层接口下声明的方法-->
+    <select id="getAllDiseaseCategory" resultMap="diseaseResultMap">
+        SELECT DISTINCT category
+        FROM disease
+    </select>
+
+    <select id="getAllDisease" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+    </select>
+
+    <select id="queryDiseases" parameterType="com.ecnu.entity.Disease" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+        <where>
+            <if test="name!=null and name!=''">
+                (name LIKE CONCAT('%',#{name},'%') OR category LIKE CONCAT('%',#{category},'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="findDiseaseByName" parameterType="java.lang.String" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+        WHERE name=#{name}
+    </select>
+
+    <select id="findDiseaseById" parameterType="java.lang.Integer" resultMap="diseaseResultMap">
+        SELECT *
+        FROM disease
+        WHERE id=#{id}
+    </select>
+
+    <insert id="insertDisease" parameterType="com.ecnu.entity.Disease" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO disease (name, category)
+        VALUES (#{name}, #{category})
+    </insert>
+
+    <delete id="deleteDisease" parameterType="com.ecnu.entity.Disease">
+        DELETE FROM disease WHERE id=#{id}
+    </delete>
+
+    <update id="updateDisease" parameterType="com.ecnu.entity.Disease">
+        UPDATE disease
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="category!=null and category!=''">
+                category=#{category},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+</mapper>

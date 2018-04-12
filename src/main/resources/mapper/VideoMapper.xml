@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.VideoDao">
+
+    <resultMap id="videoResultMap" type="com.ecnu.entity.Video">
+        <id  column="id" property="id" />
+        <result column="case_id" property="caseId" />
+        <result column="procedure_id" property="procedureId" />
+        <result column="stage" property="stage" />
+        <result column="url" property="url" />
+    </resultMap>
+
+    <insert id="insertProcedureVideo" parameterType="com.ecnu.entity.Video" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO video (procedure_id, url)
+        VALUES (#{procedureId}, #{url})
+    </insert>
+    <insert id="insertCaseVideo" parameterType="com.ecnu.entity.Video" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO video (case_id, stage, url)
+        VALUES (#{caseId}, #{stage}, #{url})
+    </insert>
+
+
+    <insert id="insertProcedureVideos" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO video (procedure_id, url)
+        VALUES
+        <foreach collection="list" item="video" separator=",">
+            (#{video.procedureId}, #{video.url})
+        </foreach>
+    </insert>
+
+    <select id="queryVideos" parameterType="com.ecnu.entity.Video" resultMap="videoResultMap">
+        SELECT *
+        FROM video
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="caseId!=null and caseId>0">
+                AND case_id=#{caseId}
+            </if>
+            <if test="procedureId!=null and procedureId>0">
+                AND procedure_id=#{procedureId}
+            </if>
+            <if test="stage!=null and stage>0">
+                AND stage=#{stage}
+            </if>
+            <if test="url!=null and url!=''">
+                AND url LIKE CONCAT('%',#{url},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteCaseVideo" parameterType="com.ecnu.entity.Video">
+        DELETE FROM video
+        <where>
+            <if test="caseId!=null and caseId>0">
+                case_id=#{caseId}
+            </if>
+            <if test="id!=null and id>0">
+                AND id=#{id}
+            </if>
+        </where>
+    </delete>
+
+    <select id="findVideoById" parameterType="java.lang.Integer" resultMap="videoResultMap">
+        SELECT *
+        FROM video
+        WHERE id=#{id}
+    </select>
+
+    <select id="queryVideosByStepIds" parameterType="java.util.List" resultMap="videoResultMap">
+        SELECT *
+        FROM  video
+        WHERE  video.procedure_id IN
+        <foreach collection="list" item="procedureId" open="(" close=")"
+                 separator=",">
+            #{procedureId}
+        </foreach>
+    </select>
+
+    <delete id="deleteVideos" parameterType="java.util.List">
+        DELETE FROM video
+        <where>
+            <foreach collection="list" item="item" index="index" separator="or">
+                (
+                <trim prefixOverrides="AND">
+                    <if test="item.id!=null and item.id>0">
+                        id=#{item.id}
+                    </if>
+                    <if test="item.caseId!=null and item.caseId>0">
+                        AND case_id=#{item.caseId}
+                    </if>
+                    <if test="item.procedureId!=null and item.procedureId>0">
+                        AND procedure_id=#{item.procedureId}
+                    </if>
+                    <if test="item.stage!=null and item.stage>0">
+                        AND stage=#{item.stage}
+                    </if>
+                    <if test="item.url!=null and item.url!=''">
+                        AND url LIKE CONCAT('%',#{item.url},'%')
+                    </if>
+                </trim>
+                )
+            </foreach>
+        </where>
+    </delete>
+</mapper>

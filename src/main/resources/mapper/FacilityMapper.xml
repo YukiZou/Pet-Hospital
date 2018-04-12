@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.FacilityDao">
+
+    <resultMap id="facilityResultMap" type="com.ecnu.entity.Facility">
+        <id  column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="picture" property="picture" />
+        <result column="info" property="info" />
+    </resultMap>
+
+    <insert id="insertFacility" parameterType="com.ecnu.entity.Facility" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO facility (name, picture, info)
+        VALUES (#{name}, #{picture}, #{info})
+    </insert>
+
+    <delete id="deleteFacility" parameterType="com.ecnu.entity.Facility">
+        DELETE FROM facility WHERE id=#{id}
+    </delete>
+
+    <update id="updateFacility" parameterType="com.ecnu.entity.Facility">
+        UPDATE facility
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="picture!=null and picture!=''">
+                picture=#{picture},
+            </if>
+            <if test="info!=null and info!=''">
+                info=#{info},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryFacilities" parameterType="com.ecnu.entity.Facility" resultMap="facilityResultMap">
+        SELECT *
+        FROM facility
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="picture!=null and picture!=''">
+                AND picture LIKE #{picture}
+            </if>
+            <if test="info!=null and info!=''">
+                AND info LIKE CONCAT('%',#{info},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="queryFacilityById" parameterType="java.lang.Integer" resultMap="facilityResultMap">
+        SELECT *
+        FROM facility
+        WHERE id=#{id}
+    </select>
+
+    <select id="queryFacilitiesByIds" parameterType="java.util.List" resultMap="facilityResultMap">
+        SELECT *
+        FROM  facility
+        WHERE  id IN
+        <foreach collection="list" item="id" open="(" close=")"
+                 separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

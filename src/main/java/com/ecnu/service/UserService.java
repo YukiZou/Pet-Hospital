@@ -1,7 +1,6 @@
 package com.ecnu.service;
 
 import com.ecnu.entity.User;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 
@@ -20,11 +19,11 @@ public interface UserService {
     User queryUserById(int id);
 
     /**
-     * 登录成功与否判定
-     * @param usr
+     * 根据用户名来查找user
+     * @param name
      * @return
      */
-    User checkLogin(User usr);
+    User queryUserByName(String name);
 
     /**
      * 新增用户
@@ -52,4 +51,11 @@ public interface UserService {
      * @param pwd 新密码
      */
     Boolean changePwd(int id, String pwd);
+
+    /**
+     * 管理员用户修改自身的信息
+     * @param user
+     * @return
+     */
+    Boolean updateUser(User user);
 }

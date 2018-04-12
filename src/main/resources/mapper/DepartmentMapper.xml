@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.dao.DepartmentDao">
+
+    <resultMap id="departmentResultMap" type="com.ecnu.entity.Department">
+        <id  column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="role" property="role" />
+        <result column="info" property="info" />
+        <result column="picture" property="picture" />
+    </resultMap>
+
+    <insert id="insertDepartment" parameterType="com.ecnu.entity.Department" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO department (name, role, info, picture)
+        VALUES (#{name}, #{role}, #{info}, #{picture})
+    </insert>
+
+    <delete id="deleteDepartment" parameterType="com.ecnu.entity.Department">
+        DELETE FROM department WHERE id=#{id}
+    </delete>
+
+    <update id="updateDepartment" parameterType="com.ecnu.entity.Department">
+        UPDATE department
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="role!=null and role>0">
+                role=#{role},
+            </if>
+            <if test="picture!=null and picture!=''">
+                picture=#{picture},
+            </if>
+            <if test="info!=null and info!=''">
+                info=#{info},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryDepartments" parameterType="com.ecnu.entity.Department" resultMap="departmentResultMap">
+        SELECT *
+        FROM department
+        <where>
+            <if test="id!=null and id>0">
+                id=#{id}
+            </if>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="role!=null and role>0">
+                AND role=#{role},
+            </if>
+            <if test="picture!=null and picture!=''">
+                AND picture LIKE #{picture}
+            </if>
+            <if test="info!=null and info!=''">
+                AND info LIKE CONCAT('%',#{info},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="queryDepartmentById" parameterType="java.lang.Integer" resultMap="departmentResultMap">
+        SELECT *
+        FROM department
+        WHERE id=#{id}
+    </select>
+
+</mapper>

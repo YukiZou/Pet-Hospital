@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class Text implements Serializable{
     private int id;
-    private int case_id;
+    private int caseId;
     private int stage;//与CaseStageEnum枚举类对应，表示处于病例的哪个阶段的文字表示。
     private String info;
 }

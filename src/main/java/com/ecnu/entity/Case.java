@@ -10,6 +10,6 @@ import java.io.Serializable;
 @Data
 public class Case implements Serializable{
     private int id;//病例ID
-    private int disease_id;
-    private int name;
+    private int diseaseId;
+    private String name;
 }
