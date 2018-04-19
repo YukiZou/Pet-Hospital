@@ -8,9 +8,7 @@ public class CheckInputStringUtil {
     public static Boolean containIllegalCharacter(String str) {
         String beLessChar = "<";
         String beMoreChar = ">";
-        String slash = "/";
-        String questionMark = "?";
-        if (str.contains(beLessChar) || str.contains(beMoreChar) || str.contains(slash) || str.contains(questionMark) ) {
+        if (str.contains(beLessChar) || str.contains(beMoreChar)) {
             return true;
         } else {
             return false;
