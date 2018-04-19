@@ -69,7 +69,8 @@ public class DepartmentController {
                 return new DepartmentAddVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
 
-            if ((name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info))) {
+            Boolean isIllegal = (name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info));
+            if (isIllegal) {
                 LOG.error("department name or info are not invalid!");
                 return new DepartmentAddVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
@@ -100,7 +101,7 @@ public class DepartmentController {
      * @return
      */
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse deleteDepartment(@RequestBody DepartmentDeleteDTO departmentDeleteDTO) {
         try {
@@ -110,8 +111,7 @@ public class DepartmentController {
                 LOG.error("invalid department id");
                 return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
-            //List<DepDrug> depDrugList = depDrugService.findDepDrugsByDepId(depId);
-            //List<DepFacility> depFacilityList = depFacilityService.findDepFacilitiesByDepId(depId);
+
             //删除科室，首先删除和该科室关联的药物和设备记录。
             DepDrug depDrug = new DepDrug();
             depDrug.setDepartmentId(depId);
@@ -147,7 +147,8 @@ public class DepartmentController {
     public BaseResponse updateDepartment(@RequestBody Department department) {
         try {
             LOG.info("start update department data for {}", department);
-            int depId = department.getId();//id是一定有的
+            //id是一定有的
+            int depId = department.getId();
             String name = department.getName();
             String info = department.getInfo();
             if (depId <= 0) {
@@ -155,13 +156,18 @@ public class DepartmentController {
                 return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
 
-            if ((name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info))) {
+            Boolean isIllegal = (name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info));
+            if (isIllegal) {
                 LOG.error("department name or info are not invalid for update department data!");
                 return new BaseResponse(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
 
             //除了id以外，其他参数都为空的情况在update时是不合法的
-            if ((name == null || name.equals("")) && department.getRole() == 0 && (info == null || info.equals("")) && (department.getPicture() == null || department.getPicture().equals(""))) {
+            isIllegal =  (name == null || name.equals("")) &&
+                    department.getRole() == 0 &&
+                    (info == null || info.equals("")) &&
+                    (department.getPicture() == null || department.getPicture().equals(""));
+            if (isIllegal) {
                 LOG.error("name/role/info/picture are null");
                 return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }

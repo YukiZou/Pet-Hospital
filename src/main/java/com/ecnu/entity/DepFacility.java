@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * 科室药物的关联表
+ * @author asus
  */
 @Data
 public class DepFacility implements Serializable{

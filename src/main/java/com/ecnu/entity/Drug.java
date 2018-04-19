@@ -6,11 +6,19 @@ import java.io.Serializable;
 
 /**
  * 药物
+ * @author asus
  */
 @Data
 public class Drug implements Serializable{
-    private int id;//药物ID
-    private String name;//药品名称
+    /**
+     * 药物ID
+     */
+    private int id;
+
+    /**
+     * 药品名称
+     */
+    private String name;
     private String picture;
     private String info;
 }

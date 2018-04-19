@@ -4,7 +4,13 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author asus
+ */
 @Data
 public class ProcedurePicDeleteDTO implements Serializable{
-    private int id; //picture 的 id
+    /**
+     * picture 的 id
+     */
+    private int id;
 }

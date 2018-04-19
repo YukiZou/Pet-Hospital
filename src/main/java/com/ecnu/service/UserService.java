@@ -4,9 +4,14 @@ import com.ecnu.entity.User;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 public interface UserService {
-
-    //test
+    /**
+     * test
+     * @return
+     */
     List<User> getUsers();
 
     /**
@@ -16,6 +21,11 @@ public interface UserService {
      */
     List<User> queryUsers(User user);
 
+    /**
+     * 根据user id 查询 user
+     * @param id
+     * @return
+     */
     User queryUserById(int id);
 
     /**
@@ -28,6 +38,7 @@ public interface UserService {
     /**
      * 新增用户
      * @param usr
+     * @return
      */
     Boolean addUser(User usr);
 
@@ -42,13 +53,15 @@ public interface UserService {
      * 管理员修改指定用户权限
      * @param id
      * @param auth 新权限
+     * @return
      */
     Boolean changeAuth(int id, int auth);
 
     /**
      * 管理员重置密码/用户修改密码
      * @param id
-     * @param pwd 新密码
+     * @param pwd 新秘密
+     * @return
      */
     Boolean changePwd(int id, String pwd);
 

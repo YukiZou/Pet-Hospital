@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Repository
 public interface DrugDao {
 

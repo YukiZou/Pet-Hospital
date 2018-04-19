@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * @author asus
+ */
 @Controller
 @RequestMapping("api/case/text")
 public class TextController {
@@ -41,7 +44,8 @@ public class TextController {
             Text text=toText(textDTO);
             Boolean res=false;
             res=textService.addText(text);
-            if(res){//新增text成功
+            if(res){
+                //新增text成功
                 TextVO textVO=new TextVO(text);
                 LOG.info("add text : {} success", text.toString());
                 textVO.setStatus("success");
@@ -68,7 +72,7 @@ public class TextController {
     @ResponseBody
     public BaseResponse deleteText(@RequestBody TextDeleteDTO textDeleteDTO) {
         try{
-            Boolean res=false;
+            Boolean res;
             int deleteTextId=textDeleteDTO.getId();
             Text text=textService.findTextById(deleteTextId);
             res = textService.deleteText(text);
@@ -95,15 +99,9 @@ public class TextController {
         try {
             Text text=toText3(textAllDTO);
             Text resText=textService.findTextByCIdS(text);
-            //if(resText.getId()>0){
-                TextAllVO textAllVO=new TextAllVO(resText);
-                textAllVO.setStatus("success");
-                return textAllVO;
-            //}
-            //else {
-            //    LOG.error("all text : {} failed", text.toString());
-            //    return new TextAllVO("fail");
-            //}
+            TextAllVO textAllVO=new TextAllVO(resText);
+            textAllVO.setStatus("success");
+            return textAllVO;
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("all text failed");
@@ -121,7 +119,7 @@ public class TextController {
     public BaseResponse updateText(@RequestBody TextUpdateDTO textUpdateDTO) {
         try {
             Text text=toText2(textUpdateDTO);
-            Boolean res = false;
+            Boolean res;
             res = textService.updateText(text);
             if (res) {
                 LOG.info("update text for text id {} success!", textUpdateDTO.getId());

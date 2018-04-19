@@ -24,6 +24,9 @@ import java.util.Map;
 
 import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
+/**
+ * @author asus
+ */
 @Controller
 @RequestMapping("api/user")
 public class UserController {
@@ -62,8 +65,10 @@ public class UserController {
                 UserVO userVO = new UserVO(loginUser);
                 LOG.info("user {} login success", loginUserName);
                 userVO.setStatus(ResponseStatusEnum.SUCCESS.getDesc());
-                HttpSession session = request.getSession(true);//获取session, true表示如果没有，则新建一个session
-                session.setAttribute("loginUser", loginUser);//将loginUser存入session中，让其他方法可以访问到。
+                //获取session, true表示如果没有，则新建一个session
+                HttpSession session = request.getSession(true);
+                //将loginUser存入session中，让其他方法可以访问到。
+                session.setAttribute("loginUser", loginUser);
                 return userVO;
             } else {
                 LOG.error("user {} login failed for error password!", loginUserName);
@@ -115,20 +120,16 @@ public class UserController {
             }
 
             HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            //得到session里存储的当前登录用户数据。
+            User loginUser = (User) session.getAttribute("loginUser");
             LOG.info("add user : {} for loginUser {}", userDTO.toString(), loginUser.getUserName());
 
             //将UserDTO对象转化成User对象
             User user = toUser(userDTO);
 
-            //获得项目的路径
-            //ServletContext sc = request.getSession().getServletContext();
-            //获得默认头像存储位置
-            //String pictureUrl
 
             //给新增的用户一个默认的头像url
-            //TODO:https://www.ecnupet.cn/img/logo.jpg
-            user.setPictureUrl("https://www.ecnupet.cn/pet/img/2e1007b6-59ba-437c-a1be-14b4d43230d6z.jpg");
+            user.setPictureUrl("http://ecnupet.cn/img/sijia.jpg");
 
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
             UserAuthEnum addUserAuth = UserAuthEnum.getUserAuthEnum(auth);
@@ -140,16 +141,21 @@ public class UserController {
                 case ORDINARY_USER:
                     hasAuth = false;
                     break;
-                case ADMIN://登录用户是普通管理员
+                case ADMIN:
+                    //登录用户是普通管理员
                     switch (addUserAuth) {
-                        case ORDINARY_USER: //可以增加普通前台用户
+                        case ORDINARY_USER:
+                            //可以增加普通前台用户
                             break;
                         default:
                             hasAuth = false;
                             break;
                     }
                     break;
-                case SUPER_ADMIN://超级管理员
+                case SUPER_ADMIN:
+                    //超级管理员
+                    break;
+                default:
                     break;
             }
 
@@ -168,7 +174,8 @@ public class UserController {
 
             Boolean res = userService.addUser(user);
 
-            if (res) {//新增用户成功
+            if (res) {
+                //新增用户成功
                 UserVO userVO = new UserVO(user);
                 LOG.info("add user : {} success", user.toString());
                 userVO.setStatus(ResponseStatusEnum.SUCCESS.getDesc());
@@ -196,7 +203,8 @@ public class UserController {
     public BaseResponse deleteUser(@RequestBody UserDeleteDTO userDeleteDTO, HttpServletRequest request) {
         try{
             HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            //得到session里存储的当前登录用户数据。
+            User loginUser = (User) session.getAttribute("loginUser");
             LOG.info("delete user with id {} for loginUser {}", userDeleteDTO.getId(), loginUser.getUserName());
 
 
@@ -216,19 +224,25 @@ public class UserController {
                 case ORDINARY_USER:
                     hasAuth = false;
                     break;
-                case ADMIN://登录用户是普通管理员
+                case ADMIN:
+                    //登录用户是普通管理员
                     switch (deleteUserAuth) {
-                        case ORDINARY_USER://可以删除普通前台用户
+                        case ORDINARY_USER:
+                            //可以删除普通前台用户
                             break;
                         default:
                             hasAuth = false;
                             break;
                     }
                     break;
-                case SUPER_ADMIN://超级管理员
-                    if (loginUser.getId() == deleteUser.getId()) {//超级管理员无权删除自己
+                case SUPER_ADMIN:
+                    //超级管理员
+                    if (loginUser.getId() == deleteUser.getId()) {
+                        //超级管理员无权删除自己
                         hasAuth = false;
                     }
+                    break;
+                default:
                     break;
             }
 
@@ -268,7 +282,8 @@ public class UserController {
     public BaseResponse changeAuth(@RequestBody UserAuthDTO userAuthDTO, HttpServletRequest request) {
         try{
             HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            //得到session里存储的当前登录用户数据。
+            User loginUser = (User) session.getAttribute("loginUser");
             int userId = userAuthDTO.getId();
             int auth = userAuthDTO.getAuth();
             if (userId <= 0 || auth > 3 || auth < 1) {
@@ -284,11 +299,11 @@ public class UserController {
             }
 
             Boolean hasAuth = true;
-            //int loginUserAuth = loginUser.getAuth();
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
             switch (loginUserAuth) {
                 case SUPER_ADMIN:
-                    if (loginUser.getId() == userId) {//超级管理员不能修改自己的权限
+                    //超级管理员不能修改自己的权限
+                    if (loginUser.getId() == userId) {
                         hasAuth = false;
                     }
                     break;
@@ -333,9 +348,10 @@ public class UserController {
     public BaseResponse changePwd(@RequestBody UserPwdDTO userPwdDTO, HttpServletRequest request) {
         try {
             HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            //得到session里存储的当前登录用户数据。
+            User loginUser = (User) session.getAttribute("loginUser");
             int userId = userPwdDTO.getId();
-            String pwd = userPwdDTO.getPwd();//明文密码
+            String pwd = userPwdDTO.getPwd();
             if (userId <= 0 || pwd == null || pwd.equals("")) {
                 LOG.error("userId or pwd invalid!");
                 return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
@@ -356,12 +372,16 @@ public class UserController {
                 case ORDINARY_USER:
                     hasAuth = false;
                     break;
-                case ADMIN://登录用户是普通管理员
+                case ADMIN:
+                    //登录用户是普通管理员
                     switch (changePwdUserAuth) {
-                        case ORDINARY_USER://可以修改普通前台用户密码
+                        case ORDINARY_USER:
+                            //可以修改普通前台用户密码
                             break;
-                        case ADMIN://如果是普通管理员，可以先判断是不是更改本人的密码
-                            if (userId != loginUser.getId()) {//当前登录用户只能修改自己的密码，不可修改其他普通管理员用户密码
+                        case ADMIN:
+                            //如果是普通管理员，可以先判断是不是更改本人的密码
+                            if (userId != loginUser.getId()) {
+                                //当前登录用户只能修改自己的密码，不可修改其他普通管理员用户密码
                                 hasAuth = false;
                             }
                             break;
@@ -371,6 +391,8 @@ public class UserController {
                     }
                     break;
                 case SUPER_ADMIN:
+                    break;
+                default:
                     break;
             }
             if (!hasAuth) {
@@ -405,9 +427,9 @@ public class UserController {
     public UserListVO allUsers(HttpServletRequest request) {
         try {
             HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            //得到session里存储的当前登录用户数据。
+            User loginUser = (User) session.getAttribute("loginUser");
             LOG.info("list all users for loginUser {}", loginUser.getUserName());
-            //int loginUserAuth = loginUser.getAuth();
             UserAuthEnum loginUserAuth = UserAuthEnum.getUserAuthEnum(loginUser.getAuth());
             if (UserAuthEnum.isOrdinaryUser(loginUserAuth)) {
                 LOG.info("loginUser has no permissions to query user list");
@@ -476,7 +498,8 @@ public class UserController {
     public BaseResponse userSelfUpdate(@RequestBody UserSelfUpdateDTO userSelfUpdateDTO, HttpServletRequest request) {
         try {
             HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("loginUser");//得到session里存储的当前登录用户数据。
+            //得到session里存储的当前登录用户数据。
+            User loginUser = (User) session.getAttribute("loginUser");
             LOG.info("start update loginUser {} data for {}", loginUser.getUserName(), userSelfUpdateDTO.toString());
             int id = loginUser.getId();
             String name = userSelfUpdateDTO.getUserName();
@@ -520,7 +543,9 @@ public class UserController {
         }
     }
 
-    //test
+    /**
+     * test
+     */
     @RequestMapping(value = "/listAll")
     public String listUsers(Map<String, Object> map) {
         List<User> users = userService.getUsers();

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Repository
 public interface VideoDao {
     /**
@@ -30,7 +33,6 @@ public interface VideoDao {
      * @param video
      * @return
      */
-    //TODO: @黑猫实现对应的sql
     int insertCaseVideo(Video video);
 
     /**
@@ -40,8 +42,6 @@ public interface VideoDao {
      * @param videos
      * @return
      */
-    //TODO: @黑猫实现
-    //不实现了
     int insertCaseVideos(List<Video> videos);
 
     /**
@@ -56,6 +56,8 @@ public interface VideoDao {
 
     /**
      * 删除和病例相关的video
+     * @param video
+     * @return
      */
     int deleteCaseVideo(Video video);
 

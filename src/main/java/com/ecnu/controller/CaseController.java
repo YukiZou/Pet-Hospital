@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,7 +62,7 @@ public class CaseController {
      * @return
      */
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse deleteCase(@RequestBody CaseDeleteDTO caseDeleteDTO) {
         try {
@@ -114,7 +115,8 @@ public class CaseController {
 
             Boolean res=false;
             res=caseService.addCase(c);
-            if(res){//新增试题成功
+            if(res){
+                //新增试题成功
                 CaseVO caseVO=new CaseVO(c);
                 LOG.info("add case : {} success", c.toString());
                 caseVO.setStatus("success");
@@ -144,7 +146,8 @@ public class CaseController {
             Case c=toCase2(caseUpdateDTO);
             LOG.info("case : {} ",c.toString());
 
-            Boolean res = false;
+            //Boolean类型默认值是false.
+            Boolean res;
             res = caseService.updateCase(c);
             if (res) {
                 LOG.info("update case for case id {} success!", caseUpdateDTO.getId());

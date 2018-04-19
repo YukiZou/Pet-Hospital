@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author zou yuanyuan
+ */
 @Controller
 @RequestMapping("api/case/picture")
 public class PictureController {
@@ -44,7 +47,8 @@ public class PictureController {
             Picture picture=toPicture(pictureDTO);
             Boolean res=false;
             res=pictureService.addCasePic(picture);
-            if(res){//新增picture成功
+            if(res){
+                //新增picture成功
                 PictureVO pictureVO=new PictureVO(picture);
                 LOG.info("add picture : {} success", picture.toString());
                 pictureVO.setStatus("success");
@@ -71,7 +75,7 @@ public class PictureController {
     @ResponseBody
     public BaseResponse deletePicture(@RequestBody PictureDeleteDTO pictureDeleteDTO) {
         try{
-            Boolean res=false;
+            Boolean res;
             int deletePictureId=pictureDeleteDTO.getId();
             Picture picture=pictureService.findPictureById(deletePictureId);
             res=pictureService.deleteCasePic(picture);

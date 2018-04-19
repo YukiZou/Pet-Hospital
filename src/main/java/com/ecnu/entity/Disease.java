@@ -7,10 +7,19 @@ import java.io.Serializable;
 
 /**
  * 病种
+ * @author asus
  */
 @Data
 public class Disease implements Serializable{
     private int id;
-    private String name;//病种名，如蛔虫病。
-    private String category;//大类别，如寄生虫病
+
+    /**
+     * 病种名，如蛔虫病。
+     */
+    private String name;
+
+    /**
+     * 大类别，如寄生虫病
+     */
+    private String category;
 }

@@ -6,10 +6,14 @@ import java.io.Serializable;
 
 /**
  * 病例
+ * @author asus
  */
 @Data
 public class Case implements Serializable{
-    private int id;//病例ID
+    /**
+     * 病例ID
+     */
+    private int id;
     private int diseaseId;
     private String name;
 }

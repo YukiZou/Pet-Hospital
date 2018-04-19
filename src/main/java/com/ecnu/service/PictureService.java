@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * 病例/流程的图片
+ * @author asus
  */
 public interface PictureService {
     /**
@@ -47,9 +48,16 @@ public interface PictureService {
 
     /**
      * 删除与病例有关的picture记录
+     * @param picture
+     * @return
      */
     Boolean deleteCasePic(Picture picture);
 
+    /**
+     * 根据picture id 找 picture
+     * @param id
+     * @return
+     */
     Picture findPictureById(int id);
 
     /**

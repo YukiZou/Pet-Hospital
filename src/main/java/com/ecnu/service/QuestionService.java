@@ -4,9 +4,14 @@ import com.ecnu.entity.Question;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 public interface QuestionService {
-
-
+    /**
+     * 拿到所有的问题种类
+     * @return
+     */
     List<Question> getAllQuestionCategory();
 
     /**
@@ -16,11 +21,17 @@ public interface QuestionService {
      */
     List<Question> queryQuestions(Question question);
 
+    /**
+     * 根据参数匹配查询所有的问题
+     * @param question
+     * @return
+     */
     List<Question> queryQuestionsByQues(Question question);
 
     /**
      * 新增试题
      * @param question
+     * @return
      */
     Boolean addQuestion(Question question);
 
@@ -34,12 +45,14 @@ public interface QuestionService {
     /**
      * 删除试题
      * @param id
+     * @return
      */
     Boolean deleteQuestion(int id);
 
     /**
      * 修改指定试题
+     * @param question
+     * @return
      */
- //   Boolean changeQuestion(int id, String category, String stem, String optA, String optB, String optC, String optD, String answer);
     Boolean updateQuestion(Question question);
 }

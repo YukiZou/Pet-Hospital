@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * 科室——设备关联表管理
+ * @author asus
  */
 public interface DepFacilityService {
     /**

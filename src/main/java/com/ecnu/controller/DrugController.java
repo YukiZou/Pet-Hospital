@@ -19,6 +19,9 @@ import java.util.List;
 
 import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
+/**
+ * @author zou yuanyuan
+ */
 @Controller
 @RequestMapping("api/drug")
 public class DrugController {
@@ -50,14 +53,15 @@ public class DrugController {
                 LOG.error("the drug name is already exist or name is null, add drug failed!");
                 return new DrugAddVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
-
-            if ((name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info))) {
+            Boolean isIllegal = (name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info));
+            if (isIllegal) {
                 LOG.error("drug name or info are not invalid for add drug!");
                 return new DrugAddVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
 
             Boolean res = drugService.addDrug(drug);
-            DrugAddVO drugAddVO = new DrugAddVO(drug);//将新增后得到的最新drug返回给前端
+            //将新增后得到的最新drug返回给前端
+            DrugAddVO drugAddVO = new DrugAddVO(drug);
 
             if (res) {
                 LOG.info("add drug success. Complete drug add.");
@@ -88,7 +92,7 @@ public class DrugController {
         try {
             LOG.info("start query all drugs!");
             List<Drug> drugList = drugService.queryDrugs(new Drug());
-            List<DrugVO> drugVOList = new ArrayList<DrugVO>();
+            List<DrugVO> drugVOList = new ArrayList<>();
             //将格式转化
             for (Drug drug : drugList) {
                 DrugVO drugVO = new DrugVO(drug);
@@ -120,7 +124,7 @@ public class DrugController {
             Drug drug = toDrug(drugQueryDTO);
 
             List<Drug> drugList = drugService.queryDrugs(drug);
-            List<DrugVO> drugVOList = new ArrayList<DrugVO>();
+            List<DrugVO> drugVOList = new ArrayList<>();
             //将格式转化
             for (Drug d : drugList) {
                 DrugVO drugVO = new DrugVO(d);

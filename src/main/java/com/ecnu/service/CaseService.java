@@ -4,10 +4,14 @@ import com.ecnu.entity.Case;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 public interface CaseService {
     /**
      * 新增疾病
      * @param c
+     * @return
      */
     Boolean addCase(Case c);
 
@@ -30,5 +34,11 @@ public interface CaseService {
      * @return
      */
     List<Case> queryCases(Case c);
+
+    /**
+     * 根据diseaseId找到所有的case
+     * @param diseaseId
+     * @return
+     */
     List<Case> findCaseByDId(int diseaseId);
 }

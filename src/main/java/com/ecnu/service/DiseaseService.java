@@ -5,11 +5,21 @@ import com.ecnu.entity.Disease;
 import javax.xml.crypto.Data;
 import java.util.List;
 
+/**
+ * @author asus
+ */
 public interface DiseaseService {
-
-
+    /**
+     * 得到所有的disease 的种类
+     * @return
+     */
     List<Disease> getAllDiseaseCategory();
 
+    /**
+     * 根据id找 disease
+     * @param id
+     * @return
+     */
     Disease findDiseaseById(int id);
 
     /**
@@ -22,6 +32,7 @@ public interface DiseaseService {
     /**
      * 新增疾病
      * @param disease
+     * @return
      */
     Boolean addDisease(Disease disease);
 

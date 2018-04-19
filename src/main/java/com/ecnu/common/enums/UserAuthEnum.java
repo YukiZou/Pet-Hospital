@@ -25,15 +25,6 @@ public enum  UserAuthEnum {
         return null;
     }
 
-    public static int getValue(String desc) {
-        for (UserAuthEnum u: UserAuthEnum.values()) {
-            if (u.desc.equals(desc)) {
-                return u.value;
-            }
-        }
-        return 0;
-    }
-
     public static UserAuthEnum getUserAuthEnum(int value) {
         for (UserAuthEnum u: UserAuthEnum.values()) {
             if (u.value == value) {
@@ -43,33 +34,8 @@ public enum  UserAuthEnum {
         return null;
     }
 
-    public static UserAuthEnum getUserAuthEnum(String desc) {
-        for (UserAuthEnum u: UserAuthEnum.values()) {
-            if (u.desc.equals(desc)) {
-                return u;
-            }
-        }
-        return null;
-    }
-
     public static boolean isOrdinaryUser(UserAuthEnum  userAuthEnum) {
         if (userAuthEnum.value == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static boolean isAdmin(UserAuthEnum  userAuthEnum) {
-        if (userAuthEnum.value == 2) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static boolean isSuperAdmin(UserAuthEnum  userAuthEnum) {
-        if (userAuthEnum.value == 3) {
             return true;
         } else {
             return false;

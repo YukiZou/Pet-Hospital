@@ -27,6 +27,7 @@ import java.util.List;
 
 /**
  * 病种：category + 病种name
+ * @author zou yuanyuan
  */
 @Controller
 @RequestMapping("api/disease")
@@ -51,7 +52,7 @@ public class DiseaseController {
      * @return
      */
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse deleteDisease(@RequestBody DiseaseDeleteDTO diseaseDeleteDTO) {
         try {
@@ -202,7 +203,7 @@ public class DiseaseController {
 
             List<DiseaseQueryVO> diseaseQueryVOList = new LinkedList<>();
             for (Disease queryDisease: queryDiseases) {
-                DiseaseQueryVO diseaseQueryVO = new DiseaseQueryVO(queryDisease);///////
+                DiseaseQueryVO diseaseQueryVO = new DiseaseQueryVO(queryDisease);
                 LOG.info("diseaseQueryVO for filter : {} ",diseaseQueryVO.toString());
 
                 diseaseQueryVOList.add(diseaseQueryVO);

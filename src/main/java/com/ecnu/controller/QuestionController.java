@@ -30,6 +30,9 @@ import java.util.List;
 import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
 
+/**
+ * @author asus
+ */
 @Controller
 @RequestMapping("api/question")
 public class QuestionController {
@@ -58,7 +61,7 @@ public class QuestionController {
 
             List<QuestionQueryVO> questionQueryVOList = new LinkedList<>();
             for (Question queryQuestion: queryQuestions) {
-                QuestionQueryVO questionQueryVO = new QuestionQueryVO(queryQuestion);///////
+                QuestionQueryVO questionQueryVO = new QuestionQueryVO(queryQuestion);
                 LOG.info("questionQueryVO for filter : {} ",questionQueryVO.toString());
 
                 questionQueryVOList.add(questionQueryVO);
@@ -87,7 +90,8 @@ public class QuestionController {
             Question question=toQuestion(questionDTO);
             Boolean res=false;
             res=questionService.addQuestion(question);
-            if(res){//新增试题成功
+            if(res){
+                //新增试题成功
                 QuestionVO questionVO=new QuestionVO(question);
                 LOG.info("add question : {} success", question.toString());
                 questionVO.setStatus("success");
@@ -129,7 +133,8 @@ public class QuestionController {
             List<Question> questionList = new ArrayList<>();
             for (int index = 0; index < size; index++) {
                 String[] strings = originList.get(index);
-                if (strings.length != 7) {//每行必须是七个字段
+                if (strings.length != 7) {
+                    //每行必须是七个字段
                     continue;
                 }
 
@@ -142,16 +147,17 @@ public class QuestionController {
                 String answer = strings[6];
 
                 //新增试题的题干及选项的长度限制
-                if(category == null || category.equals("")
+                Boolean isIllegal = category == null || category.equals("")
                         || stem == null || stem.equals("")
                         || A == null || A.equals("")
                         || B == null || B.equals("")
                         || C == null || C.equals("")
                         || D == null || D.equals("")
-                        || answer == null || (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")))){//不合法输入
+                        || answer == null || (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")));
+                if(isIllegal){
+                    //不合法输入
                     LOG.error("invalid input.");
                     continue;
-                    //return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
                 }
                 if (category.length() > 255 || containIllegalCharacter(category)
                         || stem.length() > 255 || containIllegalCharacter(stem)
@@ -161,7 +167,6 @@ public class QuestionController {
                         || D.length() > 255 || containIllegalCharacter(D)) {
                     LOG.error("invalid input.");
                     continue;
-                    //return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
                 }
 
                 //判断新增的题干是否已经存在（数据库中不允许题干重复）
@@ -178,7 +183,6 @@ public class QuestionController {
                 if (queryQuestions != null && queryQuestions.size() > 0) {
                     LOG.error("this question already exist!");
                     continue;
-                    //return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
                 }
                 questionList.add(question);
             }
@@ -207,7 +211,7 @@ public class QuestionController {
     @ResponseBody
     public BaseResponse deleteQuestion(@RequestBody QuestionDeleteDTO questionDeleteDTO) {
         try{
-            Boolean res=false;
+            Boolean res;
             int deleteQuestionId=questionDeleteDTO.getId();
             res = questionService.deleteQuestion(deleteQuestionId);
 
@@ -239,7 +243,7 @@ public class QuestionController {
             LOG.info("questionUpdateDTO {}",questionUpdateDTO);
             //将QuestionUpdateDTO对象转化成Question对象
             Question question = toQuestion3(questionUpdateDTO);
-            Boolean res = false;
+            Boolean res;
             res = questionService.updateQuestion(question);
             if (res) {
                 LOG.info("update question for question id {} success!", questionUpdateDTO.getId());

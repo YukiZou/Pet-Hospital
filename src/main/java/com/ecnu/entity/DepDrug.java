@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * 科室和药品关联图
+ * @author asus
  */
 
 @Data

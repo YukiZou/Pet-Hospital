@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * 科室管理
+ * @author asus
  */
 public interface DepartmentService {
 

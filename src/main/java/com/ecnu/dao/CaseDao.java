@@ -5,11 +5,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Repository
 public interface CaseDao {
-
-
+    /**
+     * 根据diseaseId 找到所有的病例 mcase
+     * @param diseaseId
+     * @return
+     */
     List<Case> findCasesByDId(int diseaseId);
+
     /**
      * 根据参数case查询出所有符合查询条件的case
      * @param c
@@ -26,6 +33,7 @@ public interface CaseDao {
     /**
      * 根据参数case的ID找到要更改的病例记录，然后update该条记录
      * @param c
+     * @return
      */
     int updateCase(Case c);
 

@@ -6,15 +6,20 @@ import java.util.List;
 
 /**
  * 病例/流程的视频
+ * @author asus
  */
 public interface VideoService {
     /**
      * 新增与病例相关的视频
+     * @param video
+     * @return
      */
     Boolean addCaseVideo(Video video);
 
     /**
      * 删除与病例相关的视频
+     * @param video
+     * @return
      */
     Boolean deleteCaseVideo(Video video);
 
@@ -49,6 +54,11 @@ public interface VideoService {
      */
     List<Video> queryVideos(Video video);
 
+    /**
+     * 通过 id 找 video 记录
+     * @param id
+     * @return
+     */
     Video findVideoById(int id);
 
     /**

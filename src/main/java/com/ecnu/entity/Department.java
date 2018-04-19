@@ -6,12 +6,25 @@ import java.io.Serializable;
 
 /**
  * 科室
+ * @author asus
  */
 @Data
 public class Department implements Serializable{
     private int id;
-    private String name;//科室名字
-    private int role;//负责人角色，与RoleEnum对应
+
+    /**
+     * 科室名字
+     */
+    private String name;
+
+    /**
+     * 负责人角色，与RoleEnum对应
+     */
+    private int role;
     private String info;
-    private String picture;//科室图片url
+
+    /**
+     * 科室图片url
+     */
+    private String picture;
 }

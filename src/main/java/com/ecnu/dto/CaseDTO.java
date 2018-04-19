@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * 增加病例时前端传回的数据
+ * @author asus
  */
 @Data
 public class CaseDTO implements Serializable {

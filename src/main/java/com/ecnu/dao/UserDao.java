@@ -5,9 +5,15 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Repository
 public interface UserDao {
-    //test
+    /**
+     * test
+     * @return
+     */
     List<User> getAllUser();
 
     /**
@@ -41,12 +47,14 @@ public interface UserDao {
      * 根据参数usr的ID找到要更改的用户记录，然后update该条记录
      * 可修改权限auth,修改密码
      * @param usr
+     * @return
      */
     int updateUser(User usr);
 
     /**
      * 根据参数usr删除指定用户记录。
      * @param usr
+     * @return
      */
     int deleteUser(User usr);
 }

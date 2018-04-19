@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Repository
 public interface QuestionDao {
 
@@ -59,12 +62,14 @@ public interface QuestionDao {
     /**
      * 根据参数question删除指定试题记录。
      * @param question
+     * @return
      */
     int deleteQuestion(Question question);
 
     /**
      * 修改试题
      * @param question
+     * @return
      */
     int updateQuestion(Question question);
 }

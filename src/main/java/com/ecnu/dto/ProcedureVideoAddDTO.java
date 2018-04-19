@@ -4,8 +4,14 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author asus
+ */
 @Data
 public class ProcedureVideoAddDTO implements Serializable{
-    private int stepId; // 即 procedureId
+    /**
+     * 即 procedureId
+     */
+    private int stepId;
     private String url;
 }

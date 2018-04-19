@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Controller
 @RequestMapping("api/case/video")
 public class VideoController {
@@ -70,7 +73,8 @@ public class VideoController {
             Video video=toVideo(videoDTO);
             Boolean res=false;
             res=videoService.addCaseVideo(video);
-            if(res){//新增video成功
+            if(res){
+                //新增video成功
                 VideoVO videoVO=new VideoVO(video);
                 LOG.info("add video : {} success", video.toString());
                 videoVO.setStatus("success");
@@ -97,7 +101,7 @@ public class VideoController {
     @ResponseBody
     public BaseResponse deleteVideo(@RequestBody VideoDeleteDTO videoDeleteDTO) {
         try{
-            Boolean res=false;
+            Boolean res;
             int deleteVideoId=videoDeleteDTO.getId();
             Video video=videoService.findVideoById(deleteVideoId);
             res=videoService.deleteCaseVideo(video);

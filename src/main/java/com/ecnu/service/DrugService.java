@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * 药品管理服务
+ * @author asus
  */
 public interface DrugService {
 

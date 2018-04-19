@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * 科室——药品 关联关系管理
+ * @author asus
  */
 public interface DepDrugService {
     /**
@@ -42,6 +43,7 @@ public interface DepDrugService {
     /**
      * 根据参数删除指定的关联记录
      * @param depDrug
+     * @return
      */
     int deleteDepDrugs(DepDrug depDrug);
 }

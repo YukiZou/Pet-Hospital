@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Repository
 public interface PictureDao {
 
@@ -32,7 +35,6 @@ public interface PictureDao {
      * @param picture
      * @return
      */
-    //TODO: @黑猫实现
     int insertCasePic(Picture picture);
 
     /**
@@ -42,7 +44,6 @@ public interface PictureDao {
      * @param pictures
      * @return
      */
-    //TODO: @黑猫实现
     int insertCasePics(List<Picture> pictures);
 
     /**
@@ -57,6 +58,8 @@ public interface PictureDao {
 
     /**
      * 删除和病例相关的picture
+     * @param picture
+     * @return
      */
     int deleteCasePicture(Picture picture);
 

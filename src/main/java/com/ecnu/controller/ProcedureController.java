@@ -20,13 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
+/**
+ * @author asus
+ */
 @Controller
 @RequestMapping("api/procedure")
 public class ProcedureController {
@@ -52,7 +54,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public ProcedureAddVO addProcedureStep(@RequestBody ProcedureAddDTO procedureAddDTO) {
         try {
@@ -62,13 +64,15 @@ public class ProcedureController {
             int step = procedureAddDTO.getStep();
             String stepName = procedureAddDTO.getStepName();
             String info =procedureAddDTO.getInfo();
-            List<String> pictures = procedureAddDTO.getPictures(); //如果前端传过来 null, 则 pictures=null; 如果前端传过来[], 则 pictures.size == 0
+            //如果前端传过来 null, 则 pictures=null; 如果前端传过来[], 则 pictures.size == 0
+            List<String> pictures = procedureAddDTO.getPictures();
             List<String> videos = procedureAddDTO.getVideos();
 
             //判断String类型输入是否含有特殊非法字符
-            if ((domain != null && containIllegalCharacter(domain)) ||
+            Boolean isIllegal = (domain != null && containIllegalCharacter(domain)) ||
                     (stepName != null && containIllegalCharacter(stepName)) ||
-                    (info != null && containIllegalCharacter(info))) {
+                    (info != null && containIllegalCharacter(info));
+            if (isIllegal) {
                 LOG.error("domain stepName or info are not invalid!");
                 return new ProcedureAddVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
@@ -79,7 +83,8 @@ public class ProcedureController {
             queryProcedure.setDomain(domain);
             queryProcedure.setStep(step);
             List<Procedure> qProcedureList = procedureService.queryProcedureSteps(queryProcedure);
-            if (qProcedureList.size() == 1) {//能进此分支表示剩下的step都是连贯的
+            if (qProcedureList.size() == 1) {
+                //能进此分支表示剩下的step都是连贯的
                 LOG.info("this procedure step already exist, so change the following steps");
                 //首先找到此roleId + domain下的所有step
                 queryProcedure.setStep(0);
@@ -119,7 +124,8 @@ public class ProcedureController {
             procedureAddVO.setStatus(ResponseStatusEnum.SUCCESS.getDesc());
             LOG.info("add procedure step success!");
 
-            int procedureId = addProcedure.getId();//拿到新增的procedureId
+            //拿到新增的procedureId
+            int procedureId = addProcedure.getId();
             //如果有picture,则增加 picture记录
             if(pictures != null && pictures.size() > 0) {
                 List<Picture> pictureList = new ArrayList<>();
@@ -178,7 +184,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse deleteProcedure(@RequestBody ProcedureDeleteDTO procedureDeleteDTO) {
         try {
@@ -317,7 +323,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/step/delete", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse deleteStep(@RequestBody ProcedureStepChangeDTO stepDeleteDTO) {
         try {
@@ -375,7 +381,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/step/up", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse upStep(@RequestBody ProcedureStepChangeDTO stepUpDTO) {
         try {
@@ -413,7 +419,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/step/down", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse downStep(@RequestBody ProcedureStepChangeDTO stepDownDTO) {
         try {
@@ -451,7 +457,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse updateProcedure(@RequestBody ProcedureUpdateDTO procedureUpdateDTO) {
         try {
@@ -499,7 +505,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/step/update", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public BaseResponse updateStep(@RequestBody ProcedureStepDTO procedureStepDTO) {
         try {
@@ -508,8 +514,9 @@ public class ProcedureController {
             String stepName = procedureStepDTO.getStepName();
             String info = procedureStepDTO.getInfo();
 
-            if ((stepName != null && containIllegalCharacter(stepName)) ||
-                    (info != null && containIllegalCharacter(info))) {
+            Boolean isIllegal = (stepName != null && containIllegalCharacter(stepName)) ||
+                    (info != null && containIllegalCharacter(info));
+            if (isIllegal) {
                 LOG.error("stepName or info are not invalid!");
                 return new ProcedureAddVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
@@ -544,7 +551,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/picture/add", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public ProcedurePicAddVO procedurePicAdd(@RequestBody ProcedurePicAddDTO procedurePicAddDTO) {
         try {
@@ -603,7 +610,7 @@ public class ProcedureController {
      * @return
      */
     @RequestMapping(value = "/video/add", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public ProcedureVideoAddVO procedurePicAdd(@RequestBody ProcedureVideoAddDTO procedureVideoAddDTO) {
         try {

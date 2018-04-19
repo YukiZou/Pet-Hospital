@@ -23,6 +23,9 @@ import java.util.List;
 
 import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
+/**
+ * @author zou yuanyuan
+ */
 @Controller
 @RequestMapping("api/facility")
 public class FacilityController {
@@ -55,13 +58,15 @@ public class FacilityController {
                 return new FacilityAddVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
 
-            if ((name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info))) {
+            Boolean isIllegal = (name != null && containIllegalCharacter(name)) || (info != null && containIllegalCharacter(info));
+            if (isIllegal) {
                 LOG.error("facility name or info are not invalid for add facility!");
                 return new FacilityAddVO(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
 
             Boolean res = facilityService.addFacility(facility);
-            FacilityAddVO facilityAddVO = new FacilityAddVO(facility);//将新增后得到的最新 facility 返回给前端
+            //将新增后得到的最新 facility 返回给前端
+            FacilityAddVO facilityAddVO = new FacilityAddVO(facility);
 
             if (res) {
                 LOG.info("add facility success. Complete facility add.");

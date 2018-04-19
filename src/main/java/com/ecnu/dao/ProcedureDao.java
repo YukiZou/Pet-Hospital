@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Repository
 public interface ProcedureDao {
 
@@ -34,6 +37,11 @@ public interface ProcedureDao {
      */
     int deleteProcedureSteps(List<Procedure> procedures);
 
+    /**
+     * 删除流程中的某一step
+     * @param procedure
+     * @return
+     */
     int deleteProcedureStep(Procedure procedure);
 
     /**
