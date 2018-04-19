@@ -11,9 +11,9 @@ import java.io.Serializable;
  */
 @Data
 public class UserQueryVO implements Serializable {
-    private int id;
+    private Integer id;
     private String userName;
-    private int auth;
+    private Integer auth;
 
     public UserQueryVO() {
 

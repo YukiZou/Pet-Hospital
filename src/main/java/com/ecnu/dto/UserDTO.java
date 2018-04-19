@@ -1,6 +1,5 @@
 package com.ecnu.dto;
 
-import com.ecnu.entity.User;
 import lombok.Data;
 
 import java.io.Serializable;

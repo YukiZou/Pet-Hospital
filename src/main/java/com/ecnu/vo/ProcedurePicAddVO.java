@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 public class ProcedurePicAddVO extends BaseResponse implements Serializable{
-    private int id;
+    private Integer id;
     private String url;
 
     public ProcedurePicAddVO() {

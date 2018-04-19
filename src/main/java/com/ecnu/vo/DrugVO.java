@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 public class DrugVO implements Serializable{
-    private int id;
+    private Integer id;
     private String name;
     private String info;
     private String picture;

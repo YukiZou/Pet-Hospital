@@ -11,12 +11,12 @@ import java.util.List;
  */
 @Data
 public class ProcedureStepVO implements Serializable{
-    private int id;
+    private Integer id;
 
     /**
      * 角色id，与RoleEnum对应 1、2、3
      */
-    private int roleId;
+    private Integer roleId;
 
     /**
      * 流程名
@@ -26,7 +26,7 @@ public class ProcedureStepVO implements Serializable{
     /**
      * 表示此节点属于流程的第几阶段
      */
-    private int step;
+    private Integer step;
 
     /**
      * 阶段名，类似于第一步，第二步这种（感觉没啥意义）

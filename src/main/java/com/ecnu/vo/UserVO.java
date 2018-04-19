@@ -12,9 +12,9 @@ import java.io.Serializable;
  */
 @Data
 public class UserVO extends BaseResponse implements Serializable{
-    private int id;
+    private Integer id;
     private String userName;
-    private int auth;
+    private Integer auth;
     private String pictureUrl;
 
     public UserVO() {

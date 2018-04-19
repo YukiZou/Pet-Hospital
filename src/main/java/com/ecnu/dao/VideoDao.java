@@ -61,6 +61,11 @@ public interface VideoDao {
      */
     int deleteCaseVideo(Video video);
 
+    /**
+     * 根据id 找 video 记录
+     * @param id
+     * @return
+     */
     Video findVideoById(int id);
 
     /**

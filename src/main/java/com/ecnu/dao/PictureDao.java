@@ -63,6 +63,11 @@ public interface PictureDao {
      */
     int deleteCasePicture(Picture picture);
 
+    /**
+     * 根据id 找 picture 记录
+     * @param id
+     * @return
+     */
     Picture findPictureById(int id);
 
     /**

@@ -10,12 +10,12 @@ import java.io.Serializable;
  */
 @Data
 public class ProcedurePicVO implements Serializable{
-    private int id;
+    private Integer id;
 
     /**
      * 流程管理的id
      */
-    private int procedureId;
+    private Integer procedureId;
     private String url;
 
     public ProcedurePicVO() {

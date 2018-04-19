@@ -114,7 +114,7 @@ public class ProcedureController {
 
             Procedure addProcedure = toProcedure(procedureAddDTO);
             //stepName如果前端没给，则后端根据step值自动生成。
-            if (stepName == null || stepName.equals("")) {
+            if (stepName == null || "".equals(stepName)) {
                 stepName = "第" + step + "步";
                 addProcedure.setStepName(stepName);
             }
@@ -130,7 +130,7 @@ public class ProcedureController {
             if(pictures != null && pictures.size() > 0) {
                 List<Picture> pictureList = new ArrayList<>();
                 for (String pic : pictures) {
-                    if (pic.equals("")) {
+                    if ("".equals(pic)) {
                         continue;
                     }
                     Picture picture = new Picture();
@@ -150,7 +150,7 @@ public class ProcedureController {
             if (videos != null && videos.size() > 0) {
                 List<Video> videoList = new ArrayList<>();
                 for (String vi : videos) {
-                    if (vi.equals("")) {
+                    if ("".equals(vi)) {
                         continue;
                     }
                     Video video = new Video();
@@ -480,7 +480,7 @@ public class ProcedureController {
             if (newRoleId > 0) {
                 updatePro.setRoleId(newRoleId);
             }
-            if (newDomain != null && !newDomain.equals("")) {
+            if (newDomain != null && !"".equals(newDomain)) {
                 updatePro.setDomain(newDomain);
             }
             //遍历更新
@@ -527,10 +527,10 @@ public class ProcedureController {
             Procedure pro = procedureList.get(0);
             Procedure updatePro = new Procedure();
             updatePro.setId(pro.getId());
-            if (stepName != null && !stepName.equals("")) {
+            if (stepName != null && !"".equals(stepName)) {
                 updatePro.setStepName(stepName);
             }
-            if (info != null && !info.equals("")) {
+            if (info != null && !"".equals(info)) {
                 updatePro.setInfo(info);
             }
             procedureService.updateProcedureStep(updatePro);

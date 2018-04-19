@@ -43,7 +43,7 @@ public class CaseServiceImpl implements CaseService{
         LOG.info("case service : {} ",c.toString());
 
         //TODO：新增试题的题干及选项的长度限制
-        if(name == null || name.equals("")){
+        if(name == null || "".equals(name)){
             //不合法输入
             LOG.error("新增病例信息不符合规范，新增病例失败。");
             return false;

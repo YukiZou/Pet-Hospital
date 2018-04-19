@@ -12,9 +12,9 @@ import java.io.Serializable;
  */
 @Data
 public class DepartmentAddVO extends BaseResponse implements Serializable {
-    private int id;
+    private Integer id;
     private String name;
-    private int role;
+    private Integer role;
     private String info;
     /**
      * picture url

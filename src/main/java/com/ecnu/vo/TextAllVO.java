@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 public class TextAllVO extends BaseResponse implements Serializable {
-    private int id;
+    private Integer id;
     private String info;
     public TextAllVO() {
 

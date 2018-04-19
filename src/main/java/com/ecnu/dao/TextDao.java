@@ -22,6 +22,11 @@ public interface TextDao {
      */
     int deleteText(Text text);
 
+    /**
+     * 根据id找 text记录
+     * @param id
+     * @return
+     */
     Text findTextById(int id);
 
     /**

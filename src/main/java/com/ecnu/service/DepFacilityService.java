@@ -11,10 +11,10 @@ import java.util.List;
 public interface DepFacilityService {
     /**
      * 根据depId找到对应的设备关联关系
-     * @param DepId
+     * @param depId
      * @return
      */
-    List<DepFacility> findDepFacilitiesByDepId(int DepId);
+    List<DepFacility> findDepFacilitiesByDepId(int depId);
 
     /**
      * 根据参数找到对应的关联记录

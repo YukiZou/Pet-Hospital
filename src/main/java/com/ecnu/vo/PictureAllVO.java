@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 public class PictureAllVO implements Serializable {
-    private int id;
+    private Integer id;
     private String url;
 
     public PictureAllVO() {

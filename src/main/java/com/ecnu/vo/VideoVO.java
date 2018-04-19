@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 public class VideoVO extends BaseResponse implements Serializable {
-    private int id;
+    private Integer id;
     public VideoVO() {
 
     }

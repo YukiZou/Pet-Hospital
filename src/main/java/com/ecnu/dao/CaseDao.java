@@ -28,6 +28,12 @@ public interface CaseDao {
      * @param c
      */
     void insertCase(Case c);
+
+    /**
+     * 通过caseName找到Case记录
+     * @param name
+     * @return
+     */
     Case findCaseByName(String name);
 
     /**

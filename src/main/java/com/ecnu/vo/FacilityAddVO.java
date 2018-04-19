@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 public class FacilityAddVO extends BaseResponse implements Serializable{
-    private int id;
+    private Integer id;
     private String name;
     private String info;
 

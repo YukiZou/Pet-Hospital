@@ -38,17 +38,17 @@ public class QuestionServiceImpl implements QuestionService {
     public Boolean addQuestion(Question question) {
         String category=question.getCategory();
         String stem=question.getStem();
-        String A=question.getOptA();
-        String B=question.getOptB();
-        String C=question.getOptC();
-        String D=question.getOptD();
+        String a=question.getOptA();
+        String b=question.getOptB();
+        String c=question.getOptC();
+        String d=question.getOptD();
         String answer=question.getAnswer();
 
         //TODO：新增试题的题干及选项的长度限制
-        Boolean isIllegal = stem == null || stem.equals("") ||category == null || category.equals("") || A == null || A.equals("") ||
-                B == null || B.equals("") || C == null || C.equals("") ||
-                D == null || D.equals("") || answer == null ||
-                (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")));
+        Boolean isIllegal = stem == null || "".equals(stem) ||category == null || "".equals(category) || a == null || "".equals(a) ||
+                b == null || "".equals(b) || c == null || "".equals(c) ||
+                d == null || "".equals(d) || answer == null ||
+                (!("A".equals(answer) || "B".equals(answer) || "C".equals(answer) || "D".equals(answer)));
         if(isIllegal){
             //不合法输入
             LOG.error("新增试题信息不符合规范，新增试题失败。");
@@ -104,14 +104,14 @@ public class QuestionServiceImpl implements QuestionService {
         if(question.getId()>0){
             LOG.info("question {}",question);
 
-            Boolean isIllegal = question.getCategory()==null||question.getCategory().equals("")||
-                    question.getStem()==null||question.getStem().equals("")||
-                    question.getOptA()==null||question.getOptA().equals("")||
-                    question.getOptB()==null||question.getOptB().equals("")||
-                    question.getOptC()==null||question.getOptC().equals("")||
-                    question.getOptD()==null||question.getOptD().equals("")||
+            Boolean isIllegal = question.getCategory()==null|| "".equals(question.getCategory()) ||
+                    question.getStem()==null|| "".equals(question.getStem()) ||
+                    question.getOptA()==null|| "".equals(question.getOptA()) ||
+                    question.getOptB()==null|| "".equals(question.getOptB()) ||
+                    question.getOptC()==null|| "".equals(question.getOptC()) ||
+                    question.getOptD()==null|| "".equals(question.getOptD()) ||
                     question.getAnswer() == null ||
-                    (!(question.getAnswer().equals("A")||question.getAnswer().equals("B")||question.getAnswer().equals("C")||question.getAnswer().equals("D")));
+                    (!("A".equals(question.getAnswer()) || "B".equals(question.getAnswer()) || "C".equals(question.getAnswer()) || "D".equals(question.getAnswer())));
             if(isIllegal){
                 LOG.error("信息缺失，修改试题失败");
                 return false;

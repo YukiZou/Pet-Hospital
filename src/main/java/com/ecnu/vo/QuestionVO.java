@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 public class QuestionVO extends BaseResponse implements Serializable {
-    private int id;
+    private Integer id;
     private String category;
     private String stem;
     private String optA;

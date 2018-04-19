@@ -164,10 +164,10 @@ public class DepartmentController {
             }
 
             //除了id以外，其他参数都为空的情况在update时是不合法的
-            isIllegal =  (name == null || name.equals("")) &&
+            isIllegal =  (name == null || "".equals(name)) &&
                     department.getRole() == 0 &&
-                    (info == null || info.equals("")) &&
-                    (department.getPicture() == null || department.getPicture().equals(""));
+                    (info == null || "".equals(info)) &&
+                    (department.getPicture() == null || "".equals(department.getPicture()));
             if (isIllegal) {
                 LOG.error("name/role/info/picture are null");
                 return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());

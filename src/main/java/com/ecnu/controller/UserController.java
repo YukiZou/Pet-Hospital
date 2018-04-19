@@ -48,7 +48,7 @@ public class UserController {
             LOG.info("user {} login", userDTO.toString());
             String loginUserName = userDTO.getUserName();
             String loginUserPwd = userDTO.getPwd();
-            if (loginUserName == null || loginUserName.equals("") || loginUserPwd == null || loginUserPwd.equals("")) {
+            if (loginUserName == null || "".equals(loginUserName) || loginUserPwd == null || "".equals(loginUserPwd)) {
                 LOG.error("用户名或密码不能为空");
                 return new UserVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
@@ -109,7 +109,7 @@ public class UserController {
             String addUserName = userDTO.getUserName();
             String addUserPwd = userDTO.getPwd();
             int auth = userDTO.getAuth();
-            if (addUserName == null || addUserName.equals("") || addUserPwd == null || addUserPwd.equals("") || auth > 3 || auth < 1) {
+            if (addUserName == null || "".equals(addUserName) || addUserPwd == null || "".equals(addUserPwd)) {
                 LOG.error("add user for input error!");
                 return new UserVO(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
@@ -286,8 +286,8 @@ public class UserController {
             User loginUser = (User) session.getAttribute("loginUser");
             int userId = userAuthDTO.getId();
             int auth = userAuthDTO.getAuth();
-            if (userId <= 0 || auth > 3 || auth < 1) {
-                LOG.error("userId or auth invalid!");
+            if (userId <= 0) {
+                LOG.error("userId invalid!");
                 return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
             LOG.info("change user {} with auth {} for loginUser {}", userId, auth, loginUser.getUserName());
@@ -352,7 +352,7 @@ public class UserController {
             User loginUser = (User) session.getAttribute("loginUser");
             int userId = userPwdDTO.getId();
             String pwd = userPwdDTO.getPwd();
-            if (userId <= 0 || pwd == null || pwd.equals("")) {
+            if (userId <= 0 || pwd == null || "".equals(pwd)) {
                 LOG.error("userId or pwd invalid!");
                 return new BaseResponse(ResponseStatusEnum.INPUT_FAIL.getDesc());
             }
@@ -464,10 +464,10 @@ public class UserController {
             User user = new User();
             String userName = userQueryDTO.getUserName();
             int auth = userQueryDTO.getAuth();
-            if (userName != null && !userName.equals("")) {
+            if (userName != null && !"".equals(userName)) {
                 user.setUserName(userName);
             }
-            if (auth > 0 && auth < 4) {
+            if (auth > 0) {
                 user.setAuth(auth);
             }
             List<User> queryUsers = userService.queryUsers(user);
@@ -515,7 +515,7 @@ public class UserController {
                 return new BaseResponse(ResponseStatusEnum.INVALID_INPUT_FAIL.getDesc());
             }
             //新昵称要唯一
-            if (name != null && !name.equals("")) {
+            if (name != null && !"".equals(name)) {
                 User queryUser = userService.queryUserByName(name);
                 if (queryUser != null) {
                     LOG.error("user name has existed! update login user data error!");

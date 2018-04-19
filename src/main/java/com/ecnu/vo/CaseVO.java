@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 public class CaseVO extends BaseResponse implements Serializable {
-    private int id;
+    private Integer id;
     public CaseVO() {
 
     }

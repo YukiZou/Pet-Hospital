@@ -53,7 +53,7 @@ public class TextServiceImpl implements TextService {
     @Override
     public Boolean updateText(Text text) {
         if(text.getId()>0){
-            if(text.getInfo()==null||text.getInfo().equals("")){
+            if(text.getInfo()==null|| "".equals(text.getInfo())){
                 LOG.error("信息缺失，修改text失败");
                 return false;
 

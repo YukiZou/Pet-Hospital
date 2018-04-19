@@ -54,6 +54,7 @@ public interface DiseaseDao {
     /**
      * 根据参数disease的ID找到要更改的疾病记录，然后update该条记录
      * @param disease
+     * @return
      */
     int updateDisease(Disease disease);
 

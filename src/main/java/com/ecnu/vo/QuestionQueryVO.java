@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 public class QuestionQueryVO implements Serializable {
-    private int id;
+    private Integer id;
     private String category;
     private String stem;
     private String optA;

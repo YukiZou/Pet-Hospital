@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 public class ProcedureVO implements Serializable{
-    private int roleId;
+    private Integer roleId;
     private String domain;
 
     public ProcedureVO(){

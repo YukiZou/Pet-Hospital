@@ -38,7 +38,7 @@ public class DiseaseServiceImpl implements DiseaseService {
     public Boolean addDisease(Disease disease) {
         String name=disease.getName();
         String category=disease.getCategory();
-        if(name == null || name.equals("") || category == null || category.equals("") ){
+        if(name == null || "".equals(name) || category == null || "".equals(category)){
             LOG.error("新增疾病信息不符合规范，新增疾病失败。");
             return false;
         }

@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 public class DiseaseAddVO extends BaseResponse implements Serializable {
-    private int id;
+    private Integer id;
     private String name;
     private String category;
 

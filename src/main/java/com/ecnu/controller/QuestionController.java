@@ -140,20 +140,20 @@ public class QuestionController {
 
                 String category = strings[0];
                 String stem = strings[1];
-                String A = strings[2];
-                String B = strings[3];
-                String C = strings[4];
-                String D = strings[5];
+                String a = strings[2];
+                String b = strings[3];
+                String c = strings[4];
+                String d = strings[5];
                 String answer = strings[6];
 
                 //新增试题的题干及选项的长度限制
-                Boolean isIllegal = category == null || category.equals("")
-                        || stem == null || stem.equals("")
-                        || A == null || A.equals("")
-                        || B == null || B.equals("")
-                        || C == null || C.equals("")
-                        || D == null || D.equals("")
-                        || answer == null || (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")));
+                Boolean isIllegal = category == null || "".equals(category)
+                        || stem == null || "".equals(stem)
+                        || a == null || "".equals(a)
+                        || b == null || "".equals(b)
+                        || c == null || "".equals(c)
+                        || d == null || "".equals(d)
+                        || answer == null || (!("A".equals(answer) || "B".equals(answer) || "C".equals(answer) || "D".equals(answer)));
                 if(isIllegal){
                     //不合法输入
                     LOG.error("invalid input.");
@@ -161,10 +161,10 @@ public class QuestionController {
                 }
                 if (category.length() > 255 || containIllegalCharacter(category)
                         || stem.length() > 255 || containIllegalCharacter(stem)
-                        || A.length() > 255 || containIllegalCharacter(A)
-                        || B.length() > 255 || containIllegalCharacter(B)
-                        || C.length() > 255 || containIllegalCharacter(C)
-                        || D.length() > 255 || containIllegalCharacter(D)) {
+                        || a.length() > 255 || containIllegalCharacter(a)
+                        || b.length() > 255 || containIllegalCharacter(b)
+                        || c.length() > 255 || containIllegalCharacter(c)
+                        || d.length() > 255 || containIllegalCharacter(d)) {
                     LOG.error("invalid input.");
                     continue;
                 }
@@ -173,10 +173,10 @@ public class QuestionController {
                 Question question = new Question();
                 question.setCategory(category);
                 question.setStem(stem);
-                question.setOptA(A);
-                question.setOptB(B);
-                question.setOptC(C);
-                question.setOptD(D);
+                question.setOptA(a);
+                question.setOptB(b);
+                question.setOptC(c);
+                question.setOptD(d);
                 question.setAnswer(answer);
 
                 List<Question> queryQuestions = questionService.queryQuestionsByQues(question);

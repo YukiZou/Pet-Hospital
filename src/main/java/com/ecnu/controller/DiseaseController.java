@@ -111,7 +111,8 @@ public class DiseaseController {
             Disease disease=toDisease(diseaseDTO);
             Boolean res=false;
             res=diseaseService.addDisease(disease);
-            if(res){//新增病种成功
+            if(res){
+                //新增病种成功
                 DiseaseAddVO diseaseAddVO=new DiseaseAddVO(disease);
                 LOG.info("add disease : {} success", disease.toString());
                 diseaseAddVO.setStatus("success");
