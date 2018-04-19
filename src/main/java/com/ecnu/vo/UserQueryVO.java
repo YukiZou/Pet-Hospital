@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * 查询用户信息列表时返回的数据。
+ * @author asus
  */
 @Data
 public class UserQueryVO implements Serializable {

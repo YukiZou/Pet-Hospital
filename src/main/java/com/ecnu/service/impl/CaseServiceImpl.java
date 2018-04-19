@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Service
 public class CaseServiceImpl implements CaseService{
     private static Logger LOG = LoggerFactory.getLogger(CaseServiceImpl.class);
@@ -36,17 +39,17 @@ public class CaseServiceImpl implements CaseService{
     }
     @Override
     public Boolean addCase(Case c) {
-        int diseaseId=c.getDiseaseId();
         String name=c.getName();
-
         LOG.info("case service : {} ",c.toString());
 
         //TODO：新增试题的题干及选项的长度限制
-        if(name == null || name.equals("")){//不合法输入
+        if(name == null || name.equals("")){
+            //不合法输入
             LOG.error("新增病例信息不符合规范，新增病例失败。");
             return false;
         }
-        else if(caseDao.findCaseByName(name)!=null){//判断新增病例是否已在数据库中存在
+        else if(caseDao.findCaseByName(name)!=null){
+            //判断新增病例是否已在数据库中存在
             LOG.error("新增病例已存在，新增病例失败。");
             return false;
         }

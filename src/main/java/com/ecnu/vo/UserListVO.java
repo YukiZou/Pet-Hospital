@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 将后端查询出的User的部分信息返回到前端界面
+ * @author asus
  */
 @Data
 public class UserListVO extends BaseResponse implements Serializable{

@@ -5,13 +5,20 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author asus
+ */
 @Data
 public class DepartmentVO implements Serializable{
     private int id;
     private String name;
     private int role;
     private String info;
-    private String picture;//picture url
+
+    /**
+     * picture url
+     */
+    private String picture;
 
     public DepartmentVO() {
 

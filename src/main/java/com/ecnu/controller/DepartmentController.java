@@ -24,6 +24,7 @@ import static com.ecnu.common.CheckInputStringUtil.containIllegalCharacter;
 
 /**
  * 科室管理
+ * @author asus
  */
 @Controller
 @RequestMapping("api/department")

@@ -6,6 +6,9 @@ import java.io.Serializable;
 import com.ecnu.entity.Case;
 import lombok.Data;
 
+/**
+ * @author asus
+ */
 @Data
 public class CaseVO extends BaseResponse implements Serializable {
     private int id;

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Service
 public class ProcedureServiceImpl implements ProcedureService {
     @Autowired
@@ -45,7 +48,11 @@ public class ProcedureServiceImpl implements ProcedureService {
         return procedureDao.deleteProcedureStep(procedure);
     }
 
-    //更新表记录不为空的字段值表示新值，id值不能为空
+    /**
+     * 更新表记录不为空的字段值表示新值，id值不能为空
+     * @param procedure
+     * @return
+     */
     @Override
     public int updateProcedureStep(Procedure procedure) {
         if (procedure.getId() <= 0) {

@@ -8,6 +8,7 @@ import java.io.Serializable;
 /**
  * 查询药品信息列表时将返回的Drug对象转换成DrugVO
  * 不封装status字段
+ * @author asus
  */
 @Data
 public class DrugVO implements Serializable{

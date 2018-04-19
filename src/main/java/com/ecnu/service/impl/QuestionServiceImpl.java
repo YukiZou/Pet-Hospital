@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Service
 public class QuestionServiceImpl implements QuestionService {
     private static Logger LOG = LoggerFactory.getLogger(QuestionServiceImpl.class);
@@ -42,10 +45,12 @@ public class QuestionServiceImpl implements QuestionService {
         String answer=question.getAnswer();
 
         //TODO：新增试题的题干及选项的长度限制
-        if(stem == null || stem.equals("") ||category == null || category.equals("") || A == null || A.equals("") ||
+        Boolean isIllegal = stem == null || stem.equals("") ||category == null || category.equals("") || A == null || A.equals("") ||
                 B == null || B.equals("") || C == null || C.equals("") ||
                 D == null || D.equals("") || answer == null ||
-                (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")))){//不合法输入
+                (!(answer.equals("A")||answer.equals("B")||answer.equals("C")||answer.equals("D")));
+        if(isIllegal){
+            //不合法输入
             LOG.error("新增试题信息不符合规范，新增试题失败。");
             return false;
         } else{
@@ -57,7 +62,8 @@ public class QuestionServiceImpl implements QuestionService {
             }
 
             questionDao.insertQuestion(question);
-            if (question.getId() > 0) {//判断是否新增试题成功
+            if (question.getId() > 0) {
+                //判断是否新增试题成功
                 LOG.info("新增试题成功。");
                 return true;
             } else {
@@ -98,14 +104,15 @@ public class QuestionServiceImpl implements QuestionService {
         if(question.getId()>0){
             LOG.info("question {}",question);
 
-            if(question.getCategory()==null||question.getCategory().equals("")||
+            Boolean isIllegal = question.getCategory()==null||question.getCategory().equals("")||
                     question.getStem()==null||question.getStem().equals("")||
                     question.getOptA()==null||question.getOptA().equals("")||
                     question.getOptB()==null||question.getOptB().equals("")||
                     question.getOptC()==null||question.getOptC().equals("")||
                     question.getOptD()==null||question.getOptD().equals("")||
                     question.getAnswer() == null ||
-            (!(question.getAnswer().equals("A")||question.getAnswer().equals("B")||question.getAnswer().equals("C")||question.getAnswer().equals("D")))){
+                    (!(question.getAnswer().equals("A")||question.getAnswer().equals("B")||question.getAnswer().equals("C")||question.getAnswer().equals("D")));
+            if(isIllegal){
                 LOG.error("信息缺失，修改试题失败");
                 return false;
             } else{

@@ -7,6 +7,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Data
 public class DiseaseCategoryListVO extends BaseResponse implements Serializable {
     private List<String> categoryList;

@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * 药品增加方法返回给前端的数据,封装了status
+ * @author asus
  */
 @Data
 public class DrugAddVO extends BaseResponse implements Serializable {

@@ -1,8 +1,14 @@
 package com.ecnu.common.enums;
 
-public enum ResponseStatusEnum {
-    SUCCESS("success"),
+/**
+ * @author asus
+ */
 
+public enum ResponseStatusEnum {
+    /**
+     * 返回状态
+     */
+    SUCCESS("success"),
     FAIL("fail"),
     NO_USER_FAIL("noUserFail"),
     DUPLICATE_USERNAME_FAIL("duplicateUsernameFail"),

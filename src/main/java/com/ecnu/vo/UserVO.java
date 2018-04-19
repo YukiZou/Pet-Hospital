@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * 用户登录方法返回的对象
+ * @author asus
  */
 @Data
 public class UserVO extends BaseResponse implements Serializable{

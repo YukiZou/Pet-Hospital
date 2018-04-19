@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * 新增试题方法返回的对象
+ * @author asus
  */
 @Data
 public class QuestionVO extends BaseResponse implements Serializable {

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Service
 public class DiseaseServiceImpl implements DiseaseService {
     private static Logger LOG = LoggerFactory.getLogger(DiseaseServiceImpl.class);
@@ -39,7 +42,8 @@ public class DiseaseServiceImpl implements DiseaseService {
             LOG.error("新增疾病信息不符合规范，新增疾病失败。");
             return false;
         }
-        else if(diseaseDao.findDiseaseByName(name)!=null){//判断新增病种的name是否已在数据库中存在
+        else if(diseaseDao.findDiseaseByName(name)!=null){
+            //判断新增病种的name是否已在数据库中存在
             LOG.error("新增疾病已存在，新增疾病失败。");
             return false;
         }

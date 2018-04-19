@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author asus
+ */
 @Data
 public class TextVO  extends BaseResponse implements Serializable {
     private int id;

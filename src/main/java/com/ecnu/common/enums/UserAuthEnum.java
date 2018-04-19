@@ -3,8 +3,12 @@ package com.ecnu.common.enums;
 
 /**
  * 表明用户权限的枚举类
+ * @author asus
  */
 public enum  UserAuthEnum {
+    /**
+     * 普通用户
+     */
     ORDINARY_USER(1, "ordinary user"),
     ADMIN(2, "admin"),
     SUPER_ADMIN(3, "super admin");

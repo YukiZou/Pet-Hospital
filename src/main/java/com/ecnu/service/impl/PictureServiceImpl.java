@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Service
 public class PictureServiceImpl implements PictureService{
     private static Logger LOG = LoggerFactory.getLogger(PictureServiceImpl.class);

@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author asus
+ */
 @Data
 public class QuestionQueryVO implements Serializable {
     private int id;

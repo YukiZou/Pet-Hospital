@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 将后端查询出来的 FacilityVO list对象封装上status返回到前端界面
+ * @author asus
  */
 @Data
 public class FacilityListVO extends BaseResponse implements Serializable{

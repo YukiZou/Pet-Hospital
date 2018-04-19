@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * the return data for add department method
+ * @author asus
  */
 @Data
 public class DepartmentAddVO extends BaseResponse implements Serializable {
@@ -15,7 +16,10 @@ public class DepartmentAddVO extends BaseResponse implements Serializable {
     private String name;
     private int role;
     private String info;
-    private String picture;//picture url
+    /**
+     * picture url
+     */
+    private String picture;
 
     public DepartmentAddVO() {
 

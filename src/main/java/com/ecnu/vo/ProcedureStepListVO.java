@@ -6,6 +6,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * @author asus
+ */
 @Data
 public class ProcedureStepListVO extends BaseResponse implements Serializable{
     private List<ProcedureStepVO> stepList;

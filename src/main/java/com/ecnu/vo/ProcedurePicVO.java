@@ -5,10 +5,17 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author asus
+ */
 @Data
 public class ProcedurePicVO implements Serializable{
     private int id;
-    private int procedureId;//流程管理的id
+
+    /**
+     * 流程管理的id
+     */
+    private int procedureId;
     private String url;
 
     public ProcedurePicVO() {
